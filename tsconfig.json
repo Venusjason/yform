@@ -18,6 +18,11 @@
       // "rxjs/*": [
       //   "./node_modules/rxjs/*"
       // ]
-    }
+    },
+    "typeRoots": [
+      "node",
+      "node_modules/@types",
+      "./typings"
+    ]
   }
 }

@@ -1,11 +1,21 @@
 {
-  "name": "core",
+  "name": "@yform/core",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/core/src/index.js",
   "scripts": {
-    "build": "tsc"
+    "dev": "rimraf -rf lib && cross-env NODE_ENV=development && tsc -w",
+    "build": "rimraf -rf lib && cross-env NODE_ENV=production && tsc"
   },
   "author": "jindajian",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "async-validator": "^3.3.0",
+    "cool-path": "^0.1.30",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.5",
+    "cross-env": "^7.0.2"
+  }
 }

@@ -1,5 +1,7 @@
 export default class {
-  events = {}
+  events: {
+    [key: string]: Function[]
+  } = {}
 
   on(type: string, listener: Function, isPrepend: Boolean = false) {
     if (this.events[type]) {
