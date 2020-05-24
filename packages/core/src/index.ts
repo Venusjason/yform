@@ -13,12 +13,16 @@ import EventEmiter from './EventEmiter'
 //     {
 //       a: 'a'
 //     }
-//   ]
+//   ],
+//   g: {
+//     a: 2,
+//     b: 3,
+//   }
 // }
 
 // console.log(
 //   'lodash',
-//   _get(app, 'c[0].a'),
+//   _get(app, 'g'),
 //   _get(app, 'c.0.a'),
 //   _set(app, 'e', null),
 //   _get(app, 'e[0]')
@@ -27,7 +31,7 @@ import EventEmiter from './EventEmiter'
 export type ITrigger = '' | 'blur' | 'change'
 
 interface FieldRuleItem extends RuleItem {
-  trigger?: ITrigger;
+  trigger?: ITrigger | ITrigger[];
 }
 
 export interface IFormFieldItem {
@@ -182,7 +186,6 @@ export class Form {
       fields = this.fields
     }
     const fieldsNamesLength = Object.keys(fields).length
-    console.log(fieldsNamesLength)
     let valid = true
     return new Promise((resolve, reject) => {
 

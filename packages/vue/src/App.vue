@@ -1,24 +1,26 @@
 <template>
   <div id="app">
-    <Form v-model="formValues" ref="form" >
+    <Form v-model="formValues" ref="form" @submit="submitForm" label-position="right" inline size="mini" >
       <div>YForm vue版本</div>
       <Field name="name" label="名称" component="input" y-native required />
-      <Field name="age" label="年龄" component="input" y-native :rules="rules.age" />
-      <Field name="age" component="input" y-native placeholder="请输入年龄" required />
+      <Field name="age" label="年龄年龄年龄" component="input" y-native :rules="rules.age" required />
+      <Field name="age" component="input" y-native placeholder="请输入年龄" required labelWidth="20px" />
       <button @click="submit">提交</button>
+      <YButton do="submit" ></YButton>
     </Form>
     <pre>{{JSON.stringify(this.formValues, null, 4)}}</pre>
   </div>
 </template>
 
 <script>
-import { Form, Field } from './YForm'
+import { Form, Field, Button } from './YForm'
 
 export default {
   name: 'App',
   components: {
     Form,
     Field,
+    'YButton': Button,
   },
   data() {
     return {
@@ -56,14 +58,24 @@ export default {
     },
     async submit(e) {
       e.preventDefault()
-      const { formInstance } = this.$refs.form.$options
-      console.log(formInstance)
-      try {
-        const res = await formInstance.validate()
-        console.log(res)
-      } catch (e) {
-        console.log(e)
-      }
+      const res = await this.$refs.form.onSubmit()
+      console.log(res)
+      // const { formInstance } = this.$refs.form.$options
+      // console.log(formInstance)
+      // try {
+      //   const res = await formInstance.validate()
+      //   console.log(res)
+      // } catch (e) {
+      //   console.log(e)
+      // }
+    },
+    submitForm(values) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(values)
+          resolve()
+        }, 2000)
+      })
     }
   },
 }
