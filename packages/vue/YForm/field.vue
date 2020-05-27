@@ -1,18 +1,45 @@
 <script>
-import { Vue } from 'vue-property-decorator'
-import { createField } from '../../../core/lib/core/src/index'
+import { createField } from '../../core/lib/core/src/index'
+import log from '../../core/lib/utils/log'
 import LabelWrap from './label-wrap.vue'
+import createInputComponent from './InputComponent.js'
 
-export default Vue.extend({
+const globalOptions = {
+  defaultComponent: 'input',
+}
+
+const VueField = ({
   name: 'YFIELD',
   componentName: 'YFIELD',
+  inject: ['YForm'],
+  provide() {
+    return {
+      YField: this
+    }
+  },
   props: {
     name: {
       type: String,
       required: false
     },
     label: {},
-    component: {},
+    component: {
+      default: globalOptions.defaultComponent,
+    },
+    /**
+     * component style
+     */
+    componentStyle: {
+      type: Object,
+      default: () => ({}),
+    },
+    /**
+     * component class
+     */
+    componentClass: {
+      type: [Array, String, Object],
+      default: () => []
+    },
     /**
      * 是否html原生控件
      */
@@ -34,13 +61,25 @@ export default Vue.extend({
     },
     labelWidth: {
       type: String,
+      default: '',
     },
-    size: {
+
+    // 表单域态 edit、preview、disabled
+    fieldStatus: {
       type: String,
-      // validator(value) {
-      //   return ['large', 'medium', 'small', 'mini'].includes(value)
-      // },
+      default: 'edit',
+      validator(value) {
+        return ['edit', 'preview', 'disabled'].includes(value)
+      },
     },
+    // 自定义预览ui (value) => vnode
+    previewValue: {
+      type: Function,
+    },
+    /**
+     * label 后缀
+     */
+    colon: {},
   },
   fieldInstance: null,
   data() {
@@ -48,23 +87,11 @@ export default Vue.extend({
       value: null,
       errorMsg: '',
       isNested: false,
+      computedLabelWidth: '',
+      InputComponent: null,
     }
   },
   computed: {
-    YForm() {
-      const getParentForm = (context) => {
-        let parent = context.$parent
-        let parentName = parent && parent.$options && parent.$options.componentName
-        while (parentName !== 'YFORM') {
-          if (parentName === 'YFIELD') {
-            this.isNested = true
-          }
-          parent = parent && parent.$parent
-        }
-        return parent
-      }
-      return getParentForm(this)
-    },
     rulesResult() {
       const rules = []
       if (this.required) {
@@ -112,20 +139,58 @@ export default Vue.extend({
       return this.YForm.inline
     },
     fieldSize() {
-      if (!this.YForm) return this.size || 'small'
-      return this.size || this.YForm.size || 'small'
-    }
+      return this.YForm.size || 'small'
+    },
+    fieldColon() {
+      const getcolon = (colon) => {
+        if (typeof colon === 'boolean') {
+          return colon ? '：' : ''
+        } else {
+          return colon
+        }
+      }
+      if (this.colon === undefined) {
+        return getcolon(this.YForm.colon)
+      } else {
+        return getcolon(this.colon)
+      }
+    },
+    fieldValidateOnRuleChange() {
+      return this.YForm.validateOnRuleChange
+    },
+    validateState() {
+      // TODO: validating success error ''
+      return this.errorMsg ? 'error' : 'success'
+    },
+    fieldClassNames() {
+      return {
+        'is-error': this.errorMsg !== '',
+        'is-success': this.errorMsg === '',
+        'is-required': this.isRequired,
+        'is-no-asterisk': this.YForm && this.YForm.hideRequiredAsterisk,
+        'is-inline': this.isInline,
+        'mr4': this.isInline,
+      }
+    },
+    // InputComponent() {
+    //   return createInputComponent(this)
+    // }
   },
   watch: {
     rulesResult: {
       deep: true,
-      handler(value) {
-        console.log(`${this.name}的rule 更新`, value)
+      handler() {
+        if (this.fieldValidateOnRuleChange) {
+          log.help('rules 变化 立即执行校验')
+          this.$options.fieldInstance.validate('')
+        }
       }
     }
   },
-  mounted() {
+  created() {
     this.initFieldInstance()
+  },
+  mounted() {
   },
   beforeDestroy() {
     this.$options.fieldInstance.beforeFieldDestory()
@@ -144,6 +209,7 @@ export default Vue.extend({
       fieldInstance.updateByInputChange = this.updateByInputChange
       fieldInstance.updateByChange = this.updateByChange
       fieldInstance.validateCallback = this.validateCallback
+      this.InputComponent = createInputComponent(this)
     },
     updateByInputChange(value) {
       this.value = value
@@ -159,18 +225,10 @@ export default Vue.extend({
     },
   },
   render(h) {
-    const _this = this
-
-
     return (
       <div class={{
+        ...this.fieldClassNames,
         yfield: true,
-        'is-error': this.errorMsg !== '',
-        'is-success': this.errorMsg === '',
-        'is-required': this.isRequired,
-        'is-no-asterisk': this.YForm && this.YForm.hideRequiredAsterisk,
-        'is-inline': this.isInline,
-        'mr4': this.isInline,
       }}>
         {
           /**
@@ -178,7 +236,7 @@ export default Vue.extend({
            */
         }
         <LabelWrap
-          isAutoWidth={this.labelStyle && this.labelStyle === 'auto'}
+          isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
           updateAll={this.YForm.labelWidth === 'auto'}
         >
         {
@@ -187,7 +245,7 @@ export default Vue.extend({
               'yfield__label': true,
               [`size-${this.fieldSize}`]: true,
             }}>
-              <slot name="label">{this.label}</slot>
+              {this.label}{this.fieldColon}
             </label>
           )
         }
@@ -198,29 +256,7 @@ export default Vue.extend({
           [`size-${this.fieldSize}`]: true,
         }} style={this.contentStyle}>
           {
-            h(this.component, {
-              props: {
-                ...this.$attrs,
-                value: this.value,
-              },
-              attrs: {
-                ...this.$attrs,
-                value: this.value,
-              },
-              on: {
-                ...this.$listeners,
-                input(e) {
-                  let value = e
-                  /**
-                   * 原生事件
-                   */
-                  if (_this.yNative) {
-                    value = e.target.value
-                  }
-                  _this.$options.fieldInstance.onFieldInputChange(value)
-                },
-              }
-            })
+            h(this.InputComponent)
           }
           {
             this.errorMsg && (
@@ -232,6 +268,15 @@ export default Vue.extend({
     )
   },
 })
+
+VueField.install = function(Vue, options = {
+  name: 'YField'
+}) {
+  Object.assign(globalOptions, options)
+  Vue.component(globalOptions.name || VueField.name, VueField)
+}
+
+export default VueField
 </script>
 
 <style lang="less">
@@ -246,7 +291,7 @@ export default Vue.extend({
 }
 
 .yfield {
-  margin-top: 20px;
+  margin-bottom: 20px;
 
   &:before {
     display: table;

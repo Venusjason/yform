@@ -1,7 +1,8 @@
-import { Vue } from 'vue-property-decorator'
+import log from '../../core/lib/utils/log'
 
 export const createYButton = (ButtonComponent = 'button') => {
-  return Vue.extend({
+  let latestQueryTable = null
+  const YButton = ({
     name: 'YBUTTON',
     componentName: 'YBUTTON',
     props: {
@@ -30,9 +31,11 @@ export const createYButton = (ButtonComponent = 'button') => {
         }
         return getParentForm(this)
       },
-      loading() {
-        return this.YForm.submiting
-      },
+    },
+    data() {
+      return {
+        loading: false,
+      }
     },
     methods: {
       onClick(e) {
@@ -41,15 +44,52 @@ export const createYButton = (ButtonComponent = 'button') => {
           return this.$listeners.onClick(e)
         }
         if (this.do === 'submit') {
-          this.YForm.onSubmit()
+          this.loading = true
+          this.YForm.onSubmit().then(() => {
+            this.loading = false
+          }).catch(() => {
+            this.loading = false
+          })
+        } else if (this.do === 'search') {
+          this.loading = true
+          this.onSearch()
         }
-      }
+      },
+      onSearch() {
+        if (!latestQueryTable) {
+          const getlatestQueryTable = (context) => {
+            let parent = context.$parent
+            let children = parent.$children || []
+            let matchedTable = children.filter(child => child && child.$options && ((child.$options.componentName === 'YQUERYTABLE' || child.$options.name === 'YQUERYTABLE')))
+
+            if (matchedTable.length === 0) {
+              parent = parent.$parent
+              if (!parent) {
+                log.warn('button do=search 需要搭配QueryTable才能使用')
+                return null
+              }
+              return getlatestQueryTable(parent)
+            }
+
+            return matchedTable[0]
+          }
+          latestQueryTable = getlatestQueryTable(this)
+        }
+        this.loading = true
+        latestQueryTable.refreshList().then(() => {
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      },
     },
     render(h) {
       let slotsDefault = ''
+      let type = ''
       switch (this.do) {
         case 'search':
           slotsDefault = '查询'
+          type = 'primary'
           break
         case 'reset':
           slotsDefault = '重置'
@@ -59,14 +99,23 @@ export const createYButton = (ButtonComponent = 'button') => {
           break
         default :
           slotsDefault = '提交'
+          type = 'primary'
+          break
       }
+
+      const size = this.YForm.size
+
       return h(ButtonComponent, {
         props: {
+          size,
+          type,
           disabled: this.loading,
           loading: this.loading,
           ...this.$attrs,
         },
         attrs: {
+          size,
+          type,
           disabled: this.loading,
           ...this.$attrs,
         },
@@ -80,7 +129,14 @@ export const createYButton = (ButtonComponent = 'button') => {
       ])
     }
   
-  }) 
+  })
+
+  YButton.install = function(Vue, options = {
+    name: 'YButton'
+  }) {
+    Vue.component(options.name || YButton.name, YButton)
+  }
+  return YButton
 }
 
 export default createYButton()

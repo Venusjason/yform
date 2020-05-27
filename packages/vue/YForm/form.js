@@ -1,10 +1,14 @@
-import { Vue } from 'vue-property-decorator'
-import { cloneDeep } from 'lodash'
-import { Form } from '../../../core/lib/core/src/index'
+import cloneDeep from 'lodash/cloneDeep'
+import { Form } from '../../core/lib/core/src/index'
 
-export default Vue.extend({
+const VueForm = ({
   name: 'YFORM',
   componentName: 'YFORM',
+  provide() {
+    return {
+      YForm: this
+    }
+  },
   props: {
     value: {
       type: Object,
@@ -59,12 +63,19 @@ export default Vue.extend({
      */
     colon: {
       type: [Boolean, String],
-      default: true,
+      default: false,
     },
     disabled: {
       type: Boolean,
       default: false,
     },
+    /**
+     * 是否在 rules 属性改变后立即触发一次验证
+     */
+    validateOnRuleChange: {
+      type: Boolean,
+      default: true,
+    }
   },
   computed: {
     autoLabelWidth() {
@@ -81,7 +92,7 @@ export default Vue.extend({
       }
     }
   },
-  formInstance: new Form(),
+  formInstance: null,
   data() {
     return {
       name: '我是1',
@@ -94,26 +105,33 @@ export default Vue.extend({
     this.initForm()
   },
   mounted() {
+    // this.$options.formInstance.updateFormValues(this.value)
   },
   beforeDestroy() {
     this.$options.formInstance.beforeDestroy()
   },
   methods: {
     initForm() {
+      this.$options.formInstance = new Form(this.value)
       const { formInstance } = this.$options
-      formInstance.updateFormValues(this.value)
+      // formInstance.updateFormValues(this.value)
 
       formInstance.afterFieldRegisterToForm = this.afterFieldRegisterToForm
     },
     afterFieldRegisterToForm(field) {
       const { formInstance } = this.$options
       const value = formInstance.getFieldValue(field.name)
+      // 只有最后一次注册的字段被收入了
+      // const formValues = formInstance.getFormNewValues(field.name, value === undefined ? null : value)
+      //   this.$emit('input', formValues)
       if (value === undefined) {
         /**
          * vue对未声明的属性无法自动更新,这里要确保所有注册的字段能够自动更新
          */
         const formValues = formInstance.getFormNewValues(field.name, null)
         this.$emit('input', formValues)
+        // 要主动更新 core 层更新form.value
+        formInstance.updateFormValues(formValues)
       }
     },
     async onSubmit() {
@@ -171,8 +189,16 @@ export default Vue.extend({
       ref: 'yform',
     }, [
       this.$slots.default,
-      (<div>{this.$options.formInstance.id}</div>),
-      <pre>value: {JSON.stringify(this.value, null, 2)}</pre>,
+      // (<div>{this.$options.formInstance.id}</div>),
+      // <pre>value: {JSON.stringify(this.value, null, 2)}</pre>,
     ])
   },
 })
+
+VueForm.install = function(Vue, options = {
+  name: 'YForm'
+}) {
+  Vue.component(options.name || VueForm.name, VueForm)
+}
+
+export default VueForm

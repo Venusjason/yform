@@ -4,39 +4,37 @@ export default {
     isAutoWidth: Boolean,
     updateAll: Boolean
   },
+  inject: ['YForm'],
   computed: {
-    YForm() {
-      const getParentForm = (context) => {
-        let parent = context.$parent
-        let parentName = parent && parent.$options && parent.$options.componentName
-        while (parentName !== 'YFORM') {
-          parent = parent && parent.$parent
-        }
-        return parent
-      }
-      return getParentForm(this)
-    },
+    // YForm() {
+    //   const getParentForm = (context) => {
+    //     let parent = context.$parent
+    //     let parentName = parent && parent.$options && parent.$options.componentName
+    //     while (parentName !== 'YFORM') {
+    //       parent = parent && parent.$parent
+    //     }
+    //     return parent
+    //   }
+    //   return getParentForm(this)
+    // },
     YField() {
-      const getParentForm = (context) => {
+      const getParentField = (context) => {
         let parent = context.$parent
         let parentName = parent && parent.$options && parent.$options.componentName
-        while (parentName !== 'YFIELD') {
-          parent = parent && parent.$parent
+        if (parentName !== 'YFIELD') {
+          return getParentField(parent)
         }
         return parent
       }
-      return getParentForm(this)
+      return getParentField(this)
     },
   },
   render() {
     const slots = this.$slots.default;
     if (!slots) return null
-    console.log(this.isAutoWidth)
     if (this.isAutoWidth) {
-      console.log(!this.YForm)
       if (!this.YForm) return slots[0]
       const autoLabelWidth = this.YForm.autoLabelWidth;
-      console.log(autoLabelWidth)
       const style = {};
       if (autoLabelWidth && autoLabelWidth !== 'auto') {
         const marginLeft = parseInt(autoLabelWidth, 10) - this.computedWidth;
@@ -73,8 +71,8 @@ export default {
   watch: {
     computedWidth(val, oldVal) {
       if (this.updateAll) {
-        this.YForm.registerLabelWidth(val, oldVal);
-        this.YField.updateComputedLabelWidth(val);
+        this.YForm && this.YForm.registerLabelWidth(val, oldVal);
+        this.YField && this.YField.updateComputedLabelWidth(val);
       }
     }
   },

@@ -1,4 +1,4 @@
-const PACKAGE_NAME = '[Y-For-Table]'
+const PACKAGE_NAME = '[Y-Form]'
 
 const Log = {
   help: (...args) => {

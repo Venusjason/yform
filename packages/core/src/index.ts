@@ -1,6 +1,10 @@
 // import Path from 'cool-path'
 import AsyncValidator, { RuleItem } from 'async-validator'
-import { isEqualWith, cloneDeep, mergeWith, set as _set, get as _get } from 'lodash'
+import isEqualWith from 'lodash/isEqualWith'
+import cloneDeep from 'lodash/cloneDeep'
+import mergeWith from 'lodash/mergeWith'
+import _set from 'lodash/set'
+import _get from 'lodash/get'
 
 import log from '../../utils/log'
 import { getType } from '../../utils/index'
@@ -28,7 +32,7 @@ import EventEmiter from './EventEmiter'
 //   _get(app, 'e[0]')
 // )
 
-export type ITrigger = '' | 'blur' | 'change'
+export type ITrigger = '' | 'blur' | 'change' | 'focus'
 
 interface FieldRuleItem extends RuleItem {
   trigger?: ITrigger | ITrigger[];
@@ -120,6 +124,10 @@ export class Form {
      * 输入更新
      */
     eventEmiter.on(this.setEventName('FIELD_INPUT_CHANGE'), this.fieldInputChange.bind(this))
+
+    eventEmiter.on(this.setEventName('FIELD_INPUT_FOCUS'), this.fieldInputFocus.bind(this))
+
+    eventEmiter.on(this.setEventName('FIELD_INPUT_BLUR'), this.fieldInputBlur.bind(this))
     /**
      * 外部更新导致数据更新
      */
@@ -131,12 +139,13 @@ export class Form {
   }
 
   updateFormValues(value) {
-    // 外部赋值进来 才执行
-    if (this.isFieldUpdating) {
-      this.isFieldUpdating = false
-      return
-    }
-    log.help('外部赋值进来 updateFormValues')
+    // TODO: 外部赋值进来 才执行,现在回重复执行比对
+    // console.log('updateFormValues', value)
+    // if (this.isFieldUpdating) {
+    //   this.isFieldUpdating = false
+    //   return
+    // }
+    // log.help('外部赋值进来 updateFormValues', JSON.stringify(value))
     this.value = value
     /**
      * 外部第一次更新时 不要走校验
@@ -153,16 +162,16 @@ export class Form {
     const fullValue = _set({}, name, value)
     const formValue = cloneDeep(this.value)
     // console.log(
-    //   JSON.stringify(this.value),
+    //   999,
     //   JSON.stringify(formValue),
     //   JSON.stringify(fullValue)
     // )
     return mergeWith(formValue, fullValue)
   }
 
-  setFieldValue(name: string, value: any) {
+  setFieldValue(name: string, value: any, trigger: ITrigger) {
     _set(this.value, name, value)
-    this.notifyField(name, value)
+    this.notifyField(name, value, trigger)
     this.afterValueUpdate(this.value)
   }
 
@@ -256,10 +265,18 @@ export class Form {
 
   afterFieldRegisterToForm(field: IFormFieldItem) {}
 
-  fieldInputChange(data) {
+  fieldInputChange(data, trigger: ITrigger = 'change') {
     const { name, value } = getNameValue(data)
     this.isFieldUpdating = true
-    this.setFieldValue(name, value)
+    this.setFieldValue(name, value, trigger)
+  }
+
+  fieldInputFocus(field: IFormFieldItem) {
+    field.validate('focus')
+  }
+
+  fieldInputBlur(field: IFormFieldItem) {
+    field.validate('blur')
   }
 
   fieldChange(data) {
@@ -272,21 +289,24 @@ export class Form {
     if (field.name) {
       this.fields[field.name] = this.fields[field.name].filter(f => f !== field)
     }
+    if (this.fields[field.name].length === 0) {
+      delete this.fields[field.name]
+    }
+    // TODO: 字段被卸载 要不要去掉values里对应的字段
   }
 
-  notifyField(name: string, value: any) {
-    // const type = getType(name)
+  notifyField(name: string, value: any, trigger: ITrigger = '') {
     this.fields[name].forEach(field => {
       const isDirty = !isEqualWith(field.value, value)
       if (isDirty) {
         field.value = value
         field.updateByInputChange(value)
-        field.validate('change')
+        field.validate(trigger)
       }
     })
   }
 
-  notifyAll() {
+  notifyAll(trigger: ITrigger = '') {
     Object.keys(this.fields).forEach(fieldName => {
       this.fields[fieldName].forEach(field => {
         const value = _get(this.value, field.name)
@@ -296,7 +316,7 @@ export class Form {
           field.updateByChange(value)
           if (prevValue !== undefined) {
             // 做字段新增操作 不要立即校验
-            field.validate() 
+            field.validate(trigger) 
           }
         }
       })
@@ -311,6 +331,8 @@ export class Form {
       'FIELD_REGISTER',
       'FIELD_INPUT_CHANGE',
       'FIELD_CHANGE',
+      'FIELD_INPUT_FOCUS',
+      'FIELD_INPUT_BLUR',
       'FIELD_DESTORY',
     ]
     names.forEach(name => {
@@ -361,6 +383,20 @@ export const createField = (formId: number) => (
       eventEmiter.emit(
         eventName('FIELD_INPUT_CHANGE', formId),
         { name: this.name, value }
+      )
+    }
+
+    onFieldInputBlur(value: any) {
+      eventEmiter.emit(
+        eventName('FIELD_INPUT_BLUR', formId),
+        this
+      )
+    }
+
+    onFieldInputFocus(value: any) {
+      eventEmiter.emit(
+        eventName('FIELD_INPUT_FOCUS', formId),
+        this
       )
     }
 
