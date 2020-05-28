@@ -41,10 +41,5 @@ export default ({TableComponent, TableColumnComponent}) => {
     },
   }
 
-  YTABLE.install = function(Vue, options = {
-    name: 'YTable'
-  }) {
-    Vue.component(options.name || YTABLE.name, YTABLE)
-  }
   return YTABLE
 }

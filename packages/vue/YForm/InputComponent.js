@@ -73,7 +73,9 @@ export default (fieldContext) => {
        * previewValue
        */
 
-      return h(component, {
+       console.log(fieldContext.$options.globalOptions.defaultComponent)
+
+      return h(component || fieldContext.$options.globalOptions.defaultComponent, {
         props: {
           ...$attrs,
           value: fieldContext.value,

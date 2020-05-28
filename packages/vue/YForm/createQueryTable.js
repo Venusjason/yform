@@ -195,11 +195,5 @@ export default (props) => {
     }
   }
 
-  YQueryTable.install = function(Vue, options = {
-    name: 'YQueryTable'
-  }) {
-    Vue.component(options.name || YQueryTable.name, YQueryTable)
-  }
-
   return YQueryTable
 }

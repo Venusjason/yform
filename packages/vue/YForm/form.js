@@ -219,10 +219,4 @@ const VueForm = ({
   },
 })
 
-VueForm.install = function(Vue, options = {
-  name: 'YForm'
-}) {
-  Vue.component(options.name || VueForm.name, VueForm)
-}
-
 export default VueForm

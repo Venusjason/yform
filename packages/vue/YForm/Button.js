@@ -150,11 +150,6 @@ export const createYButton = (ButtonComponent = 'button') => {
   
   })
 
-  YButton.install = function(Vue, options = {
-    name: 'YButton'
-  }) {
-    Vue.component(options.name || YButton.name, YButton)
-  }
   return YButton
 }
 

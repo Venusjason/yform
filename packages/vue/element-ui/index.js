@@ -10,19 +10,19 @@ import {
 
 // console.log(Loading)
 
-export const getMySlots = (fieldContext, context, slotName = '*') => {
-  const slotNames = slotName.split(',')
+// export const getMySlots = (fieldContext, context, slotName = '*') => {
+//   const slotNames = slotName.split(',')
 
-  const keys = Object.keys(fieldContext.$slots)
-  const acceptKeys = keys.filter(key => slotName === '*' || slotNames.includes(key))
+//   const keys = Object.keys(fieldContext.$slots)
+//   const acceptKeys = keys.filter(key => slotName === '*' || slotNames.includes(key))
 
-  return acceptKeys.reduce((arr, key) => arr.concat(fieldContext.$slots[key]), []).map(vnode => {
-    vnode.context = context._self
-    return vnode
-  })
-}
+//   return acceptKeys.reduce((arr, key) => arr.concat(fieldContext.$slots[key]), []).map(vnode => {
+//     vnode.context = context._self
+//     return vnode
+//   })
+// }
 
-export const Form = merge({}, VueForm, {
+const ElForm = merge({}, VueForm, {
   provide() {
     return {
       elForm: this,
@@ -56,12 +56,13 @@ export const Form = merge({}, VueForm, {
 //   },
 // })
 
-export const Field = merge({}, VueField, {
+const ElField = merge({}, VueField, {
   provide() {
     return {
       elFormItem: this,
     }
   },
+  elFormItem: true,
   computed: {
     elFormItemSize() {
       return this.fieldSize
@@ -80,15 +81,64 @@ export const Field = merge({}, VueField, {
   },
 })
 
-export const Table = createTable({
+export const ElTable = createTable({
   TableComponent: 'el-table',
   TableColumnComponent: 'el-table-column',
 })
 
 // TODO: table 层loading 注入
-export const QueryTable = createQueryTable({
-  Table,
+export const ElQueryTable = createQueryTable({
+  ElTable,
   PaginationComponent: 'el-pagination',
 })
 
-export const Button = createYButton('el-button')
+export const ElButton = createYButton('el-button')
+
+export const YForm = {
+  install: function(Vue, option = { name: 'YForm' }) {
+    Vue.component(
+      option.name || ElForm.name,
+      ElForm,
+    )
+  }
+}
+
+export const YField = {
+  install: function(Vue, option = {
+    name: 'YField',
+    defaultComponent: 'el-input',
+  }) {
+    merge(ElField.globalOptions, option)
+    Vue.component(
+      option.name || ElField.name,
+      ElField
+    )
+  }
+}
+
+export const YTable = {
+  install: function(Vue, option = { name: 'YTable' }) {
+    Vue.component(
+      option.name || ElTable.name,
+      ElTable,
+    )
+  }
+}
+
+export const YQueryTable = {
+  install: function(Vue, option = { name: 'YQueryTable' }) {
+    Vue.component(
+      option.name || ElQueryTable.name,
+      ElQueryTable,
+    )
+  }
+}
+
+export const YButton = {
+  install: function(Vue, option = { name: 'YButton' }) {
+    Vue.component(
+      option.name || ElButton.name,
+      ElButton,
+    )
+  }
+}

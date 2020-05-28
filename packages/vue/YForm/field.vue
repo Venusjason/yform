@@ -6,12 +6,16 @@ import LabelWrap from './label-wrap.vue'
 import createInputComponent from './InputComponent.js'
 
 const globalOptions = {
+  name: 'YField',
   defaultComponent: 'input',
 }
 
 const VueField = ({
   name: 'YFIELD',
   componentName: 'YFIELD',
+  globalOptions: {
+    ...globalOptions,
+  },
   inject: ['YForm'],
   provide() {
     return {
@@ -25,7 +29,6 @@ const VueField = ({
     },
     label: {},
     component: {
-      default: globalOptions.defaultComponent,
     },
     /**
      * component style
@@ -176,16 +179,18 @@ const VueField = ({
   created() {
     // console.log('created')
     this.initFieldInstance()
-    this.$watch('rulesResult', function() {
-      log.help('rulesResult')
-      this.$options.fieldInstance.onFieldRulesChange(this.rulesResult)
-      if (this.fieldValidateOnRuleChange) {
-        log.help(`${this.name} rules 变化 立即执行校验`)
-        this.$options.fieldInstance.validate('')
-      }
-    }, {
-      deep: true,
-    })
+    // 一个宏任务，为了解决初始化时就触发校验
+    setTimeout(() => {
+      this.$watch('rulesResult', function() {
+        this.$options.fieldInstance.onFieldRulesChange(this.rulesResult)
+        if (this.fieldValidateOnRuleChange) {
+          log.help(`${this.name} rules 变化 立即执行校验`)
+          this.$options.fieldInstance.validate('')
+        }
+      }, {
+        deep: true,
+      })
+    }, 0)
   },
   mounted() {
   },
@@ -265,13 +270,6 @@ const VueField = ({
     )
   },
 })
-
-VueField.install = function(Vue, options = {
-  name: 'YField'
-}) {
-  Object.assign(globalOptions, options)
-  Vue.component(globalOptions.name || VueField.name, VueField)
-}
 
 export default VueField
 </script>

@@ -42,7 +42,7 @@ export default {
     // }, 2000);
     setTimeout(() => {
       this.formValues.name = '张三'
-      this.nameRule.push('url1')
+      this.nameRule.push('url')
     }, 2000)
   },
   methods: {
@@ -104,13 +104,13 @@ export default {
       <div class="eeeee">
         <p>element-ui 示例</p>
         <Form value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
-        <Field name="name" component="el-input" onChange={this.onName} >
+        <Field name="name" component="el-input" onChange={this.onName} rules={this.nameRule} >
             <span slot="label">
               slot label
             </span>
             <span slot="append">元</span>
           </Field>
-          <Field name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
+          <Field name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} rules={['required']} />
           <Button type="primary" do="search">查询一下</Button>
           <Button do="debug" />
         </Form>
