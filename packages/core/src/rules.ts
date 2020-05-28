@@ -108,7 +108,6 @@ export const extendRules = (newRegs) => {
 }
 
 export const rulelistLog = () => {
-  if (process.env.NODE_ENV !== 'development') return
   log.warn('当前快捷校验已支持以下')
   const arr = Object.keys(regs).map(key => {
     return {
