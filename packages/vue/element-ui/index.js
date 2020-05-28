@@ -22,7 +22,7 @@ import {
 //   })
 // }
 
-const ElForm = merge({}, VueForm, {
+export const ElForm = merge({}, VueForm, {
   provide() {
     return {
       elForm: this,
@@ -56,7 +56,7 @@ const ElForm = merge({}, VueForm, {
 //   },
 // })
 
-const ElField = merge({}, VueField, {
+export const ElField = merge({}, VueField, {
   provide() {
     return {
       elFormItem: this,
@@ -88,7 +88,7 @@ export const ElTable = createTable({
 
 // TODO: table 层loading 注入
 export const ElQueryTable = createQueryTable({
-  ElTable,
+  Table: ElTable,
   PaginationComponent: 'el-pagination',
 })
 

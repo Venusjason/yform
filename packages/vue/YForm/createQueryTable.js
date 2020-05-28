@@ -182,7 +182,7 @@ export default (props) => {
                 props: {
                   ...paginationRest,
                   currentPage: this.pageParams.currentPage,
-                  pageSize: this.pageParams.currentPage,
+                  pageSize: this.pageParams.pageSize,
                   total: this.total,
                   disabled: this.loading,
                 },

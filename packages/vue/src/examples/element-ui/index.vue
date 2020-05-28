@@ -1,5 +1,12 @@
 <script>
-import { Form, Field, QueryTable, Button } from '../../../element-ui/index.js'
+import {
+  ElForm,
+  ElField,
+  ElQueryTable,
+  ElButton
+} from '../../../element-ui/index.js'
+
+console.log(ElForm)
 
 const serveList = (params) => {
   console.log('查询参数', params)
@@ -103,17 +110,17 @@ export default {
     return (
       <div class="eeeee">
         <p>element-ui 示例</p>
-        <Form value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
-        <Field name="name" component="el-input" onChange={this.onName} rules={this.nameRule} >
+        <ElForm value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
+        <ElField name="name" component="el-input" onChange={this.onName} rules={this.nameRule} >
             <span slot="label">
               slot label
             </span>
             <span slot="append">元</span>
-          </Field>
-          <Field name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} rules={['required']} />
-          <Button type="primary" do="search">查询一下</Button>
-          <Button do="debug" />
-        </Form>
+          </ElField>
+          <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} rules={['required']} />
+          <ElButton type="primary" do="search">查询一下</ElButton>
+          <ElButton do="debug" />
+        </ElForm>
 
         {
           /**
@@ -134,7 +141,7 @@ export default {
            */
         }
 
-        <QueryTable
+        <ElQueryTable
           border
           columns={columns}
           serve={serve}
