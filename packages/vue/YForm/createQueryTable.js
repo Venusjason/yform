@@ -168,9 +168,11 @@ export default (props) => {
       
       return (
         <div>
-          {
-            TableComponent
-          }
+          <div v-loading={this.loading && this.showLoading} >
+            {
+              TableComponent
+            }
+          </div>
           <div style={{
             margin: '10px',
             textAlign: this.paginationPosition,

@@ -22,30 +22,39 @@ export const getMySlots = (fieldContext, context, slotName = '*') => {
   })
 }
 
-export const Form = ({
-  name: 'ElForm',
-  componentName: 'ElForm',
+export const Form = merge({}, VueForm, {
   provide() {
     return {
-      elForm: this
+      elForm: this,
+      YForm: this,
     };
   },
-  render(h) {
-    return h(VueForm, {
-      props: {
-        ...this.$attrs
-      },
-      attrs: {
-        ...this.$attrs,
-      },
-      on: {
-        ...this.$listeners
-      }
-    }, [
-      this.$slots.default,
-    ])
-  },
 })
+
+// export const Form = ({
+//   name: 'ElForm',
+//   componentName: 'ElForm',
+//   provide() {
+//     return {
+//       elForm: this
+//     };
+//   },
+//   render(h) {
+//     return h(VueForm, {
+//       props: {
+//         ...this.$attrs
+//       },
+//       attrs: {
+//         ...this.$attrs,
+//       },
+//       on: {
+//         ...this.$listeners
+//       }
+//     }, [
+//       this.$slots.default,
+//     ])
+//   },
+// })
 
 export const Field = merge({}, VueField, {
   provide() {

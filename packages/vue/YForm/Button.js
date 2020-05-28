@@ -15,7 +15,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         required: false,
         default: 'submit',
         validator(value) {
-          return ['submit', 'reset', 'search', 'cancel'].indexOf(value) !== -1
+          return ['submit', 'reset', 'search', 'cancel', 'debug'].indexOf(value) !== -1
         },
       },
     },
@@ -31,7 +31,19 @@ export const createYButton = (ButtonComponent = 'button') => {
         }
         return getParentForm(this)
       },
+      /**
+       * TODO: 表单初始化时 可以用这个字段控制按钮状态
+       */
+      YFormDisabled() {
+        return this.YForm && (this.YForm.formStatus === 'disabled')
+      },
     },
+    // watch: {
+    //   YFormDisabled(value = false) {
+    //     console.log(value)
+    //     this.loading = value
+    //   }
+    // },
     data() {
       return {
         loading: false,
@@ -53,27 +65,31 @@ export const createYButton = (ButtonComponent = 'button') => {
         } else if (this.do === 'search') {
           this.loading = true
           this.onSearch()
+        } else if (this.do === 'debug') {
+          console.log('表单值 : ')
+          console.log(JSON.stringify(this.YForm.value, null, 2))
         }
       },
       onSearch() {
         if (!latestQueryTable) {
-          const getlatestQueryTable = (context) => {
+          const getLatestQueryTable = (context) => {
             let parent = context.$parent
             let children = parent.$children || []
-            let matchedTable = children.filter(child => child && child.$options && ((child.$options.componentName === 'YQUERYTABLE' || child.$options.name === 'YQUERYTABLE')))
+            let matchedTable = children.filter(child => {
+              return child && child.$options && ((child.$options.componentName === 'YQUERYTABLE' || child.$options.name === 'YQUERYTABLE'))
+            })
 
             if (matchedTable.length === 0) {
-              parent = parent.$parent
               if (!parent) {
                 log.warn('button do=search 需要搭配QueryTable才能使用')
                 return null
               }
-              return getlatestQueryTable(parent)
+              return getLatestQueryTable(parent)
             }
 
             return matchedTable[0]
           }
-          latestQueryTable = getlatestQueryTable(this)
+          latestQueryTable = getLatestQueryTable(this)
         }
         this.loading = true
         latestQueryTable.refreshList().then(() => {
@@ -97,6 +113,9 @@ export const createYButton = (ButtonComponent = 'button') => {
         case 'cancel':
           slotsDefault = '取消'
           break
+        case 'debug':
+          slotsDefault = '打印'
+          break
         default :
           slotsDefault = '提交'
           type = 'primary'
@@ -109,7 +128,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         props: {
           size,
           type,
-          disabled: this.loading,
+          disabled: this.loading || this.YFormDisabled,
           loading: this.loading,
           ...this.$attrs,
         },

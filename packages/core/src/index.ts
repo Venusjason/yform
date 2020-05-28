@@ -34,7 +34,7 @@ import EventEmiter from './EventEmiter'
 
 export type ITrigger = '' | 'blur' | 'change' | 'focus'
 
-interface FieldRuleItem extends RuleItem {
+export interface FieldRuleItem extends RuleItem {
   trigger?: ITrigger | ITrigger[];
 }
 
@@ -140,17 +140,13 @@ export class Form {
 
   updateFormValues(value) {
     // TODO: 外部赋值进来 才执行,现在回重复执行比对
-    // console.log('updateFormValues', value)
-    // if (this.isFieldUpdating) {
-    //   this.isFieldUpdating = false
-    //   return
-    // }
-    // log.help('外部赋值进来 updateFormValues', JSON.stringify(value))
-    this.value = value
-    /**
-     * 外部第一次更新时 不要走校验
-     */
-    this.notifyAll()
+    if (!isEqualWith(this.value === value)) {
+      this.value = value
+      /**
+       * 外部第一次更新时 不要走校验
+       */
+      this.notifyAll()
+    }
   }
 
   /**
@@ -409,6 +405,10 @@ export const createField = (formId: number) => (
         name: this.name,
         value,
       })
+    }
+
+    onFieldRulesChange(rules) {
+      this.rules = rules
     }
 
     beforeFieldDestory() {

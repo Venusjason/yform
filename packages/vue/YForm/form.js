@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { Form } from '../../core/lib/core/src/index'
+import log from '../../core/lib/utils/log'
 
 const VueForm = ({
   name: 'YFORM',
@@ -75,7 +76,14 @@ const VueForm = ({
     validateOnRuleChange: {
       type: Boolean,
       default: true,
-    }
+    },
+    formStatus: {
+      type: String,
+      default: 'edit',
+      validator(value) {
+        return ['edit', 'preview', 'disabled'].includes(value)
+      },
+    },
   },
   computed: {
     autoLabelWidth() {
@@ -115,7 +123,6 @@ const VueForm = ({
       this.$options.formInstance = new Form(this.value)
       const { formInstance } = this.$options
       // formInstance.updateFormValues(this.value)
-
       formInstance.afterFieldRegisterToForm = this.afterFieldRegisterToForm
     },
     afterFieldRegisterToForm(field) {
@@ -134,8 +141,23 @@ const VueForm = ({
         formInstance.updateFormValues(formValues)
       }
     },
+    /**
+     * 供外部调用 formValidate
+     */
+    async validate() {
+      try {
+        const res = await this.$options.formInstance.validate()
+        this.$listeners.validate && this.$listeners.validate(true)
+        return Promise.resolve(res)
+      } catch(e) {
+        log.error('validate fail', e)
+        this.$listeners.validate && this.$listeners.validate(false, e)
+        return Promise.reject(e)
+      }
+    },
     async onSubmit() {
-      await this.$options.formInstance.validate()
+      // 校验成功才会执行submit接口
+      await this.validate()
       if (this.$listeners.submit) {
         this.submiting = true
         const formValues = cloneDeep(this.value)
@@ -153,6 +175,8 @@ const VueForm = ({
             submiting: this.submiting,
           })
         }
+      } else {
+        log.warn(`请在 YForm 层 声明 onSubmit 才能与 <YButton do="submit" /> 联动`)
       }
     },
 

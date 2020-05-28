@@ -1,5 +1,6 @@
 <script>
 import { createField } from '../../core/lib/core/src/index'
+import { computedRules } from '../../core/lib/core/src/rules.js'
 import log from '../../core/lib/utils/log'
 import LabelWrap from './label-wrap.vue'
 import createInputComponent from './InputComponent.js'
@@ -67,7 +68,6 @@ const VueField = ({
     // 表单域态 edit、preview、disabled
     fieldStatus: {
       type: String,
-      default: 'edit',
       validator(value) {
         return ['edit', 'preview', 'disabled'].includes(value)
       },
@@ -89,15 +89,15 @@ const VueField = ({
       isNested: false,
       computedLabelWidth: '',
       InputComponent: null,
+      validatecount: 0,
     }
   },
   computed: {
     rulesResult() {
-      const rules = []
+      const rules = computedRules(this.rules)
       if (this.required) {
-        rules.unshift({ required: true, message: '该字段必填' })
+        rules.unshift(...computedRules('required'))
       }
-      rules.push(...(this.rules || []))
       return rules
     },
     isRequired() {
@@ -172,23 +172,20 @@ const VueField = ({
         'mr4': this.isInline,
       }
     },
-    // InputComponent() {
-    //   return createInputComponent(this)
-    // }
-  },
-  watch: {
-    rulesResult: {
-      deep: true,
-      handler() {
-        if (this.fieldValidateOnRuleChange) {
-          log.help('rules 变化 立即执行校验')
-          this.$options.fieldInstance.validate('')
-        }
-      }
-    }
   },
   created() {
+    // console.log('created')
     this.initFieldInstance()
+    this.$watch('rulesResult', function() {
+      log.help('rulesResult')
+      this.$options.fieldInstance.onFieldRulesChange(this.rulesResult)
+      if (this.fieldValidateOnRuleChange) {
+        log.help(`${this.name} rules 变化 立即执行校验`)
+        this.$options.fieldInstance.validate('')
+      }
+    }, {
+      deep: true,
+    })
   },
   mounted() {
   },
@@ -245,7 +242,7 @@ const VueField = ({
               'yfield__label': true,
               [`size-${this.fieldSize}`]: true,
             }}>
-              {this.label}{this.fieldColon}
+              {this.label || this.$slots.label}{this.fieldColon}
             </label>
           )
         }

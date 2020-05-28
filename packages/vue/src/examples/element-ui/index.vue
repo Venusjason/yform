@@ -31,7 +31,8 @@ export default {
     return {
       formValues: {
         name: ''
-      }
+      },
+      nameRule: ['required', 'whiteSpace']
     }
   },
   mounted() {
@@ -39,6 +40,10 @@ export default {
     //   this.formValues.name = '张三'
     //   this.formValues.age = '12'
     // }, 2000);
+    setTimeout(() => {
+      this.formValues.name = '张三'
+      this.nameRule.push('url1')
+    }, 2000)
   },
   methods: {
     onName() {
@@ -47,6 +52,9 @@ export default {
         this.formValues.age = 9
       }
     },
+    async validate() {
+      await this.$refs.form.validate()
+    }
   },
   render() {
 
@@ -93,23 +101,18 @@ export default {
     }
 
     return (
-      <div>
+      <div class="eeeee">
         <p>element-ui 示例</p>
-        <Form value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline>
-          <Field name="name" label="名称" required component="el-input" onChange={this.onName} >
+        <Form value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
+        <Field name="name" component="el-input" onChange={this.onName} >
+            <span slot="label">
+              slot label
+            </span>
             <span slot="append">元</span>
           </Field>
-          <Field name="name" label="名称" required component="el-input" onChange={this.onName} />
-          <Field name="age" label="年龄" required component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} fieldStatus="preview" />
-          <Field name="age" label="年龄年龄年" required component="el-input" fieldStatus="edit" />
-          {
-            this.formValues.users && this.formValues.users.map((el, i) => {
-              return (
-                <Field name={`users.${i}.name`} label="岁月" required component="el-input" ff="111" />
-              )
-            })
-          }
+          <Field name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
           <Button type="primary" do="search">查询一下</Button>
+          <Button do="debug" />
         </Form>
 
         {

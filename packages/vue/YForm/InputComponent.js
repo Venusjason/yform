@@ -32,6 +32,12 @@ export default (fieldContext) => {
     previewValue,
   } = fieldContext
 
+  const { formStatus } = fieldContext.YForm
+
+  const fieldStatusResult = fieldStatus || formStatus
+
+  const isFieldDisabled = fieldStatusResult === 'disabled'
+
   const { fieldInstance } = fieldContext.$options
 
   const getClassNames = () => {
@@ -71,10 +77,12 @@ export default (fieldContext) => {
         props: {
           ...$attrs,
           value: fieldContext.value,
+          disabled: isFieldDisabled,
         },
         attrs: {
           ...$attrs,
           value: fieldContext.value,
+          disabled: isFieldDisabled,
         },
         class: {
           ...classNames,
@@ -125,7 +133,7 @@ export default (fieldContext) => {
     },
   }
 
-  if (fieldStatus === 'preview') {
+  if (fieldStatusResult === 'preview') {
     return {
       render() {
         return previewValue ? (<div>{previewValue(fieldContext.value)}</div>) : (<span>{fieldContext.value}</span>)
