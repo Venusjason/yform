@@ -69,11 +69,6 @@ export default (fieldContext) => {
     render(h) {
 
       const slots = getMySlots(fieldContext, this, '*')
-      /**
-       * previewValue
-       */
-
-       console.log(fieldContext.$options.globalOptions.defaultComponent)
 
       return h(component || fieldContext.$options.globalOptions.defaultComponent, {
         props: {
