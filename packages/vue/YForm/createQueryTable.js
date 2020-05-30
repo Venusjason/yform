@@ -1,6 +1,24 @@
 // import createTable from './createTable'
 import log from '../../core/lib/utils/log'
-import { getEvents, dasherize } from '../../core/lib/utils/index'
+import { getEvents, dasherize, getType } from '../../core/lib/utils/index'
+
+const filterParamInvalidValueFn = (data) => {
+  if (getType(data) === 'object') {
+    let obj = {}
+    Object.keys(data).forEach((key) => {
+      if ([null, undefined, ''].includes(data[key])) return
+      if (typeof data[key] === 'object') {
+        obj[key] = filterParamInvalidValueFn(data[key])
+      } else {
+        obj[key] = data[key]
+      }
+    })
+    return obj
+  } else if (getType(data) === 'array') {
+    return data.map(item => filterParamInvalidValueFn(item))
+  }
+  return data
+}
 
 export default (props) => {
 
@@ -14,6 +32,13 @@ export default (props) => {
     name: 'YQUERYTABLE',
     componentName: 'YQUERYTABLE',
     props: {
+      /**
+       * 自动过滤serve中无效入参
+       */
+      filterParamInvalidValue: {
+        type: Boolean,
+        default: true,
+      },
       serve: {
         type: [Function],
         required: true,
@@ -61,7 +86,30 @@ export default (props) => {
     mounted() {
       this.refreshList()
     },
+    latestYform: null,
     methods: {
+      setlatestYform() {
+        if (!this.$options.latestYform) {
+          const getLatestQueryTable = (context) => {
+            let parent = context.$parent
+            let children = parent.$children || []
+            let matchedTable = children.filter(child => {
+              return child && child.$options && ((child.$options.componentName === 'YFORM' || child.$options.name === 'YFORM'))
+            })
+
+            if (matchedTable.length === 0) {
+              if (!parent) {
+                log.warn('YQuerytable 没有对应的 YForm')
+                return null
+              }
+              return getLatestQueryTable(parent)
+            }
+
+            return matchedTable[0]
+          }
+          this.$options.latestYform = getLatestQueryTable(this)
+        }
+      },
       getPaginationProps(someParams = {}) {
         const defaultPaginationProps = {
           pageSizes: [10, 20, 50, 100],
@@ -102,16 +150,19 @@ export default (props) => {
       refreshList(someParams = {}) {
         // TODO: 自动取消上一次接口
         if (this.loading) return
+        this.setlatestYform()
         this.loading = true
         const { currentPage, pageSize } = this.getPaginationProps(someParams)
         /**
          * TODO: 可以考虑 formValue 也传过去，实际调用层可以自己获取，不做也行
          */
+        const formValues = this.$options.latestYform.value
         return this.serve({
           params: {
             currentPage,
             pageSize,
           },
+          formValues: this.filterParamInvalidValue ? filterParamInvalidValueFn(formValues) : formValues,
         }).then(res => {
           this.loading = false
           this.list = res.data

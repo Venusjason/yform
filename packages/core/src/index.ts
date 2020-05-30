@@ -139,8 +139,8 @@ export class Form {
   }
 
   updateFormValues(value) {
-    // TODO: 外部赋值进来 才执行,现在回重复执行比对
-    if (!isEqualWith(this.value === value)) {
+    // TODO: 外部赋值进来 才执行,现在回重复执行比对ß
+    if (!isEqualWith(this.value, value)) {
       this.value = value
       /**
        * 外部第一次更新时 不要走校验

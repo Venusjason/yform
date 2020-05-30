@@ -107,6 +107,7 @@ const VueForm = ({
       formValues: {},
       submiting: false,
       potentialLabelWidthArr: [],
+      initialValues: {}
     }
   },
   created() {
@@ -120,10 +121,19 @@ const VueForm = ({
   },
   methods: {
     initForm() {
+      this.initialValues = cloneDeep(this.value)
       this.$options.formInstance = new Form(this.value)
       const { formInstance } = this.$options
       // formInstance.updateFormValues(this.value)
       formInstance.afterFieldRegisterToForm = this.afterFieldRegisterToForm
+    },
+    /**
+     * 表单重置
+     */
+    resetFormValues() {
+      const value = cloneDeep(this.initialValues)
+      this.$emit('input', value)
+      this.$options.formInstance.updateFormValues(value)
     },
     afterFieldRegisterToForm(field) {
       const { formInstance } = this.$options

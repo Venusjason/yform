@@ -1,4 +1,5 @@
 import log from '../../core/lib/utils/log'
+import { isDevelopment, getType } from '../../core/lib/utils/index'
 
 export const createYButton = (ButtonComponent = 'button') => {
   let latestQueryTable = null
@@ -50,27 +51,7 @@ export const createYButton = (ButtonComponent = 'button') => {
       }
     },
     methods: {
-      onClick(e) {
-        e.preventDefault()
-        if (this.$listeners.onClick) {
-          return this.$listeners.onClick(e)
-        }
-        if (this.do === 'submit') {
-          this.loading = true
-          this.YForm.onSubmit().then(() => {
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else if (this.do === 'search') {
-          this.loading = true
-          this.onSearch()
-        } else if (this.do === 'debug') {
-          console.log('表单值 : ')
-          console.log(JSON.stringify(this.YForm.value, null, 2))
-        }
-      },
-      onSearch() {
+      setLatestQueryTable() {
         if (!latestQueryTable) {
           const getLatestQueryTable = (context) => {
             let parent = context.$parent
@@ -91,11 +72,62 @@ export const createYButton = (ButtonComponent = 'button') => {
           }
           latestQueryTable = getLatestQueryTable(this)
         }
+      },
+      onClick(e) {
+        e.preventDefault()
+        if (this.$listeners.onClick) {
+          return this.$listeners.onClick(e)
+        }
+        if (this.do === 'submit') {
+          this.loading = true
+          this.YForm.onSubmit().then(() => {
+            this.loading = false
+          }).catch(() => {
+            this.loading = false
+          })
+        } else if (this.do === 'search') {
+          this.loading = true
+          this.onSearch()
+        } else if (this.do === 'debug') {
+          log.help('表单值 : ')
+          log.help(JSON.stringify(this.YForm.value, null, 2))
+        } else if (this.do === 'reset') {
+          this.onReset()
+        }
+      },
+      onSearch() {
+        this.setLatestQueryTable()
         this.loading = true
         latestQueryTable.refreshList().then(() => {
           this.loading = false
         }).catch(() => {
           this.loading = false
+        })
+      },
+      onReset(params = {
+        currentPage: 1
+      }) {
+        let a = null
+        if (getType(params) === 'object') {
+          a = params
+        } else {
+          a = {
+            currentPage: params
+          }
+        }
+        this.setLatestQueryTable()
+        this.loading = true
+        // 重置表单值
+        this.YForm.resetFormValues()
+        /**
+         * 要v-model 先生效 form props.value 更新才能正确获取到formValues
+         */
+        setTimeout(() => {
+          latestQueryTable.refreshList(a).then(() => {
+            this.loading = false
+          }).catch(() => {
+            this.loading = false
+          })
         })
       },
     },
@@ -124,7 +156,7 @@ export const createYButton = (ButtonComponent = 'button') => {
 
       const size = this.YForm.size
 
-      return h(ButtonComponent, {
+      const Btn = h(ButtonComponent, {
         props: {
           size,
           type,
@@ -146,6 +178,11 @@ export const createYButton = (ButtonComponent = 'button') => {
         // this.loading ? 'loading' : '',
         this.$slots.default || slotsDefault,
       ])
+      
+      if (!isDevelopment && this.do === 'debug') {
+        return null
+      }
+      return Btn
     }
   
   })

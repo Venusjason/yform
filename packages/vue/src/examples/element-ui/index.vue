@@ -36,7 +36,7 @@ export default {
     return {
       formValues: {
         name: '',
-        sex: [],
+        // sex: [],
         likes: [],
       },
       nameRule: ['required', 'whiteSpace']
@@ -47,10 +47,10 @@ export default {
     //   this.formValues.name = '张三'
     //   this.formValues.age = '12'
     // }, 2000);
-    setTimeout(() => {
-      this.formValues.name = '张三'
-      this.nameRule.push('url')
-    }, 2000)
+    // setTimeout(() => {
+    //   this.formValues.name = '张三'
+    //   this.nameRule.push('url')
+    // }, 2000)
   },
   methods: {
     onName() {
@@ -96,12 +96,12 @@ export default {
       },
     ]
 
-    const serve = async ({ params }) => {
+    const serve = async ({ params, formValues }) => {
+      console.log(formValues)
       const params1 = {
         page: params.currentPage,
         pageSize: params.pageSize,
-        activityCode: '11111111',
-        ...this.params
+        ...formValues,
       }
       const res = await serveList(params1)
       return {
@@ -114,13 +114,13 @@ export default {
       <div class="eeeee">
         <p>element-ui 示例</p>
         <ElForm value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
-        <ElField name="name" component="el-input" onChange={this.onName} rules={this.nameRule} >
+        <ElField name="name" component="el-input" onChange={this.onName} >
             <span slot="label">
               slot label
             </span>
             <span slot="append">元</span>
           </ElField>
-          <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} rules={['required']} />
+          <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
           <ElField name="sex" label="性别" component="el-radio-group" dataSource={
             // new Map([
             //   [1, '男'],
@@ -132,9 +132,9 @@ export default {
               2: '女'
             }
           } ></ElField>
-          <ElField label="喜好" name="likes" component="el-checkbox-group" dataSource={[]}>
-          </ElField>
+    
           <ElButton type="primary" do="search">查询一下</ElButton>
+          <ElButton do="reset" />
           <ElButton do="debug" />
         </ElForm>
 
