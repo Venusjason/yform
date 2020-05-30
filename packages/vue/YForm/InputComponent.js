@@ -30,6 +30,7 @@ export default (fieldContext) => {
     componentClass,
     fieldStatus,
     previewValue,
+    dataSourceSlots,
   } = fieldContext
 
   const { formStatus } = fieldContext.YForm
@@ -125,7 +126,8 @@ export default (fieldContext) => {
           },
         },
       }, [
-        slots,
+        ...dataSourceSlots,
+        ...slots,
       ])
     },
   }

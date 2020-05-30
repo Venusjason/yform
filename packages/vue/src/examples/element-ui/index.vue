@@ -6,8 +6,6 @@ import {
   ElButton
 } from '../../../element-ui/index.js'
 
-console.log(ElForm)
-
 const serveList = (params) => {
   console.log('查询参数', params)
   return new Promise(function(resolve) {
@@ -37,7 +35,9 @@ export default {
   data() {
     return {
       formValues: {
-        name: ''
+        name: '',
+        sex: [],
+        likes: [],
       },
       nameRule: ['required', 'whiteSpace']
     }
@@ -121,6 +121,19 @@ export default {
             <span slot="append">元</span>
           </ElField>
           <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} rules={['required']} />
+          <ElField name="sex" label="性别" component="el-radio-group" dataSource={
+            // new Map([
+            //   [1, '男'],
+            //   [2, '女']
+            // ])
+            // [1, 3]
+            {
+              1: '男',
+              2: '女'
+            }
+          } ></ElField>
+          <ElField label="喜好" name="likes" component="el-checkbox-group" dataSource={[]}>
+          </ElField>
           <ElButton type="primary" do="search">查询一下</ElButton>
           <ElButton do="debug" />
         </ElForm>

@@ -83,6 +83,7 @@ const VueField = ({
      * label 后缀
      */
     colon: {},
+    dataSource: {},
   },
   fieldInstance: null,
   data() {
@@ -96,6 +97,9 @@ const VueField = ({
     }
   },
   computed: {
+    dataSourceSlots() {
+      return this.dataSource || []
+    },
     rulesResult() {
       const rules = computedRules(this.rules)
       if (this.required) {

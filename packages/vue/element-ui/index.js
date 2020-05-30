@@ -1,5 +1,6 @@
 import merge from 'lodash/merge'
 // import { Loading } from 'element-ui'
+import { getType } from '../../core/lib/utils/index'
 import {
   Form as VueForm,
   Field as VueField,
@@ -77,6 +78,53 @@ export const ElField = merge({}, VueField, {
         'is-inline': this.isInline,
         'mr4': this.isInline,
       }
+    },
+    // 适配el-select
+    dataSourceSlots() {
+      /**
+       * 支持Vnode类型
+       */
+      const { component, dataSource } = this
+
+      if (!dataSource) return []
+      let slots = []
+      let labelValues = []
+      switch(getType(dataSource)) {
+        case 'map':
+          labelValues = Array.from(dataSource).map(([value, label]) => {
+            if (getType(label) === 'object') {
+              return {
+                ...label,
+                value
+              }
+            }
+            return { label, value }
+          })
+          break
+        case 'array':
+          labelValues = dataSource.map((item) => {
+            if (typeof item !== 'object') {
+              return { label: item, value: item }
+            } else {
+              return item
+            }
+          })
+          break
+        case 'object': 
+          labelValues = Object.keys(dataSource).map(value => ({
+            label: dataSource[value],
+            value
+          }))
+          break
+      }
+      if (component === 'el-select') {
+        slots = labelValues.map(item => (<el-option  {...item} label={item.label} value={item.value} ></el-option>))
+      } else if (component === 'el-radio-group') {
+        slots = labelValues.map(item => (<el-radio {...item} label={item.value}>{item.label}</el-radio>))
+      } else {
+        console.log(`${component} 暂未支持dataSource属性`)
+      }
+      return slots
     },
   },
 })
