@@ -41,6 +41,11 @@ export default (props) => {
         default: true,
       },
     },
+    computed: {
+      yColumns() {
+        return this.columns
+      },
+    },
     data() {
       return {
         pageParams: {
@@ -111,6 +116,8 @@ export default (props) => {
           this.loading = false
           this.list = res.data
           this.total = res.total
+          this.pageParams.currentPage = currentPage
+          this.pageParams.pageSize = pageSize
           return Promise.resolve()
         }).catch(e => {
           log.error(e)
@@ -147,7 +154,7 @@ export default (props) => {
         props: {
           ...this.$attrs,
           data: this.list,
-          columns: this.columns,
+          columns: this.yColumns,
         },
         attrs: {
           ...this.$attrs,

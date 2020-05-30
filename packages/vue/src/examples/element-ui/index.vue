@@ -76,6 +76,9 @@ export default {
     const columns = [
       { type: 'selection' },
       {
+        type: 'y-index'
+      },
+      {
         renderHeader: () => {
           return <div style="color: red">我是自定义表头</div>
         },

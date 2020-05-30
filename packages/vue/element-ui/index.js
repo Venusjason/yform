@@ -87,9 +87,31 @@ export const ElTable = createTable({
 })
 
 // TODO: table 层loading 注入
-export const ElQueryTable = createQueryTable({
+export const ElQueryTable = merge({}, createQueryTable({
   Table: ElTable,
   PaginationComponent: 'el-pagination',
+}), {
+  computed: {
+    yColumns() {
+      return this.columns.map((column) => {
+        if (column.type === 'y-index') {
+          return {
+            label: '序号',
+            render: (record) => {
+              const { currentPage, pageSize } = this.pageParams
+              const value = (currentPage - 1) * pageSize + record.$index + 1
+              return column.render ? column.render({
+                ...record,
+                currentPage,
+                pageSize,
+              }) : value
+            }
+          }
+        }
+        return column
+      })
+    },
+  },
 })
 
 export const ElButton = createYButton('el-button')
