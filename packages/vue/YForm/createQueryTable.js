@@ -212,6 +212,7 @@ export default (props) => {
           data: this.list,
         },
         on: tableEvents,
+        ref: 'table'
       })
 
       const onPageChange = {
@@ -245,6 +246,7 @@ export default (props) => {
                   disabled: this.loading,
                 },
                 on: paginationEvents,
+                ref: 'pagination'
               })
             }
           </div>

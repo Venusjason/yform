@@ -74,7 +74,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         }
       },
       onClick(e) {
-        e.preventDefault()
+        e && e.preventDefault()
         if (this.$listeners.onClick) {
           return this.$listeners.onClick(e)
         }
