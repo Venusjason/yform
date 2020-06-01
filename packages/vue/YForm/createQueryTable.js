@@ -169,6 +169,12 @@ export default (props) => {
           this.total = res.total
           this.pageParams.currentPage = currentPage
           this.pageParams.pageSize = pageSize
+          this.$emit('refreshListCb', {
+            total: this.total,
+            list: this.list,
+            currentPage,
+            pageSize,
+          })
           return Promise.resolve()
         }).catch(e => {
           log.error(e)
