@@ -35,9 +35,11 @@ export default {
   data() {
     return {
       formValues: {
-        name: '',
-        // sex: [],
-        likes: [],
+        // name: '哈哈',
+        // sex: 1,
+        // likes: [],
+        // age1: '2',
+        age: '3'
       },
       nameRule: ['required', 'whiteSpace']
     }
@@ -113,7 +115,7 @@ export default {
     return (
       <div class="eeeee">
         <p>element-ui 示例</p>
-        <ElForm value={this.formValues} onInput={v => this.formValues = v} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
+        <ElForm v-model={this.formValues} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
         <ElField name="name" component="el-input" onChange={this.onName} >
             <span slot="label">
               slot label
@@ -121,16 +123,17 @@ export default {
             <span slot="append">元</span>
           </ElField>
           <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
-          <ElField name="sex" label="性别" component="el-radio-group" dataSource={
-            // new Map([
-            //   [1, '男'],
-            //   [2, '女']
-            // ])
+          <ElField name="age1" label="年龄1" component="el-input" />
+          <ElField name="sex" label="性别" component="el-select" dataSource={
+            new Map([
+              [1, '男'],
+              [2, '女']
+            ])
             // [1, 3]
-            {
-              1: '男',
-              2: '女'
-            }
+            // {
+            //   1: '男',
+            //   2: '女'
+            // }
           } ></ElField>
     
           <ElButton type="primary" do="search">查询一下</ElButton>

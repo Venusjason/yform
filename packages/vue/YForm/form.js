@@ -101,6 +101,7 @@ const VueForm = ({
     }
   },
   formInstance: null,
+  updateFormValuesTimer: null,
   data() {
     return {
       name: '我是1',
@@ -139,17 +140,27 @@ const VueForm = ({
       const { formInstance } = this.$options
       const value = formInstance.getFieldValue(field.name)
       // 只有最后一次注册的字段被收入了
-      // const formValues = formInstance.getFormNewValues(field.name, value === undefined ? null : value)
-      //   this.$emit('input', formValues)
+      const formValues = cloneDeep(formInstance.getFormNewValues(field.name, value === undefined ? null : value))
+      // this.$emit('input', formValues)
+      // formInstance.updateFormValues(formValues)
       if (value === undefined) {
         /**
          * vue对未声明的属性无法自动更新,这里要确保所有注册的字段能够自动更新
          */
-        const formValues = formInstance.getFormNewValues(field.name, null)
-        this.$emit('input', formValues)
         // 要主动更新 core 层更新form.value
         formInstance.updateFormValues(formValues)
       }
+      if (this.$options.updateFormValuesTimer) {
+        clearTimeout(this.$options.updateFormValuesTimer)
+        this.$options.updateFormValuesTimer = null
+      }
+      /**
+       * 保证 form 能最后一次更新
+       */
+      this.$options.updateFormValuesTimer = setTimeout(() => {
+        console.log('updateFormValuesTimer', formValues)
+        this.$emit('input', formValues)
+      }, 0)
     },
     /**
      * 供外部调用 formValidate
