@@ -35,11 +35,12 @@ export default {
   data() {
     return {
       formValues: {
-        // name: '哈哈',
-        // sex: 1,
+        name: '哈哈',
+        sex: 1,
+        // times: []
         // likes: [],
         // age1: '2',
-        age: '3'
+        // age: '3'
       },
       nameRule: ['required', 'whiteSpace']
     }
@@ -135,6 +136,8 @@ export default {
             //   2: '女'
             // }
           } ></ElField>
+
+          <ElField name="times" component="el-date-picker" type="daterange"/>
     
           <ElButton type="primary" do="search">查询一下</ElButton>
           <ElButton do="reset" />
