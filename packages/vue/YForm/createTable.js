@@ -1,6 +1,9 @@
 import { dasherize } from '../../core/lib/utils/index'
 
 export default ({TableComponent, TableColumnComponent}) => {
+
+  let id = 0
+
   const YTABLE = {
     name: 'YTABLE',
     componentName: 'YTABLE',
@@ -12,6 +15,10 @@ export default ({TableComponent, TableColumnComponent}) => {
         type: Array,
         default: () => [],
       },
+      uniqueKey: {},
+    },
+    mounted() {
+      id++
     },
     render(h) {
       const events = {}
@@ -36,6 +43,7 @@ export default ({TableComponent, TableColumnComponent}) => {
           columns: this.columns,
         },
         on: events,
+        key: this.uniqueKey || String(id),
         ref: 'YTable'
       }, renderColomns)
     },

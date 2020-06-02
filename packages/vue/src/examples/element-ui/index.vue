@@ -43,7 +43,8 @@ export default {
         // age: '3'
       },
       nameRule: ['required', 'whiteSpace'],
-      sexy: []
+      sexy: [],
+      tableRef: null
     }
   },
   mounted() {
@@ -53,6 +54,7 @@ export default {
       this.sexy = [
         { label: '男', value: 1 }
       ]
+      console.log(this.tableRef)
     }, 2000);
     // setTimeout(() => {
     //   this.formValues.name = '张三'
@@ -176,6 +178,9 @@ export default {
           }}
           onRowClick={() => {
             console.log('onRowClick table')
+          }}
+          wrappedTableRef={(e) => {
+            this.tableRef = e
           }}
         />
 

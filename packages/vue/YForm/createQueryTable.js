@@ -22,6 +22,8 @@ const filterParamInvalidValueFn = (data) => {
 
 export default (props) => {
 
+  let id = 0
+
   const {
     Table,
     PaginationComponent,
@@ -65,6 +67,12 @@ export default (props) => {
         type: Boolean,
         default: true,
       },
+      /**
+       * 返回底层table 的引用
+       */
+      wrappedTableRef: {
+        type: Function
+      }
     },
     computed: {
       yColumns() {
@@ -84,6 +92,8 @@ export default (props) => {
       }
     },
     mounted() {
+      id++
+      this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
       this.refreshList()
     },
     latestYform: null,
@@ -218,6 +228,7 @@ export default (props) => {
           data: this.list,
         },
         on: tableEvents,
+        key: this.uniqueKey || String(id),
         ref: 'table'
       })
 
