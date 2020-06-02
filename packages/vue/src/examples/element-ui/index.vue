@@ -42,14 +42,18 @@ export default {
         // age1: '2',
         // age: '3'
       },
-      nameRule: ['required', 'whiteSpace']
+      nameRule: ['required', 'whiteSpace'],
+      sexy: []
     }
   },
   mounted() {
-    // setTimeout(() => {
-    //   this.formValues.name = '张三'
-    //   this.formValues.age = '12'
-    // }, 2000);
+    setTimeout(() => {
+      this.formValues.name = '张三'
+      this.formValues.age = '12'
+      this.sexy = [
+        { label: '男', value: 1 }
+      ]
+    }, 2000);
     // setTimeout(() => {
     //   this.formValues.name = '张三'
     //   this.nameRule.push('url')
@@ -126,10 +130,11 @@ export default {
           <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
           <ElField name="age1" label="年龄1" component="el-input" />
           <ElField name="sex" label="性别" component="el-select" dataSource={
-            new Map([
-              [1, '男'],
-              [2, '女']
-            ])
+            this.sexy
+            // new Map([
+            //   [1, '男'],
+            //   [2, '女']
+            // ])
             // [1, 3]
             // {
             //   1: '男',

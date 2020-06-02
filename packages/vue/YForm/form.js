@@ -158,7 +158,7 @@ const VueForm = ({
        * 保证 form 能最后一次更新
        */
       this.$options.updateFormValuesTimer = setTimeout(() => {
-        console.log('updateFormValuesTimer', formValues)
+        // console.log('updateFormValuesTimer', formValues)
         this.$emit('input', formValues)
       }, 0)
     },

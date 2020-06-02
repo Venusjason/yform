@@ -92,7 +92,7 @@ const VueField = ({
       errorMsg: '',
       isNested: false,
       computedLabelWidth: '',
-      InputComponent: null,
+      // InputComponent: null,
       validatecount: 0,
     }
   },
@@ -179,6 +179,9 @@ const VueField = ({
         'mr4': this.isInline,
       }
     },
+    InputComponent() {
+      return createInputComponent(this)
+    }
   },
   created() {
     // console.log('created')
@@ -215,7 +218,7 @@ const VueField = ({
       fieldInstance.updateByInputChange = this.updateByInputChange
       fieldInstance.updateByChange = this.updateByChange
       fieldInstance.validateCallback = this.validateCallback
-      this.InputComponent = createInputComponent(this)
+      // this.InputComponent = createInputComponent(this)
     },
     updateByInputChange(value) {
       this.value = value
