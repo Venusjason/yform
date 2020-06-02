@@ -19,6 +19,15 @@ export const createYButton = (ButtonComponent = 'button') => {
           return ['submit', 'reset', 'search', 'cancel', 'debug'].indexOf(value) !== -1
         },
       },
+      /**
+       * 按钮点击前
+       */
+      beforeClick: {
+        type: Function
+      },
+      afterClick: {
+        type: Function
+      }
     },
     computed: {
       YForm() {
@@ -78,12 +87,15 @@ export const createYButton = (ButtonComponent = 'button') => {
         if (this.$listeners.onClick) {
           return this.$listeners.onClick(e)
         }
+        this.beforeClick && this.beforeClick()
         if (this.do === 'submit') {
           this.loading = true
           this.YForm.onSubmit().then(() => {
             this.loading = false
+            this.afterClick && this.afterClick()
           }).catch(() => {
             this.loading = false
+            this.afterClick && this.afterClick()
           })
         } else if (this.do === 'search') {
           this.loading = true
@@ -100,8 +112,10 @@ export const createYButton = (ButtonComponent = 'button') => {
         this.loading = true
         latestQueryTable.refreshList().then(() => {
           this.loading = false
+          this.afterClick && this.afterClick()
         }).catch(() => {
           this.loading = false
+          this.afterClick && this.afterClick()
         })
       },
       onReset(params = {
@@ -125,8 +139,10 @@ export const createYButton = (ButtonComponent = 'button') => {
         setTimeout(() => {
           latestQueryTable.refreshList(a).then(() => {
             this.loading = false
+            this.afterClick && this.afterClick()
           }).catch(() => {
             this.loading = false
+            this.afterClick && this.afterClick()
           })
         })
       },
