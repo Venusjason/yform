@@ -1,4 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
+import mergeWith from 'lodash/mergeWith'
+import _get from 'lodash/get'
+import _set from 'lodash/set'
 import { Form } from '../../core/lib/core/src/index'
 import log from '../../core/lib/utils/log'
 
@@ -102,6 +105,7 @@ const VueForm = ({
   },
   formInstance: null,
   updateFormValuesTimer: null,
+  formValues: null,
   data() {
     return {
       name: '我是1',
@@ -137,10 +141,14 @@ const VueForm = ({
       this.$options.formInstance.updateFormValues(value)
     },
     afterFieldRegisterToForm(field) {
-      const { formInstance } = this.$options
-      const value = formInstance.getFieldValue(field.name)
-      // 只有最后一次注册的字段被收入了
-      const formValues = cloneDeep(formInstance.getFormNewValues(field.name, value === undefined ? null : value))
+      // const { formInstance } = this.$options
+      const value = _get(this.value, field.name)
+      const formValues = mergeWith(
+        cloneDeep(this.$options.formValues || {}),
+        _set({}, field.name, value === undefined ? null : value)
+      )
+      // const formValues = cloneDeep(formInstance.getFormNewValues(field.name, value === undefined ? null : value))
+      this.$options.formValues = formValues
       // this.$emit('input', formValues)
       // formInstance.updateFormValues(formValues)
       if (value === undefined) {
@@ -148,7 +156,7 @@ const VueForm = ({
          * vue对未声明的属性无法自动更新,这里要确保所有注册的字段能够自动更新
          */
         // 要主动更新 core 层更新form.value
-        formInstance.updateFormValues(formValues)
+        // formInstance.updateFormValues(formValues)
       }
       if (this.$options.updateFormValuesTimer) {
         clearTimeout(this.$options.updateFormValuesTimer)
@@ -159,6 +167,7 @@ const VueForm = ({
        */
       this.$options.updateFormValuesTimer = setTimeout(() => {
         // console.log('updateFormValuesTimer', formValues)
+        // formInstance.updateFormValues(formValues)
         this.$emit('input', formValues)
       }, 0)
     },

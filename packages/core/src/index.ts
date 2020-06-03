@@ -145,8 +145,10 @@ export class Form {
      * 外部第一次更新时 不要走校验
      */
     this.notifyAll()
+    // console.log(999, JSON.stringify(this.value), JSON.stringify(value))
     // if (!isEqualWith(this.value, value)) {
-    //   this.value = value
+    //   console.log('updateFormValues', value)
+    //   this.value = cloneDeep(value)
     //   /**
     //    * 外部第一次更新时 不要走校验
     //    */

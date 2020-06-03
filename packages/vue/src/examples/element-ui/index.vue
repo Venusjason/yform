@@ -49,12 +49,13 @@ export default {
   },
   mounted() {
     setTimeout(() => {
+      console.log(1111)
       this.formValues.name = '张三'
       this.formValues.age = '12'
       this.sexy = [
         { label: '男', value: 1 }
       ]
-      console.log(this.tableRef)
+      // console.log(this.tableRef)
     }, 2000);
     // setTimeout(() => {
     //   this.formValues.name = '张三'
@@ -130,7 +131,7 @@ export default {
             <span slot="append">元</span>
           </ElField>
           <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
-          <ElField name="age1" label="年龄1" component="el-input" />
+          <ElField name="age1" label="年龄1" component="el-input" required />
           <ElField name="sex" label="性别" component="el-select" dataSource={
             this.sexy
             // new Map([
