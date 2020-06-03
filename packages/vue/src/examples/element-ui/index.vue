@@ -39,14 +39,15 @@ export default {
       formValues: {
         name: '哈哈',
         sex: 1,
-        // times: []
+        times: [],
         // likes: [],
-        // age1: '2',
-        // age: '3'
+        age1: '2',
+        age: '3'
       },
       nameRule: ['required', 'whiteSpace'],
       sexy: [],
-      tableRef: null
+      tableRef: null,
+      isForm: true,
     }
   },
   mounted() {
@@ -70,9 +71,9 @@ export default {
         this.formValues.age = 9
       }
     },
-    async validate() {
-      await this.$refs.form.validate()
-    }
+    // async validate() {
+    //   await this.$refs.form.validate()
+    // }
   },
   render() {
 
@@ -185,8 +186,11 @@ export default {
             this.tableRef = e
           }}
         />
-
-        <EditForm />
+        {
+          this.isForm && (
+            <EditForm />
+          )
+        }
       </div>
     )
   },

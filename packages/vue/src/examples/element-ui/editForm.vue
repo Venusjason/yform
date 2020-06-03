@@ -9,7 +9,11 @@ export default {
   data() {
     return {
       formValues: {
-        name: '好机会'
+        name: '好机会',
+        addr: 'addr',
+        work: 'work',
+        sex: 'sex',
+        age: 'age'
       }
     }
   },

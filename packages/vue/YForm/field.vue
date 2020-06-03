@@ -222,6 +222,7 @@ const VueField = ({
       fieldInstance.updateByInputChange = this.updateByInputChange
       fieldInstance.updateByChange = this.updateByChange
       fieldInstance.validateCallback = this.validateCallback
+      fieldInstance.clearValidateCallback = this.clearValidateCallback
       // this.InputComponent = createInputComponent(this)
     },
     updateByInputChange(value) {
@@ -236,6 +237,9 @@ const VueField = ({
     updateComputedLabelWidth(width) {
       this.computedLabelWidth = width ? `${width}px` : '';
     },
+    clearValidateCallback() {
+      this.errorMsg = ''
+    }
   },
   render(h) {
     return (

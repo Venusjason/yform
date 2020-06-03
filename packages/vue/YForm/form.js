@@ -186,6 +186,9 @@ const VueForm = ({
         return Promise.reject(e)
       }
     },
+    clearValidate () {
+      this.$options.formInstance.clearValidate()
+    },
     async onSubmit() {
       // 校验成功才会执行submit接口
       await this.validate()

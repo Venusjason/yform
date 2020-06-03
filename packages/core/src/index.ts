@@ -140,7 +140,7 @@ export class Form {
 
   updateFormValues(value) {
     // TODO: 外部赋值进来 才执行,现在回重复执行比对ß
-    this.value = value
+    this.value = cloneDeep(value)
     /**
      * 外部第一次更新时 不要走校验
      */
@@ -313,25 +313,25 @@ export class Form {
     Object.keys(this.fields).forEach(fieldName => {
       this.fields[fieldName].forEach(field => {
         const value = _get(this.value, field.name)
-        // if (!isEqualWith(field.value, value)) {
-        //   const prevValue = cloneDeep(field.value)
-        //   field.value = value
-        //   field.updateByChange(value)
-        //   if (prevValue !== undefined) {
-        //     // 做字段新增操作 不要立即校验
-        //     field.validate(trigger) 
-        //   }
-        // }
+        if (!isEqualWith(field.value, value)) {
+          const prevValue = cloneDeep(field.value)
+          field.value = value
+          field.updateByChange(value)
+          if (prevValue !== undefined) {
+            // 做字段新增操作 不要立即校验
+            field.validate(trigger) 
+          }
+        }
         /**
          * TODO: 比对 再更新
          */
-        const prevValue = cloneDeep(field.value)
-        field.value = value
-        field.updateByChange(value)
-        if (prevValue !== undefined) {
-          // 做字段新增操作 不要立即校验
-          field.validate(trigger) 
-        }
+        // const prevValue = cloneDeep(field.value)
+        // field.value = value
+        // field.updateByChange(value)
+        // if (prevValue !== undefined) {
+        //   // 做字段新增操作 不要立即校验
+        //   field.validate(trigger) 
+        // }
       })
     })
   }
