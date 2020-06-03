@@ -84,6 +84,10 @@ const VueField = ({
      */
     colon: {},
     dataSource: {},
+    validateDelay: {
+      type: Number,
+      default: 1000,
+    },
   },
   fieldInstance: null,
   data() {
@@ -186,6 +190,8 @@ const VueField = ({
   created() {
     // console.log('created')
     this.initFieldInstance()
+  },
+  mounted() {
     // 一个宏任务，为了解决初始化时就触发校验
     setTimeout(() => {
       this.$watch('rulesResult', function() {
@@ -197,9 +203,7 @@ const VueField = ({
       }, {
         deep: true,
       })
-    }, 100)
-  },
-  mounted() {
+    }, this.validateDelay)
   },
   beforeDestroy() {
     this.$options.fieldInstance.beforeFieldDestory()
