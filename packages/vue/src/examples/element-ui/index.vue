@@ -6,6 +6,8 @@ import {
   ElButton
 } from '../../../element-ui/index.js'
 
+import EditForm from './editForm.vue'
+
 const serveList = (params) => {
   console.log('查询参数', params)
   return new Promise(function(resolve) {
@@ -49,12 +51,11 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      console.log(1111)
-      this.formValues.name = '张三'
-      this.formValues.age = '12'
-      this.sexy = [
-        { label: '男', value: 1 }
-      ]
+      // this.formValues.name = '张三'
+      // this.formValues.age = '12'
+      // this.sexy = [
+      //   { label: '男', value: 1 }
+      // ]
       // console.log(this.tableRef)
     }, 2000);
     // setTimeout(() => {
@@ -130,7 +131,7 @@ export default {
             </span>
             <span slot="append">元</span>
           </ElField>
-          <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
+          <ElField name="age" label="年龄"  component="el-input" rules={['required']} previewValue={value => <div>{`${value}岁了`}</div>} />
           <ElField name="age1" label="年龄1" component="el-input" required />
           <ElField name="sex" label="性别" component="el-select" dataSource={
             this.sexy
@@ -185,6 +186,7 @@ export default {
           }}
         />
 
+        <EditForm />
       </div>
     )
   },

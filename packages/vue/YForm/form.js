@@ -164,6 +164,7 @@ const VueForm = ({
       }
       /**
        * 保证 form 能最后一次更新
+       * TODO: 如果做成微任务 做批合并 可以解决rules 192行的问题
        */
       this.$options.updateFormValuesTimer = setTimeout(() => {
         // console.log('updateFormValuesTimer', formValues)

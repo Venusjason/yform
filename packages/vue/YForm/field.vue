@@ -197,7 +197,7 @@ const VueField = ({
       }, {
         deep: true,
       })
-    }, 0)
+    }, 100)
   },
   mounted() {
   },
