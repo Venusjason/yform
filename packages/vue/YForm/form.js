@@ -148,18 +148,23 @@ const VueForm = ({
       // 只有最后一次注册的字段被收入了
       _set(this.formValuesA, field.name, value === undefined ? null : value)
       mergeWith(this.formValuesA, this.value)
-      if (this.$options.updateFormValuesTimer) {
-        clearTimeout(this.$options.updateFormValuesTimer)
-        this.$options.updateFormValuesTimer = null
-      }
+      // if (this.$options.updateFormValuesTimer) {
+      //   clearTimeout(this.$options.updateFormValuesTimer)
+      //   this.$options.updateFormValuesTimer = null
+      // }
+      // 去掉定时器 是因为宏任务不稳定
+      const newVal = cloneDeep(this.formValuesA)
+      this.$options.formInstance.updateFormValues(newVal)
+      this.$emit('input', newVal)
       /**
        * 保证 form 能最后一次更新
        */
-      this.$options.updateFormValuesTimer = setTimeout(() => {
-        const newVal = cloneDeep(this.formValuesA)
-        this.$options.formInstance.updateFormValues(newVal)
-        this.$emit('input', newVal)
-      }, 0)
+      // this.$options.updateFormValuesTimer = setTimeout(() => {
+      //   console.log('updateFormValuesTimer', this.formValuesA)
+      //   const newVal = cloneDeep(this.formValuesA)
+      //   this.$options.formInstance.updateFormValues(newVal)
+      //   this.$emit('input', newVal)
+      // }, 0)
     },
     /**
      * 供外部调用 formValidate
