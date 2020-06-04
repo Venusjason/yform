@@ -1,6 +1,7 @@
 <template>
   <div>
     <ElForm v-model="formValues1" labelWidth="200px" >
+      <pre>{{JSON.stringify(formValues1, null, 2)}}</pre>
       <ElField name="nicks" label="姓名" component="el-input" :rules="['required', 'email']" key="nicks" fieldStatus="preview"/>
       <ElField name="nicks2" label="姓名2" component="el-input" :rules="['required', 'email']" key="nicks2"/>
       <ElField name="nicks3" label="姓名3" component="el-input" :rules="['required', 'email']" key="nicks3"/>

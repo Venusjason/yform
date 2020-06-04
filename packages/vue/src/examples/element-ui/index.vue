@@ -126,6 +126,7 @@ export default {
             <div>
           <p>element-ui 示例</p>
           <ElForm v-model={this.formValues} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
+            <pre>{JSON.stringify(this.formValues, null, 2)}</pre>
           <ElField name="name" component="el-input" onChange={this.onName} >
               <span slot="label">
                 slot label
@@ -192,11 +193,12 @@ export default {
 
         <div>
           <ElForm v-model={this.formValues1} labelWidth="200px" >
-            <ElField name="nick" label="姓名" component="el-input" rules={['required', 'email']} key="nick" />
+            <ElField name="name" label="姓名" component="el-input" rules={['required', 'email']} key="nick" />
             <ElField name="nick2" label="姓名2" component="el-input" rules={['required', 'email']} key="nick2"/>
             <ElField name="nick3" label="姓名3" component="el-input" rules={['required', 'email']} key="nick3"/>
             <ElField name="nick4" label="姓名4" component="el-input" rules={['required', 'email']} />
             <ElButton do="debug" disabled={this.formValues1.nick === '11'} />
+            <pre>{JSON.stringify(this.formValues1, null, 2)}</pre>
           </ElForm>
         </div>
         <testForm />

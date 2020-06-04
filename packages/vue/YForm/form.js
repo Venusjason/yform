@@ -105,14 +105,14 @@ const VueForm = ({
   },
   formInstance: null,
   updateFormValuesTimer: null,
-  formValues: {},
+  // formValues: {},
   data() {
     return {
-      name: '我是1',
       formValues: {},
       submiting: false,
       potentialLabelWidthArr: [],
-      initialValues: {}
+      initialValues: {},
+      formValuesA: {}
     }
   },
   created() {
@@ -144,11 +144,10 @@ const VueForm = ({
       this.$options.formInstance.clearValidate()
     },
     afterFieldRegisterToForm(field) {
-      const { formInstance, formValues } = this.$options
-      const value = formInstance.getFieldValue(field.name)
+      const value = this.$options.formInstance.getFieldValue(field.name)
       // 只有最后一次注册的字段被收入了
-      _set(formValues, field.name, value === undefined ? null : value)
-      mergeWith(formValues, this.value)
+      _set(this.formValuesA, field.name, value === undefined ? null : value)
+      mergeWith(this.formValuesA, this.value)
       if (this.$options.updateFormValuesTimer) {
         clearTimeout(this.$options.updateFormValuesTimer)
         this.$options.updateFormValuesTimer = null
@@ -157,9 +156,9 @@ const VueForm = ({
        * 保证 form 能最后一次更新
        */
       this.$options.updateFormValuesTimer = setTimeout(() => {
-        // console.log('updateFormValuesTimer', formValues)
-        formInstance.updateFormValues(formValues)
-        this.$emit('input', formValues)
+        const newVal = cloneDeep(this.formValuesA)
+        this.$options.formInstance.updateFormValues(newVal)
+        this.$emit('input', newVal)
       }, 0)
     },
     /**
@@ -232,6 +231,7 @@ const VueForm = ({
       },
       attrs: this.$attrs,
       ref: 'yform',
+      key: String(this.$options.formInstance.id),
     }, [
       this.$slots.default,
       // (<div>{this.$options.formInstance.id}</div>),
