@@ -3,7 +3,7 @@ import { createField } from '../../core/lib/core/src/index'
 import { computedRules } from '../../core/lib/core/src/rules.js'
 import log from '../../core/lib/utils/log'
 import LabelWrap from './label-wrap.vue'
-import createInputComponent from './InputComponent.js'
+import InputComponent from './InputComponent.js'
 
 const globalOptions = {
   name: 'YField',
@@ -179,12 +179,11 @@ const VueField = ({
         'mr4': this.isInline,
       }
     },
-    InputComponent() {
-      return createInputComponent(this)
-    }
+    // InputComponent() {
+    //   return createInputComponent(this)
+    // }
   },
   created() {
-    // console.log('created')
     this.initFieldInstance()
     // 一个宏任务，为了解决初始化时就触发校验
     setTimeout(() => {
@@ -197,7 +196,7 @@ const VueField = ({
       }, {
         deep: true,
       })
-    }, 0)
+    }, 100)
   },
   mounted() {
   },
@@ -218,6 +217,7 @@ const VueField = ({
       fieldInstance.updateByInputChange = this.updateByInputChange
       fieldInstance.updateByChange = this.updateByChange
       fieldInstance.validateCallback = this.validateCallback
+      fieldInstance.clearValidateCallback = this.clearValidateCallback
       // this.InputComponent = createInputComponent(this)
     },
     updateByInputChange(value) {
@@ -229,52 +229,91 @@ const VueField = ({
     validateCallback(result) {
       this.errorMsg = result.errorMsg
     },
+    clearValidateCallback() {
+      this.errorMsg = ''
+    },
     updateComputedLabelWidth(width) {
       this.computedLabelWidth = width ? `${width}px` : '';
     },
   },
   render(h) {
-    return (
-      <div class={{
+
+    return h('div', {
+      class: {
         ...this.fieldClassNames,
         yfield: true,
-      }}>
+      },
+      key: this.name,
+    }, [
+      <LabelWrap
+        isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
+        updateAll={this.YForm.labelWidth === 'auto'}
+      >
+      {
+        (this.label || this.$slots.label) && (
+          <label for={this.name} style={this.labelStyle} class={{
+            'yfield__label': true,
+            [`size-${this.fieldSize}`]: true,
+          }}>
+            {this.label || this.$slots.label}{this.fieldColon}
+          </label>
+        )
+      }
+      </LabelWrap>,
+      <div class={{
+        'yfield__content': true,
+        'is-inline': this.isInline,
+        [`size-${this.fieldSize}`]: true,
+      }} style={this.contentStyle} key={this.name}>
+        <InputComponent />
         {
-          /**
-           * 自动labelwidth 有问题的 this.labelStyle.width === 'auto'
-           */
-        }
-        <LabelWrap
-          isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
-          updateAll={this.YForm.labelWidth === 'auto'}
-        >
-        {
-          (this.label || this.$slots.label) && (
-            <label for={this.name} style={this.labelStyle} class={{
-              'yfield__label': true,
-              [`size-${this.fieldSize}`]: true,
-            }}>
-              {this.label || this.$slots.label}{this.fieldColon}
-            </label>
+          this.errorMsg && (
+            <div class="yfield__errors" >{this.errorMsg}</div>
           )
         }
-        </LabelWrap>
-        <div class={{
-          'yfield__content': true,
-          'is-inline': this.isInline,
-          [`size-${this.fieldSize}`]: true,
-        }} style={this.contentStyle}>
-          {
-            h(this.InputComponent)
-          }
-          {
-            this.errorMsg && (
-              <div class="yfield__errors" >{this.errorMsg}</div>
-            )
-          }
-        </div>
       </div>
-    )
+    ])
+    // return (
+    //   <div class={{
+    //     ...this.fieldClassNames,
+    //     yfield: true,
+    //   }} key={this.name}>
+    //     {
+    //       /**
+    //        * 自动labelwidth 有问题的 this.labelStyle.width === 'auto'
+    //        */
+    //     }
+    //     <LabelWrap
+    //       isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
+    //       updateAll={this.YForm.labelWidth === 'auto'}
+    //     >
+    //     {
+    //       (this.label || this.$slots.label) && (
+    //         <label for={this.name} style={this.labelStyle} class={{
+    //           'yfield__label': true,
+    //           [`size-${this.fieldSize}`]: true,
+    //         }}>
+    //           {this.label || this.$slots.label}{this.fieldColon}
+    //         </label>
+    //       )
+    //     }
+    //     </LabelWrap>
+    //     <div class={{
+    //       'yfield__content': true,
+    //       'is-inline': this.isInline,
+    //       [`size-${this.fieldSize}`]: true,
+    //     }} style={this.contentStyle} key={this.name}>
+    //       {
+    //         h(this.InputComponent)
+    //       }
+    //       {
+    //         this.errorMsg && (
+    //           <div class="yfield__errors" >{this.errorMsg}</div>
+    //         )
+    //       }
+    //     </div>
+    //   </div>
+    // )
   },
 })
 

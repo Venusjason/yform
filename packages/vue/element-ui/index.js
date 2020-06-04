@@ -61,6 +61,7 @@ export const ElField = merge({}, VueField, {
   provide() {
     return {
       elFormItem: this,
+      YField: this
     }
   },
   elFormItem: true,

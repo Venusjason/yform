@@ -5,6 +5,7 @@ import {
   ElQueryTable,
   ElButton
 } from '../../../element-ui/index.js'
+import testForm from './testForm'
 
 const serveList = (params) => {
   console.log('查询参数', params)
@@ -44,7 +45,12 @@ export default {
       },
       nameRule: ['required', 'whiteSpace'],
       sexy: [],
-      tableRef: null
+      tableRef: null,
+      formValues1: {
+        nick: 'nick',
+        nick4: 'nick4'
+      },
+      visible: true
     }
   },
   mounted() {
@@ -54,12 +60,7 @@ export default {
       this.sexy = [
         { label: '男', value: 1 }
       ]
-      console.log(this.tableRef)
-    }, 2000);
-    // setTimeout(() => {
-    //   this.formValues.name = '张三'
-    //   this.nameRule.push('url')
-    // }, 2000)
+    }, 2000)
   },
   methods: {
     onName() {
@@ -73,7 +74,6 @@ export default {
     }
   },
   render() {
-
     // const list = []
     // for(let i = 0; i < 10; i++) {
     //   list.push({
@@ -121,69 +121,85 @@ export default {
 
     return (
       <div class="eeeee">
-        <p>element-ui 示例</p>
-        <ElForm v-model={this.formValues} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
-        <ElField name="name" component="el-input" onChange={this.onName} >
-            <span slot="label">
-              slot label
-            </span>
-            <span slot="append">元</span>
-          </ElField>
-          <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
-          <ElField name="age1" label="年龄1" component="el-input" />
-          <ElField name="sex" label="性别" component="el-select" dataSource={
-            this.sexy
-            // new Map([
-            //   [1, '男'],
-            //   [2, '女']
-            // ])
-            // [1, 3]
-            // {
-            //   1: '男',
-            //   2: '女'
-            // }
-          } ></ElField>
-
-          <ElField name="times" component="el-date-picker" type="daterange"/>
-    
-          <ElButton type="primary" do="search">查询一下</ElButton>
-          <ElButton do="reset" />
-          <ElButton do="debug" />
-        </ElForm>
-
         {
-          /**
-           * <Table
-                border
-                data={list}
-                columns={columns}
-                onSelect={() => {
-                  console.log('onSelect')
-                }}
-                onRowClick={() => {
-                  console.log('onRowClick')
-                }}
-                onSortChange={() => {
-                  console.log('onSortChange')
-                }}
-              /> 
-           */
+          this.visible && (
+            <div>
+          <p>element-ui 示例</p>
+          <ElForm v-model={this.formValues} size="medium" colon labelWidth="120px" inline ref="form" formStatus="edit">
+          <ElField name="name" component="el-input" onChange={this.onName} >
+              <span slot="label">
+                slot label
+              </span>
+              <span slot="append">元</span>
+            </ElField>
+            <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
+            <ElField name="age1" label="年龄1" component="el-input" required />
+            <ElField name="sex" label="性别" component="el-select" dataSource={
+              this.sexy
+              // new Map([
+              //   [1, '男'],
+              //   [2, '女']
+              // ])
+              // [1, 3]
+              // {
+              //   1: '男',
+              //   2: '女'
+              // }
+            } ></ElField>
+
+            <ElField name="times" component="el-date-picker" type="daterange"/>
+      
+            <ElButton type="primary" do="search">查询一下</ElButton>
+            <ElButton do="reset" />
+            <ElButton do="debug" />
+          </ElForm>
+
+          {
+            /**
+             * <Table
+                  border
+                  data={list}
+                  columns={columns}
+                  onSelect={() => {
+                    console.log('onSelect')
+                  }}
+                  onRowClick={() => {
+                    console.log('onRowClick')
+                  }}
+                  onSortChange={() => {
+                    console.log('onSortChange')
+                  }}
+                /> 
+            */
+          }
+
+          <ElQueryTable
+            border
+            columns={columns}
+            serve={serve}
+            pagination={{
+            }}
+            onRowClick={() => {
+              console.log('onRowClick table')
+            }}
+            wrappedTableRef={(e) => {
+              this.tableRef = e
+            }}
+          />
+        </div>
+          )
         }
 
-        <ElQueryTable
-          border
-          columns={columns}
-          serve={serve}
-          pagination={{
-          }}
-          onRowClick={() => {
-            console.log('onRowClick table')
-          }}
-          wrappedTableRef={(e) => {
-            this.tableRef = e
-          }}
-        />
-
+        <div>
+          <ElForm v-model={this.formValues1} labelWidth="200px" >
+            <ElField name="nick" label="姓名" component="el-input" rules={['required', 'email']} key="nick" />
+            <ElField name="nick2" label="姓名2" component="el-input" rules={['required', 'email']} key="nick2"/>
+            <ElField name="nick3" label="姓名3" component="el-input" rules={['required', 'email']} key="nick3"/>
+            <ElField name="nick4" label="姓名4" component="el-input" rules={['required', 'email']} />
+            <ElButton do="debug" disabled={this.formValues1.nick === '11'} />
+          </ElForm>
+        </div>
+        <testForm />
       </div>
     )
   },

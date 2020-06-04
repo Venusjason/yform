@@ -311,25 +311,25 @@ export class Form {
     Object.keys(this.fields).forEach(fieldName => {
       this.fields[fieldName].forEach(field => {
         const value = _get(this.value, field.name)
-        // if (!isEqualWith(field.value, value)) {
-        //   const prevValue = cloneDeep(field.value)
-        //   field.value = value
-        //   field.updateByChange(value)
-        //   if (prevValue !== undefined) {
-        //     // 做字段新增操作 不要立即校验
-        //     field.validate(trigger) 
-        //   }
-        // }
+        if (!isEqualWith(field.value, value)) {
+          const prevValue = cloneDeep(field.value)
+          field.value = value
+          field.updateByChange(value)
+          if (prevValue !== undefined) {
+            // 做字段新增操作 不要立即校验
+            field.validate(trigger) 
+          }
+        }
         /**
          * TODO: 比对 再更新
          */
-        const prevValue = cloneDeep(field.value)
-        field.value = value
-        field.updateByChange(value)
-        if (prevValue !== undefined) {
-          // 做字段新增操作 不要立即校验
-          field.validate(trigger) 
-        }
+        // const prevValue = cloneDeep(field.value)
+        // field.value = value
+        // field.updateByChange(value)
+        // if (prevValue !== undefined) {
+        //   // 做字段新增操作 不要立即校验
+        //   field.validate(trigger) 
+        // }
       })
     })
   }
@@ -480,7 +480,10 @@ export const createField = (formId: number) => (
     clearValidate() {
       this.validateState = ''
       this.validateMessage = ''
+      this.clearValidateCallback()
     }
+
+    clearValidateCallback() {}
 
     updateByInputChange() {}
   

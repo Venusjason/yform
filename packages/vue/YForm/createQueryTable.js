@@ -157,10 +157,11 @@ export default (props) => {
           this.refreshList({ currentPage })
         })
       },
-      refreshList(someParams = {}) {
+      async refreshList(someParams = {}) {
         // TODO: 自动取消上一次接口
         if (this.loading) return
         this.setlatestYform()
+        await this.$options.latestYform.validate()
         this.loading = true
         const { currentPage, pageSize } = this.getPaginationProps(someParams)
         /**
