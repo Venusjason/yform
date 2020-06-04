@@ -84,8 +84,8 @@ export const createYButton = (ButtonComponent = 'button') => {
       },
       onClick(e) {
         e && e.preventDefault()
-        if (this.$listeners.onClick) {
-          return this.$listeners.onClick(e)
+        if (this.$listeners.click) {
+          return this.$listeners.click(e)
         }
         this.beforeClick && this.beforeClick()
         if (this.do === 'submit') {
