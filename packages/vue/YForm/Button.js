@@ -63,23 +63,26 @@ export const createYButton = (ButtonComponent = 'button') => {
       setLatestQueryTable() {
         if (!latestQueryTable) {
           const getLatestQueryTable = (context) => {
-            let parent = context.$parent
-            let children = parent.$children || []
-            let matchedTable = children.filter(child => {
-              return child && child.$options && ((child.$options.componentName === 'YQUERYTABLE' || child.$options.name === 'YQUERYTABLE'))
-            })
-
-            if (matchedTable.length === 0) {
-              if (!parent) {
-                log.warn('button do=search 需要搭配QueryTable才能使用')
-                return null
-              }
-              return getLatestQueryTable(parent)
+            if (!context) {
+              return null
             }
+            const nodes = (context && context.$children) || []
 
-            return matchedTable[0]
+            let arr = nodes.filter(ele => (ele.$options.componentName === 'YQUERYTABLE'))
+
+            if (arr.length === 0) {
+              const nodes1 = nodes.filter(ele => !(ele.$options.componentName === 'YFIELD'))
+              return nodes1.filter(ele => {
+                return getLatestQueryTable(ele)
+              })[0]
+            } else {
+              return arr[0]
+            }
           }
-          latestQueryTable = getLatestQueryTable(this)
+          latestQueryTable = getLatestQueryTable(this.YForm)
+          if (!latestQueryTable) {
+            log.warn(`QueryTable 组件必须内置在 YForm组件内`)
+          }
         }
       },
       onClick(e) {
