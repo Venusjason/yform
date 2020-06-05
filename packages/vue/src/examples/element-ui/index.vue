@@ -5,7 +5,8 @@ import {
   ElQueryTable,
   ElButton
 } from '../../../element-ui/index.js'
-import testForm from './testForm'
+import axios from 'axios'
+// import testForm from './testForm'
 
 const serveList = (params) => {
   console.log('查询参数', params)
@@ -47,20 +48,27 @@ export default {
       sexy: [],
       tableRef: null,
       formValues1: {
-        nick: 'nick',
-        nick4: 'nick4'
+        // nick: 'nick',
+        // nick3: 'nick3',
+        arr: []
       },
       visible: true
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.formValues.name = '张三'
-      this.formValues.age = '12'
-      this.sexy = [
-        { label: '男', value: 1 }
-      ]
-    }, 2000)
+    // setTimeout(() => {
+    //   this.formValues.name = '张三'
+    //   this.formValues.age = '12'
+    //   this.sexy = [
+    //     { label: '男', value: 1 }
+    //   ]
+    // }, 2000)
+    axios.get('https://yapi.weierai.com/mock/171/api/sardine/riskControl/getShortMessage').then(res => {
+      console.log(99)
+      const { data } = res.data
+      this.formValues1.nick3 = data.acceptDayNum
+      this.formValues1.nick2 = data.acceptSmsNum
+    })
   },
   methods: {
     onName() {
@@ -193,15 +201,34 @@ export default {
 
         <div>
           <ElForm v-model={this.formValues1} labelWidth="200px" >
-            <ElField name="name" label="姓名" component="el-input" rules={['required', 'email']} key="nick" />
-            <ElField name="nick2" label="姓名2" component="el-input" rules={['required', 'email']} key="nick2"/>
+            <ElField name="nick" label="姓名" component="el-input" rules={['required', 'email']} key="nick" />
+            {
+              this.formValues1.nick === '22' && (
+                <ElField name="nick2" label="姓名2" component="el-input" rules={['required', 'email']} key="nick2"/>
+              )
+            }
             <ElField name="nick3" label="姓名3" component="el-input" rules={['required', 'email']} key="nick3"/>
             <ElField name="nick4" label="姓名4" component="el-input" rules={['required', 'email']} />
+
+            {
+              (this.formValues1.arr || []).map((item, i) => ((
+                <div>
+                  <ElField name={`arr.${i}.euyyy`} label={`arr.${i}.euyyy`} component="el-input" />
+                  <el-button onClick={() =>{
+                    this.formValues1.arr.splice(i, 1)
+                  }}>删除{i}</el-button>
+                </div>
+              )))
+            }
+            <el-button onClick={() => {
+              this.formValues1.arr.push({
+                euyyy: ''
+              })
+            }}>添加</el-button>
             <ElButton do="debug" disabled={this.formValues1.nick === '11'} />
             <pre>{JSON.stringify(this.formValues1, null, 2)}</pre>
           </ElForm>
         </div>
-        <testForm />
       </div>
     )
   },

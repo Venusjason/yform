@@ -99,6 +99,7 @@ const VueForm = ({
     value: {
       deep: true,
       handler: function (val) {
+        this.formValuesA = cloneDeep(val)
         this.$options.formInstance.updateFormValues(val)
       }
     }
@@ -148,13 +149,14 @@ const VueForm = ({
       // 只有最后一次注册的字段被收入了
       _set(this.formValuesA, field.name, value === undefined ? null : value)
       mergeWith(this.formValuesA, this.value)
+
       // if (this.$options.updateFormValuesTimer) {
       //   clearTimeout(this.$options.updateFormValuesTimer)
       //   this.$options.updateFormValuesTimer = null
       // }
       // 去掉定时器 是因为宏任务不稳定
       const newVal = cloneDeep(this.formValuesA)
-      this.$options.formInstance.updateFormValues(newVal)
+      // this.$options.formInstance.updateFormValues(newVal)
       this.$emit('input', newVal)
       /**
        * 保证 form 能最后一次更新

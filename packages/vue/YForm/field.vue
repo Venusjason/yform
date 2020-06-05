@@ -85,7 +85,7 @@ const VueField = ({
     colon: {},
     dataSource: {},
   },
-  fieldInstance: null,
+  fieldInstance: {},
   data() {
     return {
       value: null,
@@ -207,18 +207,19 @@ const VueField = ({
     initFieldInstance() {
       const { formInstance } = this.YForm.$options
       const Field = createField(formInstance.id)
+      const _this = this
+
+      Field.prototype.updateByInputChange = _this.updateByInputChange
+      Field.prototype.updateByChange = _this.updateByChange
+      Field.prototype.validateCallback = _this.validateCallback
+      Field.prototype.clearValidateCallback = _this.clearValidateCallback
+
       this.$options.fieldInstance = new Field({
         name: this.name,
         label: this.label,
         rules: this.rulesResult,
       })
 
-      const { fieldInstance } = this.$options
-      fieldInstance.updateByInputChange = this.updateByInputChange
-      fieldInstance.updateByChange = this.updateByChange
-      fieldInstance.validateCallback = this.validateCallback
-      fieldInstance.clearValidateCallback = this.clearValidateCallback
-      // this.InputComponent = createInputComponent(this)
     },
     updateByInputChange(value) {
       this.value = value
