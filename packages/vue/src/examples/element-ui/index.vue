@@ -8,6 +8,8 @@ import {
 import axios from 'axios'
 // import testForm from './testForm'
 
+import Tablelist from './Tablelist'
+
 const serveList = (params) => {
   console.log('查询参数', params)
   return new Promise(function(resolve) {
@@ -236,6 +238,8 @@ export default {
         </div>
           )
         }
+
+        <Tablelist />
 
         <div>
           <ElForm v-model={this.formValues1} labelWidth="200px" >

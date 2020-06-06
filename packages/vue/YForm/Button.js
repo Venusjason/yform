@@ -2,10 +2,10 @@ import log from '../../core/lib/utils/log'
 import { isDevelopment, getType } from '../../core/lib/utils/index'
 
 export const createYButton = (ButtonComponent = 'button') => {
-  let latestQueryTable = null
   const YButton = ({
     name: 'YBUTTON',
     componentName: 'YBUTTON',
+    latestQueryTable: null,
     props: {
       /**
        * TODO: 注意 与v1 版本默认值不兼容
@@ -61,7 +61,7 @@ export const createYButton = (ButtonComponent = 'button') => {
     },
     methods: {
       setLatestQueryTable() {
-        if (!latestQueryTable) {
+        if (!this.$options.latestQueryTable) {
           const getLatestQueryTable = (context) => {
             if (!context) {
               return null
@@ -79,8 +79,8 @@ export const createYButton = (ButtonComponent = 'button') => {
               return arr[0]
             }
           }
-          latestQueryTable = getLatestQueryTable(this.YForm)
-          if (!latestQueryTable) {
+          this.$options.latestQueryTable = getLatestQueryTable(this.YForm)
+          if (!this.$options.latestQueryTable) {
             log.warn(`QueryTable 组件必须内置在 YForm组件内`)
           }
         }
@@ -122,7 +122,7 @@ export const createYButton = (ButtonComponent = 'button') => {
           aParams.currentPage = 1
         }
         this.loading = true
-        latestQueryTable.refreshList(aParams).then(() => {
+        this.$options.latestQueryTable.refreshList(aParams).then(() => {
           this.loading = false
           this.afterClick && this.afterClick()
         }).catch(() => {
@@ -149,7 +149,7 @@ export const createYButton = (ButtonComponent = 'button') => {
          * 要v-model 先生效 form props.value 更新才能正确获取到formValues
          */
         setTimeout(() => {
-          latestQueryTable.refreshList(a).then(() => {
+          this.$options.latestQueryTable.refreshList(a).then(() => {
             this.loading = false
             this.afterClick && this.afterClick()
           }).catch(() => {
@@ -201,7 +201,8 @@ export const createYButton = (ButtonComponent = 'button') => {
         on: {
           ...this.$listeners,
           click: this.onClick,
-        }
+        },
+        key: String(Math.random() * 1000)
       }, [
         // this.loading ? 'loading' : '',
         this.$slots.default || slotsDefault,
