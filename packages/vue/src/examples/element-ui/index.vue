@@ -79,6 +79,9 @@ export default {
     },
     async validate() {
       await this.$refs.form.validate()
+    },
+    onSortChange () {
+      this.$refs.searchBtn.onClick()
     }
   },
   render() {
@@ -106,9 +109,16 @@ export default {
       {
         label: '操作',
         render: ({ row, $index }) => {
-          return (<el-button onClick={() => {
-            console.log(`你点击了第${$index}项, name：${row.name}`)
-          }}>删除</el-button>)
+          return (
+            <div>
+              <el-button onClick={() => {
+                console.log(`你点击了第${$index}项, name：${row.name}`)
+              }}>删除</el-button>
+              <el-button onClick={() => {
+                this.$refs.searchBtn.onSearch({ toFirstPage: false })
+              }}>刷新当前页</el-button>
+            </div>
+          )
         }
       },
     ]
@@ -142,7 +152,7 @@ export default {
               <span slot="append">元</span>
             </ElField>
             <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
-            <ElField name="age1" label="年龄1" component="el-input" required />
+            <ElField name="age1" label="年龄1" component="el-input" />
             <ElField name="sex" label="性别" component="el-select" dataSource={
               this.sexy
               // new Map([
@@ -158,9 +168,50 @@ export default {
 
             <ElField name="times" component="el-date-picker" type="daterange"/>
       
-            <ElButton type="primary" do="search">查询一下</ElButton>
+            <ElButton type="primary" do="search" ref="searchBtn">查询一下</ElButton>
             <ElButton do="reset" />
             <ElButton do="debug" />
+            <div>
+              <div>
+                <div></div>
+                <div></div>
+                <ElQueryTable
+                  border
+                  columns={columns}
+                  serve={serve}
+                  pagination={{
+                  }}
+                  onRowClick={() => {
+                    console.log('onRowClick table')
+                  }}
+                  wrappedTableRef={(e) => {
+                    this.tableRef = e
+                  }}
+                  onSortChange={this.onSortChange}
+                />
+                <div></div>
+              </div>
+            </div>
+            <div>
+              <div>
+                <div>
+                  <div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <div>
+              <div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+
           </ElForm>
 
           {
@@ -182,19 +233,6 @@ export default {
             */
           }
 
-          <ElQueryTable
-            border
-            columns={columns}
-            serve={serve}
-            pagination={{
-            }}
-            onRowClick={() => {
-              console.log('onRowClick table')
-            }}
-            wrappedTableRef={(e) => {
-              this.tableRef = e
-            }}
-          />
         </div>
           )
         }

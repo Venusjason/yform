@@ -101,7 +101,6 @@ export const createYButton = (ButtonComponent = 'button') => {
             this.afterClick && this.afterClick()
           })
         } else if (this.do === 'search') {
-          this.loading = true
           this.onSearch()
         } else if (this.do === 'debug') {
           log.help('表单值 : ')
@@ -110,10 +109,20 @@ export const createYButton = (ButtonComponent = 'button') => {
           this.onReset()
         }
       },
-      onSearch() {
+      /**
+       * 一般手动执行查询 都会重置到第一页
+       * @param {*} params 
+       */
+      onSearch(params = {
+        toFirstPage: true
+      }) {
         this.setLatestQueryTable()
+        const aParams = {}
+        if (params.toFirstPage) {
+          aParams.currentPage = 1
+        }
         this.loading = true
-        latestQueryTable.refreshList().then(() => {
+        latestQueryTable.refreshList(aParams).then(() => {
           this.loading = false
           this.afterClick && this.afterClick()
         }).catch(() => {

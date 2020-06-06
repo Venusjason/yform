@@ -161,12 +161,10 @@ export default (props) => {
         // TODO: 自动取消上一次接口
         if (this.loading) return
         this.setlatestYform()
+        // 默认在这里走了 form 校验
         await this.$options.latestYform.validate()
         this.loading = true
         const { currentPage, pageSize } = this.getPaginationProps(someParams)
-        /**
-         * TODO: 可以考虑 formValue 也传过去，实际调用层可以自己获取，不做也行
-         */
         const formValues = this.$options.latestYform.value
         return this.serve({
           params: {
@@ -180,6 +178,7 @@ export default (props) => {
           this.total = res.total
           this.pageParams.currentPage = currentPage
           this.pageParams.pageSize = pageSize
+          this.refreshPaginationForUi()
           this.$emit('refreshListCb', {
             total: this.total,
             list: this.list,
