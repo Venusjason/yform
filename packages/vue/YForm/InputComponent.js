@@ -38,6 +38,7 @@ export default {
       fieldStatus,
       previewValue,
       dataSourceSlots,
+      componentProps,
     } = fieldContext
   
     const { formStatus } = fieldContext.YForm
@@ -76,11 +77,13 @@ export default {
     const VModelComponent = h(component || fieldContext.$options.globalOptions.defaultComponent, {
       props: {
         ...$attrs,
+        ...componentProps,
         value: fieldContext.value,
         disabled: isFieldDisabled,
       },
       attrs: {
         ...$attrs,
+        ...componentProps,
         value: fieldContext.value,
         disabled: isFieldDisabled,
       },

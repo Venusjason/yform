@@ -44,6 +44,9 @@ const VueField = ({
       type: [Array, String, Object],
       default: () => []
     },
+    componentProps: {
+      default: () => ({})
+    },
     /**
      * 是否html原生控件
      */
