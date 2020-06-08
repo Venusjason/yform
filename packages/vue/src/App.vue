@@ -1,17 +1,20 @@
 <template>
 <div id="app">
-  <NativeForm v-if="isShow" />
-  <ElementForm v-if="!isShow" />
+  <Examples />
+  <!-- <NativeForm v-if="isShow" />
+  <ElementForm v-if="!isShow" /> -->
 </div>
 </template>
 <script>
-import NativeForm from './examples/nativeForm'
-import ElementForm from './examples/element-ui'
+import Examples from './examples/index'
+// import NativeForm from './examples/nativeForm'
+// import ElementForm from './examples/element-ui'
 
 export default {
   components: {
-    NativeForm,
-    ElementForm,
+    // NativeForm,
+    // ElementForm,
+    Examples
   },
   data () {
     return {

@@ -171,9 +171,13 @@ export class Form {
   }
 
   setFieldValue(name: string, value: any, trigger: ITrigger) {
+    const prevValue = cloneDeep(_get(this.value, name))
     _set(this.value, name, value)
     this.notifyField(name, value, trigger)
-    this.afterValueUpdate(this.value)
+    // 新增的字段 需要通知到vue 去主动更新form.value
+    if (prevValue === undefined) {
+      this.afterFieldValueUpdate(name, value, cloneDeep(this.value))
+    }
   }
 
   getFieldValue(name: string): any {
@@ -354,7 +358,7 @@ export class Form {
   /**
    * 表单值更新后
    */
-  afterValueUpdate(value) {
+  afterFieldValueUpdate(name, value, formValues) {
   }
 }
 

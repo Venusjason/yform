@@ -60,7 +60,7 @@ export default (props) => {
         type: String,
         default: 'right',
         validator(value) {
-          return ['right', 'left', 'top'].includes(value)
+          return ['right', 'left', 'center'].includes(value)
         },
       },
       showLoading: {

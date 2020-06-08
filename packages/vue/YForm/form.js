@@ -128,10 +128,10 @@ const VueForm = ({
   methods: {
     initForm() {
       this.initialValues = cloneDeep(this.value)
-      this.$options.formInstance = new Form(this.value)
-      const { formInstance } = this.$options
-      // formInstance.updateFormValues(this.value)
-      formInstance.afterFieldRegisterToForm = this.afterFieldRegisterToForm
+      const _this = this
+      Form.prototype.afterFieldRegisterToForm = _this.afterFieldRegisterToForm
+      Form.prototype.afterFieldValueUpdate = _this.afterFieldValueUpdate
+      _this.$options.formInstance = new Form(_this.value)
     },
     /**
      * 表单重置
@@ -167,6 +167,10 @@ const VueForm = ({
       //   this.$options.formInstance.updateFormValues(newVal)
       //   this.$emit('input', newVal)
       // }, 0)
+    },
+    afterFieldValueUpdate (name, value, formValues) {
+      log.help(`${name} is never declared : ${value}`)
+      this.$emit('input', formValues)
     },
     /**
      * 供外部调用 formValidate

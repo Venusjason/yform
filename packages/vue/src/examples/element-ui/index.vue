@@ -58,6 +58,7 @@ export default {
     }
   },
   mounted() {
+    this.formValues.name = '666'
     // setTimeout(() => {
     //   this.formValues.name = '张三'
     //   this.formValues.age = '12'
