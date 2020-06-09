@@ -199,7 +199,17 @@ const VueField = {
     this.initField()
   },
   mounted() {
-    
+    const _this = this
+    setTimeout(() => {
+      this.$watch('rulesResult', function() {
+        if (_this.fieldValidateOnRuleChange && this.value !== undefined) {
+          _this.validate('')
+        }
+      }, {
+        deep: true,
+        immediate: false,
+      })
+    }, 100)
   },
   beforeDestroy() {
     this.YForm.EM.emit('FIELD_DESTORY', this)

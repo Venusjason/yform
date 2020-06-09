@@ -82,7 +82,7 @@ export default {
      */
     validateOnRuleChange: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     formStatus: {
       type: String,
