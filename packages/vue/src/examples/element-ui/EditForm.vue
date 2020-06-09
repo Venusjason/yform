@@ -16,9 +16,9 @@ export default {
   },
   mounted() {
     // this.values.ageold = 15
-    this.values = {
-      ageold: 13
-    }
+    // this.values = {
+    //   ageold: 13
+    // }
   },
   methods: {
     onSubmit(values) {

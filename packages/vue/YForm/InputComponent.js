@@ -40,14 +40,14 @@ export default {
       dataSourceSlots,
       componentProps,
     } = fieldContext
-  
-    const { formStatus } = fieldContext.YForm
+    
+    const { formStatus, EM } = fieldContext.YForm
   
     const fieldStatusResult = fieldStatus || formStatus
   
     const isFieldDisabled = fieldStatusResult === 'disabled'
   
-    const { fieldInstance } = fieldContext.$options
+    // const { fieldInstance } = fieldContext.$options
   
     const getClassNames = () => {
       const type = getType(componentClass)
@@ -108,7 +108,10 @@ export default {
           if (fieldContext.yNative) {
             value = e.target.value
           }
-          fieldInstance.onFieldInputChange(value)
+          EM.emit('FIELD_INPUT_CHANGE', {
+            field: fieldContext,
+            value
+          })
           fieldContext.$listeners.input && fieldContext.$listeners.input(e)
         },
         change(e) {
@@ -119,20 +122,27 @@ export default {
           if (fieldContext.yNative) {
             value = e.target.value
           }
-          fieldInstance.onFieldInputChange(value)
+          EM.emit('FIELD_INPUT_CHANGE', {
+            field: fieldContext,
+            value
+          })
           fieldContext.$listeners.change && fieldContext.$listeners.change(e)
         },
         focus(e) {
-          fieldInstance.onFieldInputFocus()
+          EM.emit('FIELD_INPUT_FOCUS', {
+            field: fieldContext,
+          })
           fieldContext.$listeners.focus && fieldContext.$listeners.focus(e)
         },
         blur(e) {
-          fieldInstance.onFieldInputBlur()
+          EM.emit('FIELD_INPUT_BLUR', {
+            field: fieldContext,
+          })
           fieldContext.$listeners.blur && fieldContext.$listeners.blur(e)
         },
       },
     }, [
-      ...dataSourceSlots,
+      ...(dataSourceSlots || []),
       ...slots,
     ])
 

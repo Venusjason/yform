@@ -124,7 +124,7 @@ export const rulelistLog = () => {
  */
 export const computedRules = (rules: any): FieldRuleItem[] => {
   const rulesResult: FieldRuleItem[] = []
-  if (getType(rules) === 'string') {
+  if (getType(rules) === 'string' && rules) {
     if (regs[rules] !== undefined) {
       rulesResult.push(validatorFunc(regs[rules]))
     } else {

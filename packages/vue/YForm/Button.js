@@ -1,5 +1,5 @@
 import log from '../../core/lib/utils/log'
-import { isDevelopment, getType } from '../../core/lib/utils/index'
+import { getType } from '../../core/lib/utils/index'
 
 export const createYButton = (ButtonComponent = 'button') => {
   const YButton = ({
@@ -208,7 +208,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         this.$slots.default || slotsDefault,
       ])
       
-      if (!isDevelopment && this.do === 'debug') {
+      if (!this.YForm.$options.debug && this.do === 'debug') {
         return null
       }
       return Btn

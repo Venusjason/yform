@@ -167,7 +167,8 @@ export const ElQueryTable = merge({}, createQueryTable({
 export const ElButton = createYButton('el-button')
 
 export const YForm = {
-  install: function(Vue, option = { name: 'YForm' }) {
+  install: function(Vue, option = { name: 'YForm', debug: false }) {
+    ElForm.debug = option.debug || false
     Vue.component(
       option.name || ElForm.name,
       ElForm,

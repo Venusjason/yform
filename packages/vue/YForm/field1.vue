@@ -1,18 +1,16 @@
 <script>
-import isEqualWith from 'lodash/isEqualWith'
-import AsyncValidator from 'async-validator'
-import InputComponent from './InputComponent.js'
+import { createField } from '../../core/lib/core/src/index'
 import { computedRules } from '../../core/lib/core/src/rules.js'
 import log from '../../core/lib/utils/log'
-import { getType } from '../../core/lib/utils/index'
 import LabelWrap from './label-wrap.vue'
+import InputComponent from './InputComponent.js'
 
 const globalOptions = {
   name: 'YField',
   defaultComponent: 'input',
 }
 
-const VueField = {
+const VueField = ({
   name: 'YFIELD',
   componentName: 'YFIELD',
   globalOptions: {
@@ -90,20 +88,20 @@ const VueField = {
     colon: {},
     dataSource: {},
   },
+  fieldInstance: {},
   data() {
     return {
-      trigger: '',
-      validateState: '',
-      validateMessage: '',
+      value: null,
       errorMsg: '',
+      isNested: false,
+      computedLabelWidth: '',
+      // InputComponent: null,
+      validatecount: 0,
     }
   },
   computed: {
-    value() {
-      return this.YForm && this.YForm.getFieldValue(this.name)
-    },
-    isRequired() {
-      return this.rulesResult.filter(rule => rule.required).length > 0
+    dataSourceSlots() {
+      return this.dataSource || []
     },
     rulesResult() {
       const rules = computedRules(this.rules)
@@ -112,8 +110,8 @@ const VueField = {
       }
       return rules
     },
-    dataSourceSlots() {
-      return this.dataSource || []
+    isRequired() {
+      return this.rulesResult.filter(rule => rule.required).length > 0
     },
     labelStyle() {
       const ret = {};
@@ -170,6 +168,10 @@ const VueField = {
     fieldValidateOnRuleChange() {
       return this.YForm.validateOnRuleChange
     },
+    validateState() {
+      // TODO: validating success error ''
+      return this.errorMsg ? 'error' : 'success'
+    },
     fieldClassNames() {
       return {
         'is-error': this.errorMsg !== '',
@@ -180,84 +182,59 @@ const VueField = {
         'mr4': this.isInline,
       }
     },
-  },
-  watch: {
-    value: {
-      deep: true,
-      handler: function (val, oldVal) {
-        if (!isEqualWith(val, oldVal)) {
-          // console.log(`${this.name} : ${val} ${oldVal}`)
-          // 执行校验
-          if (oldVal !== undefined) {
-            this.validate(this.trigger)
-          }
-        }
-      }
-    },
+    // InputComponent() {
+    //   return createInputComponent(this)
+    // }
   },
   created() {
-    this.initField()
+    this.initFieldInstance()
+    // 一个宏任务，为了解决初始化时就触发校验
+    setTimeout(() => {
+      this.$watch('rulesResult', function() {
+        this.$options.fieldInstance.onFieldRulesChange(this.rulesResult)
+        if (this.fieldValidateOnRuleChange) {
+          log.help(`${this.name} rules 变化 立即执行校验`)
+          this.$options.fieldInstance.validate('')
+        }
+      }, {
+        deep: true,
+      })
+    }, 100)
   },
   mounted() {
-    
   },
   beforeDestroy() {
-    this.YForm.EM.emit('FIELD_DESTORY', this)
+    this.$options.fieldInstance.beforeFieldDestory()
   },
   methods: {
-    initField() {
-      const { EM } = this.YForm
-      EM.emit('FIELD_REGISTER', this)
-    },
-    updateAfter(trigger = '') {
-      this.trigger = trigger
-    },
-    getFilteredRule(trigger) {
-      return this.rulesResult.filter(rule => {
-        if (!rule.trigger) {
-          return true
-        }
-        if (getType(rule.trigger) === 'array') {
-          return rule.trigger.indexOf(trigger) > -1
-        } else {
-          return rule.trigger === trigger
-        }
+    initFieldInstance() {
+      const { formInstance } = this.YForm.$options
+      const Field = createField(formInstance.id)
+      const _this = this
+
+      Field.prototype.updateByInputChange = _this.updateByInputChange
+      Field.prototype.updateByChange = _this.updateByChange
+      Field.prototype.validateCallback = _this.validateCallback
+      Field.prototype.clearValidateCallback = _this.clearValidateCallback
+
+      this.$options.fieldInstance = new Field({
+        name: this.name,
+        label: this.label,
+        rules: this.rulesResult,
       })
+
     },
-    validate(trigger = '', callback) {
-      const { value } = this
-      const rules = this.getFilteredRule(trigger)
-      if (rules.length === 0) {
-        callback && callback()
-        return true
-      }
-      const descriptor = {}
-      descriptor[this.name] = rules.map(rule => {
-        const { trigger: t, ...rest } = rule
-        log.help(t)
-        return {
-          ...rest
-        }
-      })
-      this.validateState = 'validating'
-      const validator = new AsyncValidator(descriptor)
-      const model = {}
-      model[this.name] = value
-      validator.validate(
-        { [this.name]: value },
-        { firstFields: true },
-        (errors, invalidFields) => {
-          this.validateState = errors ? 'error' : 'success'
-          this.errorMsg = this.validateMessage = errors ? errors[0].message : ''
-          this.validateState === 'error' && log.warn(`${this.name}: ${this.validateMessage}`)
-          callback && callback(this.validateMessage, invalidFields)
-        }
-      )
+    updateByInputChange(value) {
+      this.value = value
     },
-    clearValidate() {
+    updateByChange(value) {
+      this.value = value
+    },
+    validateCallback(result) {
+      this.errorMsg = result.errorMsg
+    },
+    clearValidateCallback() {
       this.errorMsg = ''
-      this.validateState = ''
-      this.validateMessage = ''
     },
     updateComputedLabelWidth(width) {
       this.computedLabelWidth = width ? `${width}px` : '';
@@ -300,11 +277,53 @@ const VueField = {
         }
       </div>
     ])
+    // return (
+    //   <div class={{
+    //     ...this.fieldClassNames,
+    //     yfield: true,
+    //   }} key={this.name}>
+    //     {
+    //       /**
+    //        * 自动labelwidth 有问题的 this.labelStyle.width === 'auto'
+    //        */
+    //     }
+    //     <LabelWrap
+    //       isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
+    //       updateAll={this.YForm.labelWidth === 'auto'}
+    //     >
+    //     {
+    //       (this.label || this.$slots.label) && (
+    //         <label for={this.name} style={this.labelStyle} class={{
+    //           'yfield__label': true,
+    //           [`size-${this.fieldSize}`]: true,
+    //         }}>
+    //           {this.label || this.$slots.label}{this.fieldColon}
+    //         </label>
+    //       )
+    //     }
+    //     </LabelWrap>
+    //     <div class={{
+    //       'yfield__content': true,
+    //       'is-inline': this.isInline,
+    //       [`size-${this.fieldSize}`]: true,
+    //     }} style={this.contentStyle} key={this.name}>
+    //       {
+    //         h(this.InputComponent)
+    //       }
+    //       {
+    //         this.errorMsg && (
+    //           <div class="yfield__errors" >{this.errorMsg}</div>
+    //         )
+    //       }
+    //     </div>
+    //   </div>
+    // )
   },
-}
+})
 
 export default VueField
 </script>
+
 <style lang="less">
 @import "./common.less";
 
