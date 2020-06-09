@@ -228,6 +228,7 @@ const VueField = {
       const { value } = this
       const rules = this.getFilteredRule(trigger)
       if (rules.length === 0) {
+        this.clearValidate()
         callback && callback()
         return true
       }

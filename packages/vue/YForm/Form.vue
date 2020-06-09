@@ -194,12 +194,14 @@ export default {
       this.$emit('input', formValues)
     },
     notifyField(name, trigger = '', runValidate = false) {
-      this.fields[name].forEach(field => {
-        field.updateAfter(trigger)
-        if (runValidate) {
-          field.validate(trigger)
-        }
-      })
+      if (this.fields[name] && this.fields[name].length > 0) {
+        this.fields[name].forEach(field => {
+          field.updateAfter(trigger)
+          if (runValidate) {
+            field.validate(trigger)
+          }
+        })
+      }
     },
     /**
      * 供外部调用 formValidate
