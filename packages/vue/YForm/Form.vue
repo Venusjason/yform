@@ -189,9 +189,14 @@ export default {
       return _get(this.value, name)
     },
     setFieldValue(name, value) {
-      const formValues = cloneDeep(this.value)
-      _set(formValues, name, value)
-      this.$emit('input', formValues)
+      const prevValue = _get(this.value, name)
+      if (prevValue !== undefined) {
+        _set(this.value, name, value)
+      } else {
+        const formValues = cloneDeep(this.value)
+        _set(formValues, name, value)
+        this.$emit('input', formValues)
+      }
     },
     notifyField(name, trigger = '', runValidate = false) {
       if (this.fields[name] && this.fields[name].length > 0) {

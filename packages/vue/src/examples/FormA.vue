@@ -25,10 +25,10 @@ export default {
     return (
       <div>
         <p>新版</p>
-        <Form v-model={this.values}>
+        <Form v-model={this.values} labelPosition="top">
           <Field name="name" label="名称" component="el-input"></Field>
           <Field name="age" label="年龄" component="el-input-number"></Field>
-          <Field name="likes" label="爱好" component="el-input"></Field>
+          <Field name="likes" label="爱好" component="el-select"></Field>
         </Form>
       </div>
     )

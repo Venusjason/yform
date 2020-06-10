@@ -119,7 +119,7 @@ const VueField = {
       const ret = {};
       if (!this.YForm) return ret
       const { labelPosition } = this.YForm
-      if (labelPosition === 'top') return ret;
+      if (labelPosition === 'top') return ({ width: '100%', textAlign: 'left', display: 'block' })
       const labelWidth = this.labelWidth || this.YForm.labelWidth
       if (labelWidth) {
         ret.width = labelWidth;
@@ -202,7 +202,7 @@ const VueField = {
     const _this = this
     setTimeout(() => {
       this.$watch('rulesResult', function() {
-        if (_this.fieldValidateOnRuleChange && this.value !== undefined) {
+        if (_this.fieldValidateOnRuleChange) {
           _this.validate('')
         }
       }, {
