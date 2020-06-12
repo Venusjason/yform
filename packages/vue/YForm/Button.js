@@ -92,14 +92,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         }
         this.beforeClick && this.beforeClick()
         if (this.do === 'submit') {
-          this.loading = true
-          this.YForm.onSubmit().then(() => {
-            this.loading = false
-            this.afterClick && this.afterClick()
-          }).catch(() => {
-            this.loading = false
-            this.afterClick && this.afterClick()
-          })
+          this.onSubmit()
         } else if (this.do === 'search') {
           this.onSearch()
         } else if (this.do === 'debug') {
@@ -108,6 +101,16 @@ export const createYButton = (ButtonComponent = 'button') => {
         } else if (this.do === 'reset') {
           this.onReset()
         }
+      },
+      onSubmit() {
+        this.loading = true
+        this.YForm.onSubmit().then(() => {
+          this.loading = false
+          this.afterClick && this.afterClick()
+        }).catch(() => {
+          this.loading = false
+          this.afterClick && this.afterClick()
+        })
       },
       /**
        * 一般手动执行查询 都会重置到第一页
