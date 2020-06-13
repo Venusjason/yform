@@ -167,7 +167,7 @@ export default {
     },
     _fieldInputChange({ field, value }) {
       if (!isEqualWith(field.value, value)) {
-        this.notifyField(field.name, value, 'change')
+        this.notifyField(field.name, 'change', true)
         this.setFieldValue(field.name, value)
       }
     },

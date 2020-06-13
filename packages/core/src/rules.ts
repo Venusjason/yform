@@ -15,6 +15,7 @@ import log from '../../utils/log'
  * 
  * }
  */
+
 /**
  * 校验 高阶函数
  * @param {*} regRule [reg, message]
@@ -41,21 +42,23 @@ export const validatorFunc = (regRule) => {
   }
 }
 
+const whiteSpaceValodator = (message = '不能为空格字符') => ({
+  validator: (rule, val, callback) => {
+    if ([null, undefined, ''].includes(val)) {
+      return callback()
+    }
+    if (val.trim() === '') {
+      return callback(new Error(message))
+    }
+    return callback()
+  }
+})
+
 export const regs = {
   required: {
     required: true, message: '这是必填项',
   },
-  whiteSpace: {
-    validator: (rule, val, callback) => {
-      if ([null, undefined, ''].includes(val)) {
-        return callback()
-      }
-      if (val.trim() === '') {
-        return callback(new Error('不能为空格字符'))
-      }
-      return callback()
-    }
-  },
+  whiteSpace: whiteSpaceValodator(),
   digital: [
     /^\d+$/,
     '请输入数字格式'
@@ -140,9 +143,21 @@ export const computedRules = (rules: any): FieldRuleItem[] => {
       }
     })
   } else if (getType(rules) === 'object') {
+    console.log(999, rules)
     if (!rules.validator) {
       // 快捷校验
-      Object.keys(rules).forEach((ruleKey: string) => {
+      const { message, required, whiteSpace, ...rest } = rules
+      console.log(999, rules)
+      if (required) {
+        rulesResult.push({
+          required: true,
+          message: message || regs.required.message
+        })
+      }
+      if (whiteSpace) {
+        rulesResult.push(whiteSpaceValodator(message))
+      }
+      Object.keys(rest).forEach((ruleKey: string) => {
         if (regs[ruleKey] !== undefined && regs[ruleKey]) {
           if (['min', 'max'].includes(ruleKey)) {
             rulesResult.push(
@@ -151,7 +166,11 @@ export const computedRules = (rules: any): FieldRuleItem[] => {
               },
             )
           } else {
-            rulesResult.push(validatorFunc(regs[ruleKey]))
+            let data = validatorFunc(regs[ruleKey])
+            if (message) {
+              data[1] = message
+            }
+            rulesResult.push(data)
           }
         } else {
           log.error(`${ruleKey} 不在快捷校验方式中，你可自行扩展`)

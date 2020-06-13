@@ -2,7 +2,7 @@
 import isEqualWith from 'lodash/isEqualWith'
 import AsyncValidator from 'async-validator'
 import InputComponent from './InputComponent.js'
-import { computedRules } from '../../core/lib/core/src/rules.js'
+import { computedRules } from './rules.js'
 import log from '../../core/lib/utils/log'
 import { getType } from '../../core/lib/utils/index'
 import LabelWrap from './label-wrap.vue'
@@ -203,7 +203,7 @@ const VueField = {
     setTimeout(() => {
       this.$watch('rulesResult', function() {
         if (_this.fieldValidateOnRuleChange) {
-          _this.validate('')
+          _this.validate(_this.trigger)
         }
       }, {
         deep: true,
@@ -223,6 +223,7 @@ const VueField = {
       this.trigger = trigger
     },
     getFilteredRule(trigger) {
+      console.log(99877, trigger)
       return this.rulesResult.filter(rule => {
         if (!rule.trigger) {
           return true
@@ -237,6 +238,7 @@ const VueField = {
     validate(trigger = '', callback) {
       const { value } = this
       const rules = this.getFilteredRule(trigger)
+      console.log(555, rules)
       if (rules.length === 0) {
         this.clearValidate()
         callback && callback()
@@ -245,7 +247,7 @@ const VueField = {
       const descriptor = {}
       descriptor[this.name] = rules.map(rule => {
         const { trigger: t, ...rest } = rule
-        log.help(t)
+        log.help('trigger', t)
         return {
           ...rest
         }

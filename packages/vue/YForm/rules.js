@@ -1,0 +1,166 @@
+import log from '../../core/lib/utils/log'
+import { getType } from '../../core/lib/utils/index'
+
+const whiteSpaceValodator = (message = '不能为空格字符') => ({
+  validator: (rule, val, callback) => {
+    if ([null, undefined, ''].includes(val)) {
+      return callback()
+    }
+    if (val.trim() === '') {
+      return callback(new Error(message))
+    }
+    return callback()
+  }
+})
+
+const validatorFunc = (regRule) => {
+  const { reg, message } = regRule
+  if (reg) {
+    const validator = (rule, val, callback) => {
+      if ([null, undefined, ''].includes(val)) {
+        return callback()
+      }
+      if (!reg.test(val)) {
+        return callback(new Error(message))
+      }
+      callback()
+    }
+    return { validator }
+  } else {
+    return regRule
+  }
+}
+
+const regs = {
+  required: {
+    required: true,
+    message: '这是必填项',
+  },
+  whiteSpace: whiteSpaceValodator(),
+  digital: {
+    reg: /^\d+$/,
+    message: '请输入数字格式',
+  },
+  integer1To100: {
+    reg: /^(([1-9]\d?)|100)$/,
+    message: '请输入非零正整数且不大于100',
+  },
+  positiveInteger: {
+    reg: /^[0-9]*$/,
+    message: '请输入非负整数',
+  },
+  integer: {
+    reg: /^-?[0-9]*$/,
+    message: '请输入整数',
+  },
+  maxFixed2: {
+    reg:  /^-?[0-9]+(.[0-9]{1,2})?$/,
+    message: '请输入数字，最多保留2位小数',
+  },
+  money: {
+    reg:  /^-?[0-9]+(.[0-9]{1,2})?$/,
+    message: '请输入数字，最多保留2位小数',
+  },
+  limit0to100MaxFixed2: {
+    reg: /^([0-9]\d?(\.\d{1,2})?|0.\d{1,2}|100|100.0|100.00)$/,
+    message: '100之间数字，最多保留2位小数'
+  },
+  email: {
+    reg: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
+    message: '邮箱格式有误',
+  },
+  phone: {
+    reg: /^1[0-9]{10}$/,
+    message: '手机号格式有误',
+  },
+  url: {
+    reg: /^(ht|f)tps?:\/\//i,
+    message: '网址格式有误',
+  },
+  chinese: {
+    reg: /[\u4e00-\u9fa5]/gm,
+    message: '请输入中文',
+  },
+  englishAndDigital: {
+    reg: /^[a-z0-9]+$/i,
+    message: '请输入字母和数字',
+  },
+
+}
+
+export const extendRules = (newRegs) => {
+  log.help(`请在入口main.js 注入quickRules 的扩展`)
+  Object.assign(regs, newRegs)
+}
+
+const rulelistLog = () => {
+  log.warn('当前快捷校验已支持以下')
+  const arr = Object.keys(regs).map(key => {
+    return {
+      ruleName: key,
+      errorMsg: (getType(regs[key]) === 'object' && regs[key].message) || '-'
+    }
+  })
+  log.table(arr)
+}
+
+export const computedRules = (rules) => {
+  const rulesResult = []
+  const type = getType(rules)
+  if (type === 'array') {
+    rules.forEach(element => {
+      rulesResult.push(...computedRules(element))
+    })
+  } else if (type === 'string') {
+    if (rules && regs[rules] !== undefined) {
+      rulesResult.push(validatorFunc(regs[rules]))
+    } else {
+      log.error(`${rules} 不在快捷校验方式中，你可自行扩展`)
+      rulelistLog()
+    }
+  } else if (type === 'object') {
+    const {
+      message,
+      validator,
+      whiteSpace,
+      required,
+      trigger = '',
+      ...rest
+    } = rules
+    if (validator) {
+      rulesResult.push(rules)
+    }
+    if (required) {
+      rulesResult.push({
+        ...regs.required,
+        message: message || regs.required.message,
+        trigger,
+      })
+    }
+    if (whiteSpace) {
+      rulesResult.push({
+        ...regs.whiteSpace(message),
+        trigger,
+      })
+    }
+    Object.keys(rest).forEach(ruleName => {
+      if (rest[ruleName] === true && regs[ruleName]) {
+        const ruleReg = {
+          ...regs[ruleName],
+        }
+        if (message) {
+          ruleReg.message = message
+        }
+        rulesResult.push({
+          ...validatorFunc(ruleReg),
+          trigger,
+        })
+      }
+      if (!regs[ruleName]) {
+        log.error(`${ruleName} 不在快捷校验方式中，你可自行扩展`)
+        rulelistLog()
+      }
+    })
+  }
+  return rulesResult
+}
