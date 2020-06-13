@@ -1,3 +1,4 @@
+import merge from 'lodash/merge'
 import log from '../../core/lib/utils/log'
 import { getType } from '../../core/lib/utils/index'
 
@@ -90,7 +91,7 @@ const regs = {
 
 export const extendRules = (newRegs) => {
   log.help(`请在入口main.js 注入quickRules 的扩展`)
-  Object.assign(regs, newRegs)
+  merge(regs, newRegs)
 }
 
 const rulelistLog = () => {
