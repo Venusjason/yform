@@ -22,7 +22,7 @@ const filterParamInvalidValueFn = (data) => {
 
 export default (props) => {
 
-  let id = 0
+  // let id = 0
 
   const {
     Table,
@@ -33,6 +33,7 @@ export default (props) => {
   const YQueryTable = {
     name: 'YQUERYTABLE',
     componentName: 'YQUERYTABLE',
+    globalOptions: {},
     props: {
       /**
        * 自动过滤serve中无效入参
@@ -92,7 +93,7 @@ export default (props) => {
       }
     },
     mounted() {
-      id++
+      // id++
       this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
       this.refreshList()
     },
@@ -123,13 +124,14 @@ export default (props) => {
       getPaginationProps(someParams = {}) {
         const defaultPaginationProps = {
           pageSizes: [10, 20, 50, 100],
-          layout: 'total, prev, pager, next, jumper',
+          layout: 'total, sizes, prev, pager, next, jumper',
           total: 0,
         }
         return {
           ...defaultPaginationProps,
-          ...(this.pagination || {}),
           ...this.pageParams,
+          ...this.$options.globalOptions.pagination,
+          ...(this.pagination || {}),
           ...someParams,
         }
       },
@@ -206,8 +208,7 @@ export default (props) => {
       const {
         on: paginationOn = {},
         ...paginationRest
-      } = getEvents(this.pagination)
-
+      } = getEvents(this.getPaginationProps())
       Object.keys(paginationOn).forEach(key => {
         isDasherize && (paginationOn[dasherize(key)] = paginationOn[key])
       })
@@ -228,7 +229,7 @@ export default (props) => {
           data: this.list,
         },
         on: tableEvents,
-        key: this.uniqueKey || String(id),
+        // key: this.uniqueKey || String(id),
         ref: 'table'
       })
 
@@ -241,7 +242,6 @@ export default (props) => {
         ...paginationOn,
         ...onPageChange,
       }
-      
       return (
         <div>
           <div v-loading={this.loading && this.showLoading} >
@@ -256,9 +256,9 @@ export default (props) => {
             {
               (this.ispagination && this.total > 0) && h(PaginationComponent, {
                 props: {
+                  pageSize: this.pageParams.pageSize,
                   ...paginationRest,
                   currentPage: this.pageParams.currentPage,
-                  pageSize: this.pageParams.pageSize,
                   total: this.total,
                   disabled: this.loading,
                 },

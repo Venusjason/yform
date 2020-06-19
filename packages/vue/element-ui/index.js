@@ -111,7 +111,7 @@ export const ElField = merge({}, VueField, {
             }
           })
           break
-        case 'object': 
+        case 'object':
           labelValues = Object.keys(dataSource).map(value => ({
             label: dataSource[value],
             value
@@ -199,7 +199,8 @@ export const YTable = {
 }
 
 export const YQueryTable = {
-  install: function(Vue, option = { name: 'YQueryTable' }) {
+  install: function(Vue, option) {
+    merge(ElQueryTable.globalOptions, { name: 'YQueryTable' }, option)
     Vue.component(
       option.name || ElQueryTable.name,
       ElQueryTable,
