@@ -199,7 +199,7 @@ export const YTable = {
 }
 
 export const YQueryTable = {
-  install: function(Vue, option) {
+  install: function(Vue, option = {}) {
     merge(ElQueryTable.globalOptions, { name: 'YQueryTable' }, option)
     Vue.component(
       option.name || ElQueryTable.name,

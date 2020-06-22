@@ -96,6 +96,7 @@ const VueField = {
       validateState: '',
       validateMessage: '',
       errorMsg: '',
+      rulesResultChangeCount: 0,
     }
   },
   computed: {
@@ -200,16 +201,20 @@ const VueField = {
   },
   mounted() {
     const _this = this
-    setTimeout(() => {
-      this.$watch('rulesResult', function() {
-        if (_this.fieldValidateOnRuleChange) {
-          _this.validate(_this.trigger)
-        }
-      }, {
-        deep: true,
-        immediate: false,
-      })
-    }, 100)
+    this.$watch('rulesResult', function() {
+      if (_this.rulesResultChangeCount === 0) {
+        // 初始化 不走校验
+        _this.rulesResultChangeCount++
+        return
+      }
+      _this.rulesResultChangeCount++
+      if (_this.fieldValidateOnRuleChange) {
+        _this.validate(_this.trigger)
+      }
+    }, {
+      deep: true,
+      immediate: false,
+    })
   },
   beforeDestroy() {
     this.YForm.EM.emit('FIELD_DESTORY', this)
