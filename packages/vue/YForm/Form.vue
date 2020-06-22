@@ -249,7 +249,10 @@ export default {
     },
     clearValidate(names) {
       const type = getType(names)
-      const fieldsNames = (type === 'string' ? [names] : names)
+      if (!['array', 'string', 'undefined'].includes(type)) {
+        return log.error(`clearValidate(params), params不支持的${type}类型`)
+      }
+      const fieldsNames = names ? type === 'string' ? [names] : names : []
       let fields = {}
       if (fieldsNames.length) {
         fieldsNames.forEach((name) => {
