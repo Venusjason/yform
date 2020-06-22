@@ -32,6 +32,8 @@ const validatorFunc = (regRule) => {
   }
 }
 
+const requiredMsg = (label) => `${label || '这'}是必填项`
+
 const regs = {
   required: {
     required: true,
@@ -105,7 +107,7 @@ const rulelistLog = () => {
   log.table(arr)
 }
 
-export const computedRules = (rules) => {
+export const computedRules = (rules, label) => {
   const rulesResult = []
   const type = getType(rules)
   if (type === 'array') {
@@ -114,8 +116,12 @@ export const computedRules = (rules) => {
     })
   } else if (type === 'string') {
     if (rules && regs[rules] !== undefined) {
-      rulesResult.push(validatorFunc(regs[rules]))
-    } else {
+      const ruleItem = rules === 'required' ? {
+        ...regs['required'],
+        message: requiredMsg(label),
+      } : validatorFunc(regs[rules])
+      rulesResult.push(ruleItem)
+    } else if (rules !== ''){
       log.error(`${rules} 不在快捷校验方式中，你可自行扩展`)
       rulelistLog()
     }
@@ -134,7 +140,7 @@ export const computedRules = (rules) => {
     if (required) {
       rulesResult.push({
         ...regs.required,
-        message: message || regs.required.message,
+        message: message || requiredMsg(label),
         trigger,
       })
     }

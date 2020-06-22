@@ -74,18 +74,27 @@ export default {
 
     const slots = getMySlots(fieldContext, this, '*')
 
-    const VModelComponent = h(component || fieldContext.$options.globalOptions.defaultComponent, {
+    const {
+      defaultComponent,
+      genPlaceholder,
+    } = fieldContext.$options.globalOptions
+
+    const placeholder = fieldContext.$attrs.placeholder || (genPlaceholder ? genPlaceholder(fieldContext) : '')
+
+    const VModelComponent = h(component || defaultComponent, {
       props: {
         ...$attrs,
         ...componentProps,
         value: fieldContext.value,
         disabled: isFieldDisabled,
+        placeholder,
       },
       attrs: {
         ...$attrs,
         ...componentProps,
         value: fieldContext.value,
         disabled: isFieldDisabled,
+        placeholder,
       },
       class: {
         ...classNames,

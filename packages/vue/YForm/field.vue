@@ -107,9 +107,9 @@ const VueField = {
       return this.rulesResult.filter(rule => rule.required).length > 0
     },
     rulesResult() {
-      const rules = computedRules(this.rules)
+      const rules = computedRules(this.rules, this.label)
       if (this.required) {
-        rules.unshift(...computedRules('required'))
+        rules.unshift(...computedRules('required', this.label))
       }
       return rules
     },
