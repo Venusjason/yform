@@ -90,7 +90,17 @@ export default (props) => {
         loading: false,
         list: [],
         ispagination: true,
+        globalOptionsPagination: {},
       }
+    },
+    created() {
+      const { pagination = {} } = this.$options.globalOptions
+      const { currentPage = 1, pageSize = 10, ...globalOptionsPagination } = pagination
+      Object.assign(this.pageParams, {
+        currentPage,
+        pageSize,
+      })
+      this.globalOptionsPagination = globalOptionsPagination
     },
     mounted() {
       // id++
@@ -130,7 +140,7 @@ export default (props) => {
         return {
           ...defaultPaginationProps,
           ...this.pageParams,
-          ...this.$options.globalOptions.pagination,
+          ...this.globalOptionsPagination,
           ...(this.pagination || {}),
           ...someParams,
         }
