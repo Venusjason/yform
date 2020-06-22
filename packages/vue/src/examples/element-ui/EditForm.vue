@@ -37,7 +37,7 @@ export default {
      <div>
       <ElForm v-model={this.values} labelWidth="100px" onSubmit={this.onSubmit}>
         <ElField name="names" label="名称" component="el-input" required />
-        <ElField name="ageold" label="年龄" component="el-input-number" rules={['required', 'integer']} />
+        <ElField name="ageold" label="年龄" component="el-input" rules={['required', 'integer']} />
         <ElField name="likes" label="爱好" component="el-select" dataSource={LIKES} />
         <ElField name="isOpen" component="el-switch" label="开启动态增加项" />
         {

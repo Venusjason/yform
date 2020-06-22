@@ -112,7 +112,7 @@ export const computedRules = (rules, label) => {
   const type = getType(rules)
   if (type === 'array') {
     rules.forEach(element => {
-      rulesResult.push(...computedRules(element))
+      rulesResult.push(...computedRules(element, label))
     })
   } else if (type === 'string') {
     if (rules && regs[rules] !== undefined) {
