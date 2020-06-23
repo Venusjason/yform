@@ -161,12 +161,24 @@ export default (props) => {
           this.refreshList({
             currentPage: 1,
             pageSize
+          }).then((res) => {
+            const {
+              on: paginationOn = {},
+            } = getEvents(this.getPaginationProps())
+            const { sizeChangeSuccess } = paginationOn
+            sizeChangeSuccess && sizeChangeSuccess(pageSize, res)
           })
         })
       },
       handleCurrentChange(currentPage) {
         this.paginationMethodsIntercept('onCurrentChange')(currentPage).then(() => {
-          this.refreshList({ currentPage })
+          this.refreshList({ currentPage }).then(res => {
+            const {
+              on: paginationOn = {},
+            } = getEvents(this.getPaginationProps())
+            const { currentChangeSuccess } = paginationOn
+            currentChangeSuccess && currentChangeSuccess(currentPage, res)
+          })
         })
       },
       async refreshList(someParams = {}) {
@@ -191,13 +203,14 @@ export default (props) => {
           this.pageParams.currentPage = currentPage
           this.pageParams.pageSize = pageSize
           this.refreshPaginationForUi()
-          this.$emit('refreshListCb', {
+          const resToOut = {
             total: this.total,
             list: this.list,
             currentPage,
             pageSize,
-          })
-          return Promise.resolve()
+          }
+          this.$emit('refreshListCb', resToOut)
+          return Promise.resolve(resToOut)
         }).catch(e => {
           log.error(e)
           this.loading = false
