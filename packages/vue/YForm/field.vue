@@ -377,6 +377,13 @@ export default VueField
 
   }
 
+  &.is-inline {
+    // 解决 safari inline label 与 content 换行问题
+    .yfield__label {
+      float: none;
+    }
+  }
+
   .yfield__content {
     position: relative;
     font-size: 14px;

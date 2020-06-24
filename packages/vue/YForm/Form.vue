@@ -331,7 +331,7 @@ export default {
 
   },
   render(h) {
-    return h('form', {
+    return h('div', {
       props: {
         ...this.$attrs,
       },
