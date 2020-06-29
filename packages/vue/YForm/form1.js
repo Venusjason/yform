@@ -1,5 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
+import mergeWith from 'lodash/mergeWith'
+import _set from 'lodash/set'
+// import _get from 'lodash/get'
 import { Form } from '../../core/lib/core/src/index'
+import log from '../../core/lib/utils/log'
 
 const VueForm = ({
   name: 'YFORM',
@@ -74,8 +78,15 @@ const VueForm = ({
      */
     validateOnRuleChange: {
       type: Boolean,
-      default: true,
-    }
+      default: false,
+    },
+    formStatus: {
+      type: String,
+      default: 'edit',
+      validator(value) {
+        return ['edit', 'preview', 'disabled'].includes(value)
+      },
+    },
   },
   computed: {
     autoLabelWidth() {
@@ -88,17 +99,21 @@ const VueForm = ({
     value: {
       deep: true,
       handler: function (val) {
+        this.formValuesA = cloneDeep(val)
         this.$options.formInstance.updateFormValues(val)
       }
     }
   },
   formInstance: null,
+  updateFormValuesTimer: null,
+  // formValues: {},
   data() {
     return {
-      name: '我是1',
       formValues: {},
       submiting: false,
       potentialLabelWidthArr: [],
+      initialValues: {},
+      formValuesA: {}
     }
   },
   created() {
@@ -112,30 +127,68 @@ const VueForm = ({
   },
   methods: {
     initForm() {
-      this.$options.formInstance = new Form(this.value)
-      const { formInstance } = this.$options
-      // formInstance.updateFormValues(this.value)
-
-      formInstance.afterFieldRegisterToForm = this.afterFieldRegisterToForm
+      this.initialValues = cloneDeep(this.value)
+      const _this = this
+      Form.prototype.afterFieldRegisterToForm = _this.afterFieldRegisterToForm
+      Form.prototype.afterFieldValueUpdate = _this.afterFieldValueUpdate
+      _this.$options.formInstance = new Form(_this.value)
+    },
+    /**
+     * 表单重置
+     */
+    resetFormValues() {
+      const value = cloneDeep(this.initialValues)
+      this.$emit('input', value)
+      this.$options.formInstance.updateFormValues(value)
+    },
+    clearValidate() {
+      this.$options.formInstance.clearValidate()
     },
     afterFieldRegisterToForm(field) {
-      const { formInstance } = this.$options
-      const value = formInstance.getFieldValue(field.name)
+      const value = this.$options.formInstance.getFieldValue(field.name)
       // 只有最后一次注册的字段被收入了
-      // const formValues = formInstance.getFormNewValues(field.name, value === undefined ? null : value)
-      //   this.$emit('input', formValues)
-      if (value === undefined) {
-        /**
-         * vue对未声明的属性无法自动更新,这里要确保所有注册的字段能够自动更新
-         */
-        const formValues = formInstance.getFormNewValues(field.name, null)
-        this.$emit('input', formValues)
-        // 要主动更新 core 层更新form.value
-        formInstance.updateFormValues(formValues)
+      _set(this.formValuesA, field.name, value === undefined ? null : value)
+      mergeWith(this.formValuesA, this.value)
+
+      // if (this.$options.updateFormValuesTimer) {
+      //   clearTimeout(this.$options.updateFormValuesTimer)
+      //   this.$options.updateFormValuesTimer = null
+      // }
+      // 去掉定时器 是因为宏任务不稳定
+      const newVal = cloneDeep(this.formValuesA)
+      // this.$options.formInstance.updateFormValues(newVal)
+      this.$emit('input', newVal)
+      /**
+       * 保证 form 能最后一次更新
+       */
+      // this.$options.updateFormValuesTimer = setTimeout(() => {
+      //   console.log('updateFormValuesTimer', this.formValuesA)
+      //   const newVal = cloneDeep(this.formValuesA)
+      //   this.$options.formInstance.updateFormValues(newVal)
+      //   this.$emit('input', newVal)
+      // }, 0)
+    },
+    afterFieldValueUpdate (name, value, formValues) {
+      log.help(`${name} is never declared : ${value}`)
+      this.$emit('input', formValues)
+    },
+    /**
+     * 供外部调用 formValidate
+     */
+    async validate() {
+      try {
+        const res = await this.$options.formInstance.validate()
+        this.$listeners.validate && this.$listeners.validate(true)
+        return Promise.resolve(res)
+      } catch(e) {
+        log.error('validate fail', e)
+        this.$listeners.validate && this.$listeners.validate(false, e)
+        return Promise.reject(e)
       }
     },
     async onSubmit() {
-      await this.$options.formInstance.validate()
+      // 校验成功才会执行submit接口
+      await this.validate()
       if (this.$listeners.submit) {
         this.submiting = true
         const formValues = cloneDeep(this.value)
@@ -153,6 +206,8 @@ const VueForm = ({
             submiting: this.submiting,
           })
         }
+      } else {
+        log.warn(`请在 YForm 层 声明 onSubmit 才能与 <YButton do="submit" /> 联动`)
       }
     },
 
@@ -187,6 +242,7 @@ const VueForm = ({
       },
       attrs: this.$attrs,
       ref: 'yform',
+      key: String(this.$options.formInstance.id),
     }, [
       this.$slots.default,
       // (<div>{this.$options.formInstance.id}</div>),
@@ -194,11 +250,5 @@ const VueForm = ({
     ])
   },
 })
-
-VueForm.install = function(Vue, options = {
-  name: 'YForm'
-}) {
-  Vue.component(options.name || VueForm.name, VueForm)
-}
 
 export default VueForm

@@ -34,7 +34,7 @@ import EventEmiter from './EventEmiter'
 
 export type ITrigger = '' | 'blur' | 'change' | 'focus'
 
-interface FieldRuleItem extends RuleItem {
+export interface FieldRuleItem extends RuleItem {
   trigger?: ITrigger | ITrigger[];
 }
 
@@ -139,18 +139,19 @@ export class Form {
   }
 
   updateFormValues(value) {
-    // TODO: 外部赋值进来 才执行,现在回重复执行比对
-    // console.log('updateFormValues', value)
-    // if (this.isFieldUpdating) {
-    //   this.isFieldUpdating = false
-    //   return
-    // }
-    // log.help('外部赋值进来 updateFormValues', JSON.stringify(value))
+    // TODO: 外部赋值进来 才执行,现在回重复执行比对ß
     this.value = value
     /**
      * 外部第一次更新时 不要走校验
      */
     this.notifyAll()
+    // if (!isEqualWith(this.value, value)) {
+    //   this.value = value
+    //   /**
+    //    * 外部第一次更新时 不要走校验
+    //    */
+    //   this.notifyAll()
+    // }
   }
 
   /**
@@ -170,9 +171,13 @@ export class Form {
   }
 
   setFieldValue(name: string, value: any, trigger: ITrigger) {
+    const prevValue = cloneDeep(_get(this.value, name))
     _set(this.value, name, value)
     this.notifyField(name, value, trigger)
-    this.afterValueUpdate(this.value)
+    // 新增的字段 需要通知到vue 去主动更新form.value
+    if (prevValue === undefined) {
+      this.afterFieldValueUpdate(name, value, cloneDeep(this.value))
+    }
   }
 
   getFieldValue(name: string): any {
@@ -319,6 +324,16 @@ export class Form {
             field.validate(trigger) 
           }
         }
+        /**
+         * TODO: 比对 再更新
+         */
+        // const prevValue = cloneDeep(field.value)
+        // field.value = value
+        // field.updateByChange(value)
+        // if (prevValue !== undefined) {
+        //   // 做字段新增操作 不要立即校验
+        //   field.validate(trigger) 
+        // }
       })
     })
   }
@@ -343,7 +358,7 @@ export class Form {
   /**
    * 表单值更新后
    */
-  afterValueUpdate(value) {
+  afterFieldValueUpdate(name, value, formValues) {
   }
 }
 
@@ -411,6 +426,10 @@ export const createField = (formId: number) => (
       })
     }
 
+    onFieldRulesChange(rules) {
+      this.rules = rules
+    }
+
     beforeFieldDestory() {
       eventEmiter.emit(eventName('FIELD_DESTORY', formId), this)
     }
@@ -465,7 +484,10 @@ export const createField = (formId: number) => (
     clearValidate() {
       this.validateState = ''
       this.validateMessage = ''
+      this.clearValidateCallback()
     }
+
+    clearValidateCallback() {}
 
     updateByInputChange() {}
   

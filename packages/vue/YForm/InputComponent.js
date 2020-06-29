@@ -21,118 +21,162 @@ export const isVnode = (h, component) => {
   return component instanceof Vnode
 }
 
-export default (fieldContext) => {
-  const {
-    component,
-    $attrs,
-    $listeners,
-    componentStyle,
-    componentClass,
-    fieldStatus,
-    previewValue,
-  } = fieldContext
-
-  const { fieldInstance } = fieldContext.$options
-
-  const getClassNames = () => {
-    const type = getType(componentClass)
-    const names = {}
-    if (type === 'string') {
-      componentClass.split(' ').forEach(key => {
-        if (key.trim() !== '') {
-          names[key.trim()] = true
-        }
-      })
-    } else if (type === 'array') {
-      componentClass.forEach(key => {
-        names[key.trim()] = true
-      })
-    } else if (type === 'object') {
-      return componentClass
-    } else {
-      log.error(`componentClass 可选类型: string、array、object,不能为${type}`)
+export default {
+  name: 'YINPUTCOMPONENT',
+  componentName: 'YINPUTCOMPONENT',
+  inject: ['YField'],
+  computed: {
+    fieldStatusResult() {
+      const { fieldStatus } = this.YField
+      const { formStatus } =  this.YField.YForm
+      const fieldStatusResult = fieldStatus || formStatus || 'edit'
+      return fieldStatusResult
     }
-    return names
-  }
-
-  const classNames = getClassNames()
-
-  const YINPUTCOMPONENT = {
-    name: 'YINPUTCOMPONENT',
-    componentName: 'YINPUTCOMPONENT',
-    render(h) {
-
-      const slots = getMySlots(fieldContext, this, '*')
-      /**
-       * previewValue
-       */
-
-      return h(component, {
-        props: {
-          ...$attrs,
-          value: fieldContext.value,
-        },
-        attrs: {
-          ...$attrs,
-          value: fieldContext.value,
-        },
-        class: {
-          ...classNames,
-        },
-        style: {
-          /**
-           * 为了确保 label 与 input 能水平对齐
-           */
-          verticalAlign: 'middle',
-          ...componentStyle,
-        },
-        on: {
-          ...$listeners,
-          input(e) {
-            let value = e
-            /**
-             * 原生事件
-             */
-            if (fieldContext.yNative) {
-              value = e.target.value
-            }
-            fieldInstance.onFieldInputChange(value)
-            fieldContext.$listeners.input && fieldContext.$listeners.input(e)
-          },
-          change(e) {
-            let value = e
-            /**
-             * 原生事件
-             */
-            if (fieldContext.yNative) {
-              value = e.target.value
-            }
-            fieldInstance.onFieldInputChange(value)
-            fieldContext.$listeners.change && fieldContext.$listeners.change(e)
-          },
-          focus(e) {
-            fieldInstance.onFieldInputFocus()
-            fieldContext.$listeners.focus && fieldContext.$listeners.focus(e)
-          },
-          blur(e) {
-            fieldInstance.onFieldInputBlur()
-            fieldContext.$listeners.blur && fieldContext.$listeners.blur(e)
-          },
-        },
-      }, [
-        slots,
-      ])
-    },
-  }
-
-  if (fieldStatus === 'preview') {
-    return {
-      render() {
-        return previewValue ? (<div>{previewValue(fieldContext.value)}</div>) : (<span>{fieldContext.value}</span>)
+  },
+  mounted() {
+    const { wrappedComponentRef } = this.YField
+    this.$watch('fieldStatusResult', function(val) {
+      if (val === 'edit') {
+        wrappedComponentRef && wrappedComponentRef(this.$refs.VModelComponent)
       }
+    }, {
+      immediate: true
+    })
+  },
+  render(h) {
+
+    const fieldContext = this.YField
+    
+    const {
+      component,
+      $attrs,
+      $listeners,
+      componentStyle,
+      componentClass,
+      previewValue,
+      dataSourceSlots,
+      componentProps,
+    } = fieldContext
+    
+    const { EM } = fieldContext.YForm
+
+  
+    // const { fieldInstance } = fieldContext.$options
+  
+    const getClassNames = () => {
+      const type = getType(componentClass)
+      const names = {}
+      if (type === 'string') {
+        componentClass.split(' ').forEach(key => {
+          if (key.trim() !== '') {
+            names[key.trim()] = true
+          }
+        })
+      } else if (type === 'array') {
+        componentClass.forEach(key => {
+          names[key.trim()] = true
+        })
+      } else if (type === 'object') {
+        return componentClass
+      } else {
+        log.error(`componentClass 可选类型: string、array、object,不能为${type}`)
+      }
+      return names
     }
-  }
+  
+    const classNames = getClassNames()
 
-  return YINPUTCOMPONENT
+    const slots = getMySlots(fieldContext, this, '*')
 
+    const {
+      defaultComponent,
+      genPlaceholder,
+    } = fieldContext.$options.globalOptions
+
+    const placeholder = fieldContext.$attrs.placeholder || (genPlaceholder ? genPlaceholder(fieldContext) : '')
+
+    const isFieldDisabled = this.fieldStatusResult === 'disabled'
+
+    const VModelComponent = h(component || defaultComponent, {
+      props: {
+        ...$attrs,
+        ...componentProps,
+        value: fieldContext.value,
+        disabled: isFieldDisabled,
+        placeholder,
+      },
+      attrs: {
+        ...$attrs,
+        ...componentProps,
+        value: fieldContext.value,
+        disabled: isFieldDisabled,
+        placeholder,
+      },
+      class: {
+        ...classNames,
+      },
+      style: {
+        /**
+         * 为了确保 label 与 input 能水平对齐
+         */
+        verticalAlign: 'middle',
+        ...componentStyle,
+      },
+      key: fieldContext.name || '',
+      ref: 'VModelComponent',
+      on: {
+        ...$listeners,
+        input(e) {
+          let value = e
+          /**
+           * 原生事件
+           */
+          if (fieldContext.yNative) {
+            value = e.target.value
+          }
+          EM.emit('FIELD_INPUT_CHANGE', {
+            field: fieldContext,
+            value
+          })
+          fieldContext.$listeners.input && fieldContext.$listeners.input(e)
+        },
+        change(e) {
+          let value = e
+          /**
+           * 原生事件
+           */
+          if (fieldContext.yNative) {
+            value = e.target.value
+          }
+          EM.emit('FIELD_INPUT_CHANGE', {
+            field: fieldContext,
+            value
+          })
+          fieldContext.$listeners.change && fieldContext.$listeners.change(e)
+        },
+        focus(e) {
+          EM.emit('FIELD_INPUT_FOCUS', {
+            field: fieldContext,
+          })
+          fieldContext.$listeners.focus && fieldContext.$listeners.focus(e)
+        },
+        blur(e) {
+          EM.emit('FIELD_INPUT_BLUR', {
+            field: fieldContext,
+          })
+          fieldContext.$listeners.blur && fieldContext.$listeners.blur(e)
+        },
+      },
+    }, [
+      ...(dataSourceSlots || []),
+      ...slots,
+    ])
+
+    if (this.fieldStatusResult === 'preview') {
+      return previewValue ? (<div>{previewValue(fieldContext.value)}</div>) : (<span>{fieldContext.value}</span>)
+    }
+
+    return VModelComponent
+
+  },
 }

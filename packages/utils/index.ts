@@ -40,3 +40,9 @@ export const getEvents = (obj: {}) => {
     ...rest,
   }
 }
+
+/**
+ * 是不是开发环境
+ */
+
+export const isDevelopment = process && process.env && process.env.NODE_ENV === 'development'

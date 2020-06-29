@@ -1,10 +1,11 @@
 import log from '../../core/lib/utils/log'
+import { getType } from '../../core/lib/utils/index'
 
 export const createYButton = (ButtonComponent = 'button') => {
-  let latestQueryTable = null
   const YButton = ({
     name: 'YBUTTON',
     componentName: 'YBUTTON',
+    latestQueryTable: null,
     props: {
       /**
        * TODO: 注意 与v1 版本默认值不兼容
@@ -15,9 +16,18 @@ export const createYButton = (ButtonComponent = 'button') => {
         required: false,
         default: 'submit',
         validator(value) {
-          return ['submit', 'reset', 'search', 'cancel'].indexOf(value) !== -1
+          return ['submit', 'reset', 'search', 'cancel', 'debug'].indexOf(value) !== -1
         },
       },
+      /**
+       * 按钮点击前
+       */
+      beforeClick: {
+        type: Function
+      },
+      afterClick: {
+        type: Function
+      }
     },
     computed: {
       YForm() {
@@ -31,55 +41,124 @@ export const createYButton = (ButtonComponent = 'button') => {
         }
         return getParentForm(this)
       },
+      /**
+       * TODO: 表单初始化时 可以用这个字段控制按钮状态
+       */
+      YFormDisabled() {
+        return this.YForm && (this.YForm.formStatus === 'disabled')
+      },
     },
+    // watch: {
+    //   YFormDisabled(value = false) {
+    //     console.log(value)
+    //     this.loading = value
+    //   }
+    // },
     data() {
       return {
         loading: false,
       }
     },
     methods: {
-      onClick(e) {
-        e.preventDefault()
-        if (this.$listeners.onClick) {
-          return this.$listeners.onClick(e)
-        }
-        if (this.do === 'submit') {
-          this.loading = true
-          this.YForm.onSubmit().then(() => {
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else if (this.do === 'search') {
-          this.loading = true
-          this.onSearch()
+      setLatestQueryTable() {
+        if (!this.$options.latestQueryTable) {
+          const getLatestQueryTable = (context) => {
+            if (!context) {
+              return null
+            }
+            const nodes = (context && context.$children) || []
+
+            let arr = nodes.filter(ele => (ele.$options.componentName === 'YQUERYTABLE'))
+
+            if (arr.length === 0) {
+              const nodes1 = nodes.filter(ele => !(ele.$options.componentName === 'YFIELD'))
+              return nodes1.filter(ele => {
+                return getLatestQueryTable(ele)
+              })[0]
+            } else {
+              return arr[0]
+            }
+          }
+          this.$options.latestQueryTable = getLatestQueryTable(this.YForm)
+          if (!this.$options.latestQueryTable) {
+            log.warn(`QueryTable 组件必须内置在 YForm组件内`)
+          }
         }
       },
-      onSearch() {
-        if (!latestQueryTable) {
-          const getlatestQueryTable = (context) => {
-            let parent = context.$parent
-            let children = parent.$children || []
-            let matchedTable = children.filter(child => child && child.$options && ((child.$options.componentName === 'YQUERYTABLE' || child.$options.name === 'YQUERYTABLE')))
-
-            if (matchedTable.length === 0) {
-              parent = parent.$parent
-              if (!parent) {
-                log.warn('button do=search 需要搭配QueryTable才能使用')
-                return null
-              }
-              return getlatestQueryTable(parent)
-            }
-
-            return matchedTable[0]
-          }
-          latestQueryTable = getlatestQueryTable(this)
+      onClick(e) {
+        e && e.preventDefault()
+        if (this.$listeners.click) {
+          return this.$listeners.click(e)
         }
+        this.beforeClick && this.beforeClick()
+        if (this.do === 'submit') {
+          this.onSubmit()
+        } else if (this.do === 'search') {
+          this.onSearch()
+        } else if (this.do === 'debug') {
+          log.help('表单值 : ')
+          log.help(JSON.stringify(this.YForm.value, null, 2))
+        } else if (this.do === 'reset') {
+          this.onReset()
+        }
+      },
+      onSubmit() {
         this.loading = true
-        latestQueryTable.refreshList().then(() => {
+        this.YForm.onSubmit().then(() => {
           this.loading = false
+          this.afterClick && this.afterClick()
         }).catch(() => {
           this.loading = false
+          this.afterClick && this.afterClick()
+        })
+      },
+      /**
+       * 一般手动执行查询 都会重置到第一页
+       * @param {*} params 
+       */
+      onSearch(params = {
+        toFirstPage: true
+      }) {
+        this.setLatestQueryTable()
+        const aParams = {}
+        if (params.toFirstPage) {
+          aParams.currentPage = 1
+        }
+        this.loading = true
+        this.$options.latestQueryTable.refreshList(aParams).then(() => {
+          this.loading = false
+          this.afterClick && this.afterClick()
+        }).catch(() => {
+          this.loading = false
+          this.afterClick && this.afterClick()
+        })
+      },
+      onReset(params = {
+        currentPage: 1
+      }) {
+        let a = null
+        if (getType(params) === 'object') {
+          a = params
+        } else {
+          a = {
+            currentPage: params
+          }
+        }
+        this.setLatestQueryTable()
+        this.loading = true
+        // 重置表单值
+        this.YForm.resetFormValues()
+        /**
+         * 要v-model 先生效 form props.value 更新才能正确获取到formValues
+         */
+        setTimeout(() => {
+          this.$options.latestQueryTable.refreshList(a).then(() => {
+            this.loading = false
+            this.afterClick && this.afterClick()
+          }).catch(() => {
+            this.loading = false
+            this.afterClick && this.afterClick()
+          })
         })
       },
     },
@@ -97,6 +176,9 @@ export const createYButton = (ButtonComponent = 'button') => {
         case 'cancel':
           slotsDefault = '取消'
           break
+        case 'debug':
+          slotsDefault = '打印'
+          break
         default :
           slotsDefault = '提交'
           type = 'primary'
@@ -105,11 +187,11 @@ export const createYButton = (ButtonComponent = 'button') => {
 
       const size = this.YForm.size
 
-      return h(ButtonComponent, {
+      const Btn = h(ButtonComponent, {
         props: {
           size,
           type,
-          disabled: this.loading,
+          disabled: this.loading || this.YFormDisabled,
           loading: this.loading,
           ...this.$attrs,
         },
@@ -122,20 +204,21 @@ export const createYButton = (ButtonComponent = 'button') => {
         on: {
           ...this.$listeners,
           click: this.onClick,
-        }
+        },
+        key: String(Math.random() * 1000)
       }, [
         // this.loading ? 'loading' : '',
         this.$slots.default || slotsDefault,
       ])
+      
+      if (!this.YForm.$options.debug && this.do === 'debug') {
+        return null
+      }
+      return Btn
     }
   
   })
 
-  YButton.install = function(Vue, options = {
-    name: 'YButton'
-  }) {
-    Vue.component(options.name || YButton.name, YButton)
-  }
   return YButton
 }
 
