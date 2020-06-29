@@ -188,6 +188,7 @@ export default {
                     console.log('onRowClick table')
                   }}
                   wrappedTableRef={(e) => {
+                    console.log('wrappedTableRef', e)
                     this.tableRef = e
                   }}
                   onSortChange={this.onSortChange}

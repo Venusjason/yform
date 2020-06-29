@@ -91,6 +91,7 @@ export default (props) => {
         list: [],
         ispagination: true,
         globalOptionsPagination: {},
+        tableRef: null,
       }
     },
     created() {
@@ -104,7 +105,8 @@ export default (props) => {
     },
     mounted() {
       // id++
-      this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
+      this.tableRef = this.$refs.table.$refs.YTable
+      this.wrappedTableRef && this.wrappedTableRef(this.tableRef)
       this.refreshList()
     },
     latestYform: null,
@@ -202,13 +204,19 @@ export default (props) => {
           this.total = res.total
           this.pageParams.currentPage = currentPage
           this.pageParams.pageSize = pageSize
-          this.refreshPaginationForUi()
+          // this.refreshPaginationForUi()
           const resToOut = {
             total: this.total,
             list: this.list,
             currentPage,
             pageSize,
           }
+          this.$nextTick(() => {
+            if (this.tableRef !== this.$refs.table.$refs.YTable) {
+              this.tableRef = this.$refs.table.$refs.YTable
+              this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
+            }
+          })
           this.$emit('refreshListCb', resToOut)
           return Promise.resolve(resToOut)
         }).catch(e => {
@@ -217,6 +225,12 @@ export default (props) => {
           // 修复 element 在分页控件上的问题，element应该是以交互优先
           // 如点击2 2页接口挂掉，其实需要回退到上一页的页码高亮，erlement 还是2
           this.refreshPaginationForUi()
+          this.$nextTick(() => {
+            if (this.tableRef !== this.$refs.table.$refs.YTable) {
+              this.tableRef = this.$refs.table.$refs.YTable
+              this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
+            }
+          })
           return Promise.reject(e)
         })
       },

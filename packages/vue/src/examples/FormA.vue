@@ -6,7 +6,8 @@ import Field from '../../YForm/field.vue'
 export default {
   data() {
     return {
-      values: {}
+      values: {},
+      inputRef: null
     }
   },
   mounted() {
@@ -29,9 +30,15 @@ export default {
           <Field name="name" label="名称444" component="el-input" rules={[
             { required: true, message: 'requiredrequired' },
             { email: true, message: 'emailemail', trigger: 'blur' }
-          ]} ></Field>
+          ]} wrappedComponentRef={e => {
+            console.log(e)
+            this.inputRef = e
+          }}></Field>
           <Field name="age" label="年龄" component="el-input" rules={['required', 'whiteSpace']}></Field>
           <Field name="likes" label="爱好" component="el-select" required></Field>
+          <button onClick={() => {
+            console.log(this.inputRef)
+          }}>清除校验</button>
         </Form>
       </div>
     )

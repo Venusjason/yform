@@ -25,6 +25,24 @@ export default {
   name: 'YINPUTCOMPONENT',
   componentName: 'YINPUTCOMPONENT',
   inject: ['YField'],
+  computed: {
+    fieldStatusResult() {
+      const { fieldStatus } = this.YField
+      const { formStatus } =  this.YField.YForm
+      const fieldStatusResult = fieldStatus || formStatus || 'edit'
+      return fieldStatusResult
+    }
+  },
+  mounted() {
+    const { wrappedComponentRef } = this.YField
+    this.$watch('fieldStatusResult', function(val) {
+      if (val === 'edit') {
+        wrappedComponentRef && wrappedComponentRef(this.$refs.VModelComponent)
+      }
+    }, {
+      immediate: true
+    })
+  },
   render(h) {
 
     const fieldContext = this.YField
@@ -35,17 +53,13 @@ export default {
       $listeners,
       componentStyle,
       componentClass,
-      fieldStatus,
       previewValue,
       dataSourceSlots,
       componentProps,
     } = fieldContext
     
-    const { formStatus, EM } = fieldContext.YForm
-  
-    const fieldStatusResult = fieldStatus || formStatus
-  
-    const isFieldDisabled = fieldStatusResult === 'disabled'
+    const { EM } = fieldContext.YForm
+
   
     // const { fieldInstance } = fieldContext.$options
   
@@ -81,6 +95,8 @@ export default {
 
     const placeholder = fieldContext.$attrs.placeholder || (genPlaceholder ? genPlaceholder(fieldContext) : '')
 
+    const isFieldDisabled = this.fieldStatusResult === 'disabled'
+
     const VModelComponent = h(component || defaultComponent, {
       props: {
         ...$attrs,
@@ -107,6 +123,7 @@ export default {
         ...componentStyle,
       },
       key: fieldContext.name || '',
+      ref: 'VModelComponent',
       on: {
         ...$listeners,
         input(e) {
@@ -155,7 +172,7 @@ export default {
       ...slots,
     ])
 
-    if (fieldStatusResult === 'preview') {
+    if (this.fieldStatusResult === 'preview') {
       return previewValue ? (<div>{previewValue(fieldContext.value)}</div>) : (<span>{fieldContext.value}</span>)
     }
 
@@ -163,127 +180,3 @@ export default {
 
   },
 }
-
-// export default (fieldContext) => {
-//   const {
-//     component,
-//     $attrs,
-//     $listeners,
-//     componentStyle,
-//     componentClass,
-//     fieldStatus,
-//     previewValue,
-//     dataSourceSlots,
-//   } = fieldContext
-
-//   const { formStatus } = fieldContext.YForm
-
-//   const fieldStatusResult = fieldStatus || formStatus
-
-//   const isFieldDisabled = fieldStatusResult === 'disabled'
-
-//   const { fieldInstance } = fieldContext.$options
-
-//   const getClassNames = () => {
-//     const type = getType(componentClass)
-//     const names = {}
-//     if (type === 'string') {
-//       componentClass.split(' ').forEach(key => {
-//         if (key.trim() !== '') {
-//           names[key.trim()] = true
-//         }
-//       })
-//     } else if (type === 'array') {
-//       componentClass.forEach(key => {
-//         names[key.trim()] = true
-//       })
-//     } else if (type === 'object') {
-//       return componentClass
-//     } else {
-//       log.error(`componentClass 可选类型: string、array、object,不能为${type}`)
-//     }
-//     return names
-//   }
-
-//   const classNames = getClassNames()
-
-//   const YINPUTCOMPONENT = {
-//     name: 'YINPUTCOMPONENT',
-//     componentName: 'YINPUTCOMPONENT',
-//     render(h) {
-//       console.log(fieldContext.name)
-//       const slots = getMySlots(fieldContext, this, '*')
-
-//       return h(component || fieldContext.$options.globalOptions.defaultComponent, {
-//         props: {
-//           ...$attrs,
-//           value: fieldContext.value,
-//           disabled: isFieldDisabled,
-//         },
-//         attrs: {
-//           ...$attrs,
-//           value: fieldContext.value,
-//           disabled: isFieldDisabled,
-//         },
-//         class: {
-//           ...classNames,
-//         },
-//         style: {
-//           /**
-//            * 为了确保 label 与 input 能水平对齐
-//            */
-//           verticalAlign: 'middle',
-//           ...componentStyle,
-//         },
-//         key: fieldContext.name || '',
-//         on: {
-//           ...$listeners,
-//           input(e) {
-//             let value = e
-//             /**
-//              * 原生事件
-//              */
-//             if (fieldContext.yNative) {
-//               value = e.target.value
-//             }
-//             fieldInstance.onFieldInputChange(value)
-//             fieldContext.$listeners.input && fieldContext.$listeners.input(e)
-//           },
-//           change(e) {
-//             let value = e
-//             /**
-//              * 原生事件
-//              */
-//             if (fieldContext.yNative) {
-//               value = e.target.value
-//             }
-//             fieldInstance.onFieldInputChange(value)
-//             fieldContext.$listeners.change && fieldContext.$listeners.change(e)
-//           },
-//           focus(e) {
-//             fieldInstance.onFieldInputFocus()
-//             fieldContext.$listeners.focus && fieldContext.$listeners.focus(e)
-//           },
-//           blur(e) {
-//             fieldInstance.onFieldInputBlur()
-//             fieldContext.$listeners.blur && fieldContext.$listeners.blur(e)
-//           },
-//         },
-//       }, [
-//         ...dataSourceSlots,
-//         ...slots,
-//       ])
-//     },
-//   }
-
-//   if (fieldStatusResult === 'preview') {
-//     return {
-//       render() {
-//         return previewValue ? (<div>{previewValue(fieldContext.value)}</div>) : (<span>{fieldContext.value}</span>)
-//       }
-//     }
-//   }
-
-//   return YINPUTCOMPONENT
-
-// }

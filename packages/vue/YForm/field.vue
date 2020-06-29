@@ -89,6 +89,11 @@ const VueField = {
      */
     colon: {},
     dataSource: {},
+    // 返回 component 实例
+    wrappedComponentRef: {
+      type: Function,
+      required: false,
+    },
   },
   data() {
     return {
