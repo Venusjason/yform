@@ -145,8 +145,8 @@ export const ElQueryTable = merge({}, createQueryTable({
       return this.columns.map((column) => {
         if (column.type === 'y-index') {
           return {
-            ...column,
             label: '序号',
+            ...column,
             render: (record) => {
               const { currentPage, pageSize } = this.pageParams
               const value = (currentPage - 1) * pageSize + record.$index + 1

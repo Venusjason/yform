@@ -94,6 +94,10 @@ const VueField = {
       type: Function,
       required: false,
     },
+    validateOnRuleChange: {
+      type: Boolean,
+      required: false,
+    }
   },
   data() {
     return {
@@ -174,7 +178,12 @@ const VueField = {
       }
     },
     fieldValidateOnRuleChange() {
-      return this.YForm.validateOnRuleChange
+      // 优先级 field.fieldValidateOnRuleChange > YForm.validateOnRuleChange
+      if (this.validateOnRuleChange !== undefined) {
+        return this.validateOnRuleChange
+      } else {
+        return this.YForm.validateOnRuleChange
+      }
     },
     fieldClassNames() {
       return {
@@ -254,8 +263,9 @@ const VueField = {
       }
       const descriptor = {}
       descriptor[this.name] = rules.map(rule => {
+        // eslint-disable-next-line
         const { trigger: t, ...rest } = rule
-        log.help('trigger', t)
+        // log.help('trigger', t)
         return {
           ...rest
         }

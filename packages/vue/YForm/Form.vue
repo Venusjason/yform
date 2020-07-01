@@ -6,7 +6,7 @@ import _set from 'lodash/set'
 import _get from 'lodash/get'
 import EventEmiter from '../../core/lib/core/src/EventEmiter.js'
 import log from '../../core/lib/utils/log'
-import { getType } from '../../core/lib/utils/index'
+import { getType, filterAttrs } from '../../core/lib/utils/index'
 
 export default {
   name: 'YFORM',
@@ -82,7 +82,7 @@ export default {
      */
     validateOnRuleChange: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     formStatus: {
       type: String,
@@ -217,6 +217,10 @@ export default {
       const fieldsNamesLength = Object.keys(this.fields).length
       const invalidFields = {}
       return new Promise((resolve, reject) => {
+        if (fieldsNamesLength === 0) {
+          // 空 form 校验直接通过
+          return resolve(true)
+        }
         Object.keys(this.fields).forEach(name => {
           nameCount++
           const fieldsChildrenLen = this.fields[name].length
@@ -335,7 +339,7 @@ export default {
       props: {
         ...this.$attrs,
       },
-      attrs: this.$attrs,
+      attrs: filterAttrs(this.$attrs),
       ref: 'yform',
     }, [
       this.$slots.default,

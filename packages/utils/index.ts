@@ -46,3 +46,17 @@ export const getEvents = (obj: {}) => {
  */
 
 export const isDevelopment = process && process.env && process.env.NODE_ENV === 'development'
+
+/**
+ * 返回原生attrs
+ * @param data attrs
+ */
+export const filterAttrs = (data: Object): Object => {
+  const attrs = {}
+  Object.keys(data).forEach(key => {
+    if (['string', 'number', 'boolean'].includes(getType(data[key]))) {
+      attrs[key] = data[key]
+    }
+  })
+  return attrs
+}
