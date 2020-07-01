@@ -154,7 +154,7 @@ export default {
      */
     _fieldRegister(field) {
       if (this.fields[field.name]) {
-        this.fields.push(field)
+        this.fields[field.name].push(field)
       } else {
         this.fields[field.name] = [field]
       }
@@ -238,7 +238,7 @@ export default {
     },
     async validate() {
       try {
-        const res = this._validateForm()
+        const res = await this._validateForm()
         this.$listeners.validate && this.$listeners.validate(true)
         return Promise.resolve(res)
       } catch(e) {
