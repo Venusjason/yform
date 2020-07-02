@@ -94,6 +94,11 @@ const VueField = {
       type: Function,
       required: false,
     },
+    // 控制字段渲染
+    yVisible: {
+      type: Boolean,
+      default: true,
+    },
     validateOnRuleChange: {
       type: Boolean,
       required: false,
@@ -209,6 +214,16 @@ const VueField = {
         }
       }
     },
+    yVisible: {
+      immediate: true,
+      handler: function(val) {
+        if (val) {
+          this.initField()
+        } else {
+          this.YForm.EM.emit('FIELD_DESTORY', this)
+        }
+      }
+    },
   },
   created() {
     this.initField()
@@ -296,7 +311,7 @@ const VueField = {
   },
   render(h) {
 
-    return h('div', {
+    return this.yVisible ? h('div', {
       class: {
         ...this.fieldClassNames,
         yfield: true,
@@ -330,7 +345,7 @@ const VueField = {
           )
         }
       </div>
-    ])
+    ]) : null
   },
 }
 

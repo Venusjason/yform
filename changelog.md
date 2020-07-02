@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### 0.1.26
+
+- Added：增加 field.yVisible api 用于处理动态渲染字段 vue key需要手动设置
+
 ### 0.1.25
  - fix: field.name push
  - fix: form.validate await
