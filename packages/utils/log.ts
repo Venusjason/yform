@@ -1,18 +1,26 @@
 const PACKAGE_NAME = '[Y-Form]'
 
+let isDebug = false
+
 const Log = {
+  getIsDebug: () => isDebug,
   help: (...args) => {
-    if (process && process.env && process.env.NODE_ENV === 'development') {
+    if (isDebug) {
       console.log(`${PACKAGE_NAME} debug:`, ...args)
     }
   },
-  success: (...args) => console.log(`${PACKAGE_NAME}:`, ...args),
-  warn: (...args) => console.warn(`${PACKAGE_NAME}:`, ...args),
-  error: (...args) => console.error(`${PACKAGE_NAME}:`, ...args),
+  success: (...args) => isDebug && console.log(`${PACKAGE_NAME}:`, ...args),
+  warn: (...args) => isDebug && console.warn(`${PACKAGE_NAME}:`, ...args),
+  error: (...args) => isDebug && console.error(`${PACKAGE_NAME}:`, ...args),
   table: (...args) => {
+    if (!isDebug) return
     console.log(`${PACKAGE_NAME}:`)
     console.table(...args)
   },
+}
+
+export const useYFormLog = (b: boolean): void => {
+  isDebug = b
 }
 
 export default Log

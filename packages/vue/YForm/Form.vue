@@ -16,7 +16,8 @@ export default {
       YForm: this
     }
   },
-  debug: false,
+  globalOptions: {
+  },
   props: {
     value: {
       type: Object,

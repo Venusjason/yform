@@ -212,7 +212,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         this.$slots.default || slotsDefault,
       ])
       
-      if (!this.YForm.$options.debug && this.do === 'debug') {
+      if (!log.getIsDebug() && this.do === 'debug') {
         return null
       }
       return Btn
