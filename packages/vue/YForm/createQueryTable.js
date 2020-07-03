@@ -191,7 +191,7 @@ export default (props) => {
         await this.$options.latestYform.validate()
         this.loading = true
         const { currentPage, pageSize } = this.getPaginationProps(someParams)
-        const formValues = this.$options.latestYform.value
+        const formValues = this.$options.latestYform._getFormVales()
         return this.serve({
           params: {
             currentPage,

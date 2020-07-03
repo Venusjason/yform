@@ -152,6 +152,7 @@ export default {
     },
     /**
      * 字段注册
+     * 区分 virtualField / field
      */
     _fieldRegister(field) {
       if (this.fields[field.name]) {
@@ -160,8 +161,17 @@ export default {
         this.fields[field.name] = [field]
       }
       // 字段初始化
+      // 判断 , 拆分name
       const value = this.getFieldValue(field.name)
-      _set(this.formValuesA, field.name, value === undefined ? null : value)
+      if (field.name.includes(',')) {
+        const names = field.name.split(',')
+        const namesValue = names.map(nameItem => {
+          return this.getFieldValue(nameItem)
+        })
+        _set(this.formValuesA, field.name, namesValue)
+      } else {
+        _set(this.formValuesA, field.name, value === undefined ? null : value)
+      }
       mergeWith(this.formValuesA, this.value)
       const newVal = cloneDeep(this.formValuesA)
       this.$emit('input', newVal)
@@ -189,14 +199,127 @@ export default {
     getFieldValue(name) {
       return _get(this.value, name)
     },
+    // 返回form 过滤值
+    _getFormVales() {
+      const filterNames = (data) => {
+        if (getType(data) === 'object') {
+          let obj = {}
+          Object.keys(data).forEach(key => {
+            if (!key.includes(',')) {
+              if (typeof data[key] === 'object') {
+                obj[key] = filterNames(data[key])
+              } else {
+                obj[key] = data[key]
+              }
+            } else {
+              const names = key.split(',')
+              names.forEach((name, i) => {
+                const dataValue = data[key]
+                const dataValueType = getType(dataValue)
+                if (dataValueType === 'object') {
+                  obj[name] = dataValue[name]
+                } else if (dataValueType === 'array') {
+                  obj[name] = dataValue[i] === undefined ? null : dataValue[i]
+                } else {
+                  obj[name] = dataValue === undefined ? null : dataValue
+                }
+              })
+            }
+          })
+          return obj
+        } else if (getType(data) === 'array') {
+          return data.map(item => filterNames(item))
+        }
+        return data
+      }
+      const value = {}
+      Object.keys(this.fields).forEach(name => {
+         _set(
+          value,
+          name,
+          _get(this.value, name)
+        )
+      })
+      return filterNames(value)
+    },
     setFieldValue(name, value) {
-      const prevValue = _get(this.value, name)
-      if (prevValue !== undefined) {
-        _set(this.value, name, value)
+      let fn = (name, value) => {
+        const prevValue = _get(this.value, name)
+        if (prevValue !== undefined) {
+          _set(this.value, name, value)
+        } else {
+          const formValues = cloneDeep(this.value)
+          _set(formValues, name, value)
+          this.$emit('input', formValues)
+        }
+      }
+      // 区分 name 特殊格式
+      if (name.includes(',')) {
+        let names = name.split(',')
+        const prevFormValues = cloneDeep(this.value)
+        // 值合并
+        if (getType(value) === 'array') {
+          let isUndefined = false
+          names.forEach((nameItem, i) => {
+            const prevValue = _get(this.value, nameItem)
+            if (prevValue === undefined) {
+              isUndefined = true
+            } else {
+              _set(this.value, nameItem, value[i] === undefined ? null : value[i])
+            }
+            _set(prevFormValues, nameItem, value[i] === undefined ? null : value[i])
+          })
+          if (isUndefined) {
+            _set(prevFormValues, name, value)
+            this.$emit('input', prevFormValues)
+          } else {
+            _set(this.value, name, value)
+          }
+        } else if (getType(value) === 'object'){
+          let isUndefined = false
+          names.forEach((nameItem) => {
+            const valueItem = value[nameItem] === undefined ? null : value[nameItem]
+            const prevValue = _get(this.value, nameItem)
+            if (prevValue === undefined) {
+              isUndefined = true
+            } else {
+              _set(
+                this.value,
+                nameItem,
+                valueItem
+              )
+            }
+            _set(prevFormValues, nameItem, valueItem)
+          })
+          if (isUndefined) {
+            _set(prevFormValues, name, value)
+            this.$emit('input', prevFormValues)
+          } else {
+            _set(this.value, name, value)
+          }
+        } else if (getType(value) === 'null'){
+          let isUndefined = false
+          names.forEach((nameItem) => {
+            const prevValue = _get(this.value, nameItem)
+            if (prevValue === undefined) {
+              isUndefined = true
+            } else {
+              _set(this.value, nameItem, null)
+            }
+            _set(prevFormValues, nameItem, null)
+          })
+          if (isUndefined) {
+            _set(prevFormValues, name, value)
+            this.$emit('input', prevFormValues)
+          } else {
+            _set(this.value, name, value)
+          }
+        } else {
+          log.error(`不支持的格式${getType(value)}`)
+        }
       } else {
-        const formValues = cloneDeep(this.value)
-        _set(formValues, name, value)
-        this.$emit('input', formValues)
+        // 原始的 name 也需要更新下
+        fn(name, value)
       }
     },
     notifyField(name, trigger = '', runValidate = false) {
@@ -286,14 +409,7 @@ export default {
         this.submiting = true
         // const formValues = cloneDeep(this.value)
         // 去掉被卸载的字段, 直接返回视图中字段
-        const formValues = {}
-        Object.keys(this.fields).forEach(name => {
-          _set(
-            formValues,
-            name,
-            _get(this.value, name)
-          )
-        })
+        const formValues = this._getFormVales()
         try {
           await this.$listeners.submit(formValues)
           this.submiting = false

@@ -45,6 +45,8 @@ export default {
         // likes: [],
         // age1: '2',
         // age: '3'
+        startTime: '2020-07-01',
+        endTime: '2020-07-03',
       },
       nameRule: ['required', 'whiteSpace'],
       sexy: [],
@@ -154,7 +156,7 @@ export default {
               </span>
               <span slot="append">元</span>
             </ElField>
-            <ElField name="age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
+            <ElField name="a.e.age" label="年龄"  component="el-input" previewValue={value => <div>{`${value}岁了`}</div>} />
             <ElField name="age1" label="年龄1" component="el-input" />
             <ElField name="sex" label="性别" component="el-select" dataSource={
               this.sexy
@@ -169,7 +171,7 @@ export default {
               // }
             } ></ElField>
 
-            <ElField name="times" component="el-date-picker" type="daterange"/>
+            <ElField name="startTime,endTime" component="el-date-picker" type="daterange"/>
       
             <ElButton type="primary" do="search" ref="searchBtn">查询一下</ElButton>
             <ElButton do="reset" />
