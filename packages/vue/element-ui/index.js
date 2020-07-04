@@ -170,7 +170,7 @@ export const YForm = {
   install: function(Vue, option = { name: 'YForm', debug: false }) {
     merge(ElForm.globalOptions, option)
     Vue.component(
-      ElForm.name,
+      ElForm.globalOptions.name || ElForm.name,
       ElForm,
     )
   }
@@ -183,7 +183,7 @@ export const YField = {
   }) {
     merge(ElField.globalOptions, option)
     Vue.component(
-      option.name || ElField.name,
+      ElField.globalOptions.name || ElField.name,
       ElField
     )
   }

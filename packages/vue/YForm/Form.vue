@@ -17,6 +17,7 @@ export default {
     }
   },
   globalOptions: {
+    name: 'YForm'
   },
   props: {
     value: {

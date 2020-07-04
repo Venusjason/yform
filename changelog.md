@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### 0.1.28
+
+- fix: yform 注册时 name
+
 ### 0.1.27
 
 - ADDED: field.name 支持多字段
