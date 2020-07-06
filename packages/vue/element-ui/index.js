@@ -7,7 +7,14 @@ import {
   createTable,
   createQueryTable,
   createYButton,
+  useYFormLog,
+  extendRules
 } from '../YForm/index'
+
+export {
+  useYFormLog,
+  extendRules,
+}
 
 // console.log(Loading)
 
