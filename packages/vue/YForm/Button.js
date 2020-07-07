@@ -149,6 +149,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         this.loading = true
         // 重置表单值
         this.YForm.resetFormValues()
+        if (!this.$options.latestQueryTable) return
         /**
          * 要v-model 先生效 form props.value 更新才能正确获取到formValues
          */

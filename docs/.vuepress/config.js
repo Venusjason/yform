@@ -1,6 +1,6 @@
 module.exports = {
   title: '@yform',
-  base: '/@yform/vue/',
+  // base: './@yform/',
   description: '@yform 帮你快速搞定vue 中后台应用',
   plugins: ['demo-container'],
   themeConfig: {
