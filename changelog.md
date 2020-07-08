@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### 0.1.29
+
+- fix: form.element-ui 支持初始化配置 useYFormLog、extendRules
+- todo: field.name 多字段校验
+
 ### 0.1.28
 
 - fix: yform 注册时 name
