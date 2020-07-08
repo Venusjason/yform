@@ -94,6 +94,15 @@ const VueField = {
       type: Function,
       required: false,
     },
+    // 控制字段渲染
+    yVisible: {
+      type: Boolean,
+      default: true,
+    },
+    validateOnRuleChange: {
+      type: Boolean,
+      required: false,
+    }
   },
   data() {
     return {
@@ -174,7 +183,12 @@ const VueField = {
       }
     },
     fieldValidateOnRuleChange() {
-      return this.YForm.validateOnRuleChange
+      // 优先级 field.fieldValidateOnRuleChange > YForm.validateOnRuleChange
+      if (this.validateOnRuleChange !== undefined) {
+        return this.validateOnRuleChange
+      } else {
+        return this.YForm.validateOnRuleChange
+      }
     },
     fieldClassNames() {
       return {
@@ -197,6 +211,16 @@ const VueField = {
           if (oldVal !== undefined) {
             this.validate(this.trigger)
           }
+        }
+      }
+    },
+    yVisible: {
+      immediate: true,
+      handler: function(val) {
+        if (val) {
+          this.initField()
+        } else {
+          this.YForm.EM.emit('FIELD_DESTORY', this)
         }
       }
     },
@@ -254,8 +278,9 @@ const VueField = {
       }
       const descriptor = {}
       descriptor[this.name] = rules.map(rule => {
+        // eslint-disable-next-line
         const { trigger: t, ...rest } = rule
-        log.help('trigger', t)
+        // log.help('trigger', t)
         return {
           ...rest
         }
@@ -286,7 +311,7 @@ const VueField = {
   },
   render(h) {
 
-    return h('div', {
+    return this.yVisible ? h('div', {
       class: {
         ...this.fieldClassNames,
         yfield: true,
@@ -320,7 +345,7 @@ const VueField = {
           )
         }
       </div>
-    ])
+    ]) : null
   },
 }
 

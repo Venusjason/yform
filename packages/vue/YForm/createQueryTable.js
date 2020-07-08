@@ -191,7 +191,7 @@ export default (props) => {
         await this.$options.latestYform.validate()
         this.loading = true
         const { currentPage, pageSize } = this.getPaginationProps(someParams)
-        const formValues = this.$options.latestYform.value
+        const formValues = this.$options.latestYform._getFormVales()
         return this.serve({
           params: {
             currentPage,
@@ -234,6 +234,10 @@ export default (props) => {
           return Promise.reject(e)
         })
       },
+      // public api
+      runServe(...args) {
+        return this.refreshList(...args)
+      },
       refreshPaginationForUi() {
         this.ispagination = false
         setTimeout(() => {
@@ -261,10 +265,10 @@ export default (props) => {
           data: this.list,
           columns: this.yColumns,
         },
-        attrs: {
+        attrs: ({
           ...this.$attrs,
           data: this.list,
-        },
+        }),
         on: tableEvents,
         // key: this.uniqueKey || String(id),
         ref: 'table'

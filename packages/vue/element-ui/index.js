@@ -7,7 +7,14 @@ import {
   createTable,
   createQueryTable,
   createYButton,
+  useYFormLog,
+  extendRules
 } from '../YForm/index'
+
+export {
+  useYFormLog,
+  extendRules,
+}
 
 // console.log(Loading)
 
@@ -145,8 +152,8 @@ export const ElQueryTable = merge({}, createQueryTable({
       return this.columns.map((column) => {
         if (column.type === 'y-index') {
           return {
-            ...column,
             label: '序号',
+            ...column,
             render: (record) => {
               const { currentPage, pageSize } = this.pageParams
               const value = (currentPage - 1) * pageSize + record.$index + 1
@@ -168,9 +175,9 @@ export const ElButton = createYButton('el-button')
 
 export const YForm = {
   install: function(Vue, option = { name: 'YForm', debug: false }) {
-    ElForm.debug = option.debug || false
+    merge(ElForm.globalOptions, option)
     Vue.component(
-      option.name || ElForm.name,
+      ElForm.globalOptions.name || ElForm.name,
       ElForm,
     )
   }
@@ -183,7 +190,7 @@ export const YField = {
   }) {
     merge(ElField.globalOptions, option)
     Vue.component(
-      option.name || ElField.name,
+      ElField.globalOptions.name || ElField.name,
       ElField
     )
   }

@@ -92,7 +92,7 @@ const regs = {
 }
 
 export const extendRules = (newRegs) => {
-  log.help(`请在入口main.js 注入quickRules 的扩展`)
+  // log.help(`请在入口main.js 注入quickRules 的扩展`)
   merge(regs, newRegs)
 }
 

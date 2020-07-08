@@ -1,7 +1,7 @@
 /**
  * 表单控件
  */
-import { getType } from '../../core/lib/utils'
+import { getType, filterAttrs } from '../../core/lib/utils'
 import log from '../../core/lib/utils/log'
 
 export const getMySlots = (fieldContext, context, slotName = '*') => {
@@ -90,28 +90,48 @@ export default {
 
     const {
       defaultComponent,
-      genPlaceholder,
+      // genPlaceholder 废弃
+      // genPlaceholder,
+      // 全局默认 props
+      componentProps: globalComponentProps = {},
     } = fieldContext.$options.globalOptions
 
-    const placeholder = fieldContext.$attrs.placeholder || (genPlaceholder ? genPlaceholder(fieldContext) : '')
+    const {
+      placeholder: globalComponentPropsPlaceholder,
+      ...globalComponentPropsRest
+    } = getType(globalComponentProps) === 'object' ? globalComponentProps : globalComponentProps(fieldContext)
+
+    let defaultPlaceholder = ''
+
+    if (getType(globalComponentPropsPlaceholder) === 'string') {
+      defaultPlaceholder = globalComponentPropsPlaceholder
+    } else if (getType(globalComponentPropsPlaceholder) === 'function') {
+      defaultPlaceholder = globalComponentPropsPlaceholder(fieldContext) || ''
+    } else if (globalComponentPropsPlaceholder){
+      log.warn(`全局注册 placeholder 不能为${getType(globalComponentPropsPlaceholder)}`)
+    }
+
+    let placeholder = fieldContext.$attrs.placeholder || defaultPlaceholder
 
     const isFieldDisabled = this.fieldStatusResult === 'disabled'
 
     const VModelComponent = h(component || defaultComponent, {
       props: {
+        ...globalComponentPropsRest,
         ...$attrs,
         ...componentProps,
         value: fieldContext.value,
         disabled: isFieldDisabled,
         placeholder,
       },
-      attrs: {
+      attrs: filterAttrs({
+        ...globalComponentPropsRest,
         ...$attrs,
         ...componentProps,
         value: fieldContext.value,
         disabled: isFieldDisabled,
         placeholder,
-      },
+      }),
       class: {
         ...classNames,
       },

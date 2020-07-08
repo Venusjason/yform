@@ -5,3 +5,5 @@ export { default as createQueryTable } from './createQueryTable'
 export
 { default as Button, createYButton }
 from './Button'
+export { extendRules } from './rules'
+export { useYFormLog } from '../../core/lib/utils/log'

@@ -1,5 +1,5 @@
 import log from '../../core/lib/utils/log'
-import { getType } from '../../core/lib/utils/index'
+import { getType, filterAttrs } from '../../core/lib/utils/index'
 
 export const createYButton = (ButtonComponent = 'button') => {
   const YButton = ({
@@ -91,6 +91,7 @@ export const createYButton = (ButtonComponent = 'button') => {
           return this.$listeners.click(e)
         }
         this.beforeClick && this.beforeClick()
+        if (this.loading || this.YFormDisabled) return
         if (this.do === 'submit') {
           this.onSubmit()
         } else if (this.do === 'search') {
@@ -125,7 +126,7 @@ export const createYButton = (ButtonComponent = 'button') => {
           aParams.currentPage = 1
         }
         this.loading = true
-        this.$options.latestQueryTable.refreshList(aParams).then(() => {
+        this.$options.latestQueryTable.runServe(aParams).then(() => {
           this.loading = false
           this.afterClick && this.afterClick()
         }).catch(() => {
@@ -148,11 +149,12 @@ export const createYButton = (ButtonComponent = 'button') => {
         this.loading = true
         // 重置表单值
         this.YForm.resetFormValues()
+        if (!this.$options.latestQueryTable) return
         /**
          * 要v-model 先生效 form props.value 更新才能正确获取到formValues
          */
         setTimeout(() => {
-          this.$options.latestQueryTable.refreshList(a).then(() => {
+          this.$options.latestQueryTable.runServe(a).then(() => {
             this.loading = false
             this.afterClick && this.afterClick()
           }).catch(() => {
@@ -195,12 +197,12 @@ export const createYButton = (ButtonComponent = 'button') => {
           loading: this.loading,
           ...this.$attrs,
         },
-        attrs: {
+        attrs: filterAttrs({
           size,
           type,
           disabled: this.loading,
           ...this.$attrs,
-        },
+        }),
         on: {
           ...this.$listeners,
           click: this.onClick,
@@ -211,7 +213,7 @@ export const createYButton = (ButtonComponent = 'button') => {
         this.$slots.default || slotsDefault,
       ])
       
-      if (!this.YForm.$options.debug && this.do === 'debug') {
+      if (!log.getIsDebug() && this.do === 'debug') {
         return null
       }
       return Btn
