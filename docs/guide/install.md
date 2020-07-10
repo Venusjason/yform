@@ -37,6 +37,7 @@ Vue.use(YField, {
       props.clearable = true
       props.filterable = true
     }
+    // 这里处理 一些组件 基于业务的配置
     return props
   }
 })
