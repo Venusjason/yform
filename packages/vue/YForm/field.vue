@@ -258,7 +258,7 @@ const VueField = {
     },
     getFilteredRule(trigger) {
       return this.rulesResult.filter(rule => {
-        if (!rule.trigger) {
+        if (!rule.trigger || trigger === '') {
           return true
         }
         if (getType(rule.trigger) === 'array') {
