@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### 0.1.30
+
+- fix: trigger 过滤不对的问题
+
 ### 0.1.29
 
 - fix: form.element-ui 支持初始化配置 useYFormLog、extendRules
