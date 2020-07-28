@@ -14,6 +14,20 @@ const whiteSpaceValodator = (message = '不能为空格字符') => ({
   }
 })
 
+const requiredArray = (message = '这是必填项') => ({
+  validator: (rule, val, callback) => {
+    if (Array.isArray(val)) {
+      if (val.length === 0) {
+        return callback(new Error(message))
+      }
+      if (val.find(item => [null, undefined, ''].includes(item))) {
+        return callback(new Error(message))
+      }
+    }
+    return callback()
+  }
+})
+
 const validatorFunc = (regRule) => {
   const { reg, message } = regRule
   if (reg) {
@@ -40,6 +54,7 @@ const regs = {
     message: '这是必填项',
   },
   whiteSpace: whiteSpaceValodator(),
+  requiredArray: requiredArray(),
   digital: {
     reg: /^\d+$/,
     message: '请输入数字格式',
@@ -140,12 +155,14 @@ export const computedRules = (rules, label) => {
     if (required) {
       rulesResult.push({
         ...regs.required,
+        ...rest,
         message: message || requiredMsg(label),
         trigger,
       })
     }
     if (whiteSpace) {
       rulesResult.push({
+        ...rest,
         ...regs.whiteSpace(message),
         trigger,
       })
@@ -163,7 +180,7 @@ export const computedRules = (rules, label) => {
           trigger,
         })
       }
-      if (!regs[ruleName]) {
+      if (!regs[ruleName] && !['type', 'min', 'max'].includes(ruleName)) {
         log.error(`${ruleName} 不在快捷校验方式中，你可自行扩展`)
         rulelistLog()
       }
