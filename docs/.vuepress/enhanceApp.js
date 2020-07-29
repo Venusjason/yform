@@ -8,8 +8,10 @@ import {
   YField,
   YButton,
   YQueryTable,
+  YTable,
 } from '../../packages/vue/lib/element-ui/index.umd.js'
 import '../../packages/vue/lib/element-ui/index.css'
+import './reset.css'
 
 import axios from 'axios'
 
@@ -23,6 +25,7 @@ export default ({ Vue }) => {
     name: 'YForm',
     debug: true,
   })
+  Vue.use(YTable)
   Vue.use(YField, {
     name: 'YField',
     defaultComponent: 'el-input',

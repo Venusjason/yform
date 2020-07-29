@@ -27,19 +27,63 @@ export const createYButton = (ButtonComponent = 'button') => {
       },
       afterClick: {
         type: Function
-      }
+      },
     },
     computed: {
       YForm() {
         const getParentForm = (context) => {
+          if (!context) {
+            return null
+          }
           let parent = context.$parent
           let parentName = parent && parent.$options && parent.$options.componentName
-          while (parentName !== 'YFORM') {
-            parent = parent && parent.$parent
+          if (parentName !== 'YFORM') {
+            return getParentForm(parent && parent.$parent)
+          } else {
+            return parent
           }
-          return parent
         }
-        return getParentForm(this)
+
+        let yform = getParentForm(this)
+        if (!yform) {
+          // button 与 form 没有父子关系 使用 y-scope
+          const getYScopeNode = (context) => {
+            if (!context) return
+            if (context._vnode && context._vnode.data && context._vnode.data.attrs && (context._vnode.data.attrs.yScope || context._vnode.data.attrs['y-scope'])) {
+              return context
+            } else {
+              return getYScopeNode(context.$parent)
+            }
+          }
+          const YScopeNode = getYScopeNode(this)
+          const findYformNode = (c) => {
+            let componentName = c && c.$options && c.$options.componentName
+            return componentName === 'YFORM'
+          }
+          // 二叉树查找
+          const SearchNode = (context, arr = [YScopeNode]) => {
+            if (findYformNode(context)) {
+              arr.push(context)
+              return arr
+            }
+            for (let i in context.$children) {
+              const child = context.$children[i]
+              if (arr.indexOf(child) < 0) {
+                arr.push(child)
+                if (findYformNode(child)) {
+                  return arr
+                } else {
+                  return SearchNode(child, arr)
+                }
+              }
+            }
+          }
+          const nodes = SearchNode(YScopeNode)
+          const node = nodes && nodes.length > 0 && nodes[nodes.length - 1]
+          YScopeNode && console.log('getChildYform', nodes, node)
+          yform = node
+        }
+        return yform
       },
       /**
        * TODO: 表单初始化时 可以用这个字段控制按钮状态

@@ -37,6 +37,8 @@ export default ({TableComponent, TableColumnComponent}) => {
         })
       })
 
+      const renderSlotColumns = this.$slots.default || this.$slots.columns
+
       return h(TableComponent, {
         props: {
           ...this.$attrs,
@@ -45,7 +47,7 @@ export default ({TableComponent, TableColumnComponent}) => {
         on: events,
         key: this.uniqueKey || String(id),
         ref: 'YTable'
-      }, renderColomns)
+      }, renderSlotColumns || renderColomns)
     },
   }
 

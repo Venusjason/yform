@@ -19,6 +19,14 @@ export const dasherize = (str: string): string => str.replace(/::/g, '/')
     .toLowerCase()
 
 /**
+ * 
+ * @param name 连接符 转 驼峰
+ */
+export const toHump = (name: string): string => name.replace(/\-(\w)/g, function(all, letter) {
+  return letter.toUpperCase()
+})
+
+/**
  * 获取 on开头的事件属性
  * @param obj 
  */

@@ -16,7 +16,14 @@
     <YQueryTable
       :columns="columns"
       :serve="serve"
-    />
+    >
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="record">
+          <el-button @click="handerItem(record)">打印row</el-button>
+        </template>
+      </el-table-column>
+    </YQueryTable>
   </YForm>
 </template>
 <script>
@@ -28,6 +35,7 @@ const LIKES = new Map([
 ])
 
 export default {
+  name: 'b',
   data() {
     return {
       formValues: {},
@@ -60,6 +68,9 @@ export default {
         data: list,
         total: 100,
       }
+    },
+    handerItem(record) {
+      console.log(record)
     }
   }
 }

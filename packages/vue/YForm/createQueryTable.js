@@ -272,7 +272,7 @@ export default (props) => {
         on: tableEvents,
         // key: this.uniqueKey || String(id),
         ref: 'table'
-      })
+      }, this.$slots.default || this.$slots.columns)
 
       const onPageChange = {
         'size-change': i => this.handleSizeChange(i),

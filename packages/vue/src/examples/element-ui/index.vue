@@ -182,8 +182,8 @@ export default {
                 <div></div>
                 <ElQueryTable
                   border
-                  columns={columns}
                   serve={serve}
+                  columns={columns}
                   pagination={{
                   }}
                   onRowClick={() => {
@@ -194,7 +194,8 @@ export default {
                     this.tableRef = e
                   }}
                   onSortChange={this.onSortChange}
-                />
+                >
+                </ElQueryTable>
                 <div></div>
               </div>
             </div>

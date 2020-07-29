@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 0.1.31
+
+- feat: yTable 支持slot 来写 columns
+- feat: inputComponent componentStyle 支持字符串
+
+
 ### 0.1.30
 
 - fix: trigger 过滤不对的问题

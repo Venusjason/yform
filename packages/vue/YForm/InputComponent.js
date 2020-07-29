@@ -1,8 +1,18 @@
 /**
  * 表单控件
  */
-import { getType, filterAttrs } from '../../core/lib/utils'
+import { getType, filterAttrs, toHump } from '../../core/lib/utils'
 import log from '../../core/lib/utils/log'
+
+const inlineStyleToJsStyle = (str) => {
+  const strs = str.split(';')
+  const style = {}
+  strs.forEach(item => {
+    const [name, value] = item.split(':')
+    style[toHump(name.trim())] = value.trim()
+  })
+  return style
+}
 
 export const getMySlots = (fieldContext, context, slotName = '*') => {
   const slotNames = slotName.split(',')
@@ -59,6 +69,8 @@ export default {
     } = fieldContext
     
     const { EM } = fieldContext.YForm
+
+    const componentStyleResult = getType(componentStyle) === 'string' ? inlineStyleToJsStyle(componentStyle) : componentStyle
 
   
     // const { fieldInstance } = fieldContext.$options
@@ -140,7 +152,7 @@ export default {
          * 为了确保 label 与 input 能水平对齐
          */
         verticalAlign: 'middle',
-        ...componentStyle,
+        ...componentStyleResult,
       },
       key: fieldContext.name || '',
       ref: 'VModelComponent',

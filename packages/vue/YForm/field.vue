@@ -36,7 +36,7 @@ const VueField = {
      * component style
      */
     componentStyle: {
-      type: Object,
+      type: [Object, String],
       default: () => ({}),
     },
     /**
