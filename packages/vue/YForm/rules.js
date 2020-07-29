@@ -20,7 +20,7 @@ const requiredArray = (message = '这是必填项') => ({
       if (val.length === 0) {
         return callback(new Error(message))
       }
-      if (val.find(item => [null, undefined, ''].includes(item))) {
+      if (val.filter(item => [null, undefined, ''].includes(item)).length > 0) {
         return callback(new Error(message))
       }
     }
