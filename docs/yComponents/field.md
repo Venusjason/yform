@@ -37,7 +37,7 @@ wrappedComponentRef |回调函数，返回component组件实例 | Function(value
 
 * `yVisible`与`y-if`都可以控制组件渲染，然而`y-if`却做不到`field`字段卸载，要达到这个效果 需要`y-if + key` 组合，`yVisible = y-if + key`
 
-::: demo
+<!-- ::: demo
 ```vue
 <template>
   <YForm v-model="formValues" colon label-width="120px">
@@ -75,5 +75,5 @@ export default {
 </script>
 ```
 
-:::
+::: -->
 

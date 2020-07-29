@@ -11,7 +11,7 @@
 | size | 表单控件尺寸 | String | large/medium/small/mini |  medium |
 | hideRequiredAsterisk | 是否隐藏required 前的 * | Boolean | - |  false |
 | formStatus           | 表单状态               | String | edit/preview/disabled |  edit |
-| validateOnRuleChange | 是否在 rules 属性改变后立即触发一次验证 | Boolean | - |  true |
+| validateOnRuleChange | 是否在 rules 属性改变后立即触发一次验证 | Boolean | - |  false |
 | onSubmit             | 与YButton submit 联动   | Function(formValues) => Promise | - |  - |
 | hideRequiredAsterisk | 是否隐藏required 前的 * | Boolean | - |  false |
 | onValidate | 表单整体校验完成后回调 | Function(isValid, err): void | - |  - |

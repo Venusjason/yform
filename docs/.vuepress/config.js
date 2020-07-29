@@ -54,10 +54,10 @@ module.exports = {
             title: '表单',
             path: '/examples/'
           },
-          {
-            title: '查询列表',
-            path: '/examples/queryTable'
-          },
+          // {
+          //   title: '查询列表',
+          //   path: '/examples/queryTable'
+          // },
           {
             title: '自定义查询列表',
             path: '/examples/customQueryTable'

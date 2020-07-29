@@ -35,6 +35,7 @@ const LIKES = new Map([
 ])
 
 export default {
+  name: 'b',
   data() {
     return {
       formValues: {},
