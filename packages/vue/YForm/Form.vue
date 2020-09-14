@@ -96,7 +96,7 @@ export default {
     /**
      * 表单提交是是否需要定位到未通过校验的元素
      */
-    validateOnScroll: {
+    scrollToFirstError: {
       type: Boolean,
       default: false,
     }
@@ -370,7 +370,7 @@ export default {
                 if(valid){
                   resolve(true)
                 } else {
-                  if(this.validateOnScroll){
+                  if(this.scrollToFirstError){
                     // 定位到错误元素
                     Object.keys(invalidFields).forEach(name => {
                       let node = this.getFieldInstance(name)

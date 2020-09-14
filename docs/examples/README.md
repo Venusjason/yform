@@ -3,7 +3,7 @@
 ::: demo
 ```vue
 <template>
-  <YForm v-model="formValues" label-width="140px" colon validateOnScroll>
+  <YForm v-model="formValues" label-width="140px" colon scrollToFirstError>
     <YField name="name" label="商品名称" :rules="['required', 'whiteSpace']" />
     <YField name="priceA" label="供货价" :rules="['required', 'positiveInteger']" />
     <YField name="priceB" label="售卖价" component="el-input-number" rules="required" />
