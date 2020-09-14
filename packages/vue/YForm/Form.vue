@@ -341,7 +341,8 @@ export default {
       let valid = true
       const fieldsNamesLength = Object.keys(this.fields).length
       const invalidFields = {}
-      let firstTop, firstNode 
+      let firstTop
+      let firstNode
       return new Promise((resolve, reject) => {
         if (fieldsNamesLength === 0) {
           // 空 form 校验直接通过
