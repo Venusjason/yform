@@ -366,7 +366,10 @@ export default {
                   Object.keys(invalidFields).forEach(name => {
                     let node = this.getFieldInstance(name)
                     if(node){
-                      var top = node.getBoundingClientRect().top
+                      var fieldTop = node.getBoundingClientRect().top
+                      var formTop = this.$refs.yform.getBoundingClientRect().top
+                      var top = fieldTop - formTop;
+                      console.log(top)
                       if (node.type !== 'hidden' && (firstTop === undefined || firstTop > top)) {
                         firstTop = top;
                         firstNode = node;
