@@ -93,6 +93,13 @@ export default {
         return ['edit', 'preview', 'disabled'].includes(value)
       },
     },
+    /**
+     * 表单提交是是否需要定位到未通过校验的元素
+     */
+    validateOnScroll: {
+      type: Boolean,
+      default: false,
+    }
   },
   computed: {
     autoLabelWidth() {
@@ -361,25 +368,27 @@ export default {
               // 校验到最后一个字段
               if (nameCount === fieldsNamesLength && ++count === fieldsChildrenLen) {
                 if(valid){
-                  resolve(true) 
+                  resolve(true)
                 } else {
-                  Object.keys(invalidFields).forEach(name => {
-                    let node = this.getFieldInstance(name)
-                    if(node){
-                      var fieldTop = node.getBoundingClientRect().top
-                      var formTop = this.$refs.yform.getBoundingClientRect().top
-                      var top = fieldTop - formTop;
-                      console.log(top)
-                      if (node.type !== 'hidden' && (firstTop === undefined || firstTop > top)) {
-                        firstTop = top;
-                        firstNode = node;
+                  if(this.validateOnScroll){
+                    // 定位到错误元素
+                    Object.keys(invalidFields).forEach(name => {
+                      let node = this.getFieldInstance(name)
+                      if(node){
+                        var fieldTop = node.getBoundingClientRect().top
+                        var formTop = this.$refs.yform.getBoundingClientRect().top
+                        var top = fieldTop - formTop;
+                        if (node.type !== 'hidden' && (firstTop === undefined || firstTop > top)) {
+                          firstTop = top;
+                          firstNode = node;
+                        }
                       }
+                    })
+                    if (firstNode) {
+                      setTimeout(function(){
+                        firstNode.scrollIntoView();
+                      }, 100)
                     }
-                  })
-                  if (firstNode) {
-                   setTimeout(function(){
-                     firstNode.scrollIntoView();
-                   }, 100)
                   }
                   reject(invalidFields)
                 }
