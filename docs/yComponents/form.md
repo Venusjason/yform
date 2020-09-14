@@ -15,3 +15,4 @@
 | onSubmit             | 与YButton submit 联动   | Function(formValues) => Promise | - |  - |
 | hideRequiredAsterisk | 是否隐藏required 前的 * | Boolean | - |  false |
 | onValidate | 表单整体校验完成后回调 | Function(isValid, err): void | - |  - |
+| validateOnScroll | 提交表单时定位到错误项 | Boolean| - |  false |
