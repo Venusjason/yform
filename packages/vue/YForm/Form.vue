@@ -341,6 +341,7 @@ export default {
       let valid = true
       const fieldsNamesLength = Object.keys(this.fields).length
       const invalidFields = {}
+      let firstTop, firstNode 
       return new Promise((resolve, reject) => {
         if (fieldsNamesLength === 0) {
           // 空 form 校验直接通过
@@ -358,12 +359,41 @@ export default {
               }
               // 校验到最后一个字段
               if (nameCount === fieldsNamesLength && ++count === fieldsChildrenLen) {
-                valid ? resolve(true) : reject(invalidFields)
+                if(valid){
+                  resolve(true) 
+                } else {
+                  Object.keys(invalidFields).forEach(name => {
+                    let node = this.getFieldInstance(name)
+                    if(node){
+                      var top = node.getBoundingClientRect().top
+                      if (node.type !== 'hidden' && (firstTop === undefined || firstTop > top)) {
+                        firstTop = top;
+                        firstNode = node;
+                      }
+                    }
+                  })
+                  if (firstNode) {
+                   setTimeout(function(){
+                     firstNode.scrollIntoView();
+                   }, 100)
+                  }
+                  reject(invalidFields)
+                }
               }
             })
           })
         })
       })
+    },
+    getFieldInstance(name){
+      let slots = this.$slots.default
+      let node
+      slots.forEach((ele) => {
+        if(ele.componentInstance && ele.componentInstance.$refs && ele.componentInstance.$refs['yfield_'+name]){
+          node = ele.componentInstance.$refs['yfield_'+name]
+        }
+      });
+      return node
     },
     async validate() {
       try {
