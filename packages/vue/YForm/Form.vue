@@ -378,7 +378,7 @@ export default {
                         var fieldTop = node.getBoundingClientRect().top
                         var formTop = this.$refs.yform.getBoundingClientRect().top
                         var top = fieldTop - formTop;
-                        if (node.type !== 'hidden' && (firstTop === undefined || firstTop > top)) {
+                        if (firstTop === undefined || firstTop > top) {
                           firstTop = top;
                           firstNode = node;
                         }
@@ -399,13 +399,13 @@ export default {
       })
     },
     getFieldInstance(name){
-      let slots = this.$slots.default
+      let children = this.$children
       let node
-      slots.forEach((ele) => {
-        if(ele.componentInstance && ele.componentInstance.$refs && ele.componentInstance.$refs['yfield_'+name]){
-          node = ele.componentInstance.$refs['yfield_'+name]
+      children.forEach((ele) => {
+        if(ele && ele.$refs && ele.$refs['yfield_'+name]){
+          node = ele.$refs['yfield_'+name]
         }
-      });
+      })
       return node
     },
     async validate() {
