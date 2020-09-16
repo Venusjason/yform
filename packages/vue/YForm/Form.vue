@@ -385,9 +385,16 @@ export default {
                       }
                     })
                     if (firstNode) {
-                      setTimeout(function(){
-                        firstNode.scrollIntoViewIfNeeded();
-                      }, 100)
+                      if(typeof(firstNode.scrollIntoViewIfNeeded) == "function"){
+                        setTimeout(function(){
+                          firstNode.scrollIntoViewIfNeeded();
+                        }, 100)
+                      }else {
+                        firstNode.scrollIntoView({
+                          block:'end',
+                          behavior:'smooth'
+                        })
+                      }
                     }
                   }
                   reject(invalidFields)
