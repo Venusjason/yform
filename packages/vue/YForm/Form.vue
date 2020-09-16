@@ -386,7 +386,7 @@ export default {
                     })
                     if (firstNode) {
                       setTimeout(function(){
-                        firstNode.scrollIntoView();
+                        firstNode.scrollIntoView({block:'center'});
                       }, 100)
                     }
                   }
