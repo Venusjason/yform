@@ -385,10 +385,9 @@ export default {
                       }
                     })
                     if (firstNode) {
-                      firstNode.scrollIntoView({
-                        block:'center',
-                        behavior: "smooth"
-                      });
+                      setTimeout(function(){
+                        firstNode.scrollIntoViewIfNeeded();
+                      }, 100)
                     }
                   }
                   reject(invalidFields)
