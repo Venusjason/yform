@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### 0.1.32
+
+- feat: 新增 scrollToFirstError api: 表单提交时是否需要自动定位到错误项
+
 ### 0.1.31
 
 - feat: yTable 支持slot 来写 columns

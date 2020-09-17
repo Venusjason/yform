@@ -317,6 +317,7 @@ const VueField = {
         yfield: true,
       },
       key: this.name,
+      ref: 'yfield_'+this.name
     }, [
       <LabelWrap
         isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}

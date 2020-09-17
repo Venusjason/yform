@@ -93,6 +93,13 @@ export default {
         return ['edit', 'preview', 'disabled'].includes(value)
       },
     },
+    /**
+     * 表单提交是是否需要定位到未通过校验的元素
+     */
+    scrollToFirstError: {
+      type: Boolean,
+      default: false,
+    }
   },
   computed: {
     autoLabelWidth() {
@@ -341,6 +348,8 @@ export default {
       let valid = true
       const fieldsNamesLength = Object.keys(this.fields).length
       const invalidFields = {}
+      let firstTop
+      let firstNode
       return new Promise((resolve, reject) => {
         if (fieldsNamesLength === 0) {
           // 空 form 校验直接通过
@@ -358,12 +367,66 @@ export default {
               }
               // 校验到最后一个字段
               if (nameCount === fieldsNamesLength && ++count === fieldsChildrenLen) {
-                valid ? resolve(true) : reject(invalidFields)
+                if(valid){
+                  resolve(true)
+                } else {
+                  if(this.scrollToFirstError){
+                    // 定位到错误元素
+                    Object.keys(invalidFields).forEach(name => {
+                      let node = this.getFieldInstance(name)
+                      if(node){
+                        var fieldTop = node.getBoundingClientRect().top
+                        var formTop = this.$refs.yform.getBoundingClientRect().top
+                        var top = fieldTop - formTop;
+                        if (firstTop === undefined || firstTop > top) {
+                          firstTop = top;
+                          firstNode = node;
+                        }
+                      }
+                    })
+                    if (firstNode) {
+                      if(typeof(firstNode.scrollIntoViewIfNeeded) == "function"){
+                        setTimeout(function(){
+                          firstNode.scrollIntoViewIfNeeded();
+                        }, 100)
+                      }else {
+                        // 必要时滚动
+                        if(!this.isElementInViewport(firstNode)){
+                          firstNode.scrollIntoView({
+                            block:'center',
+                            behavior:'smooth'
+                          })
+                        }
+                      }
+                    }
+                  }
+                  reject(invalidFields)
+                }
               }
             })
           })
         })
       })
+    },
+    getFieldInstance(name){
+      let children = this.$children
+      let node
+      children.forEach((ele) => {
+        if(ele && ele.$refs && ele.$refs['yfield_'+name]){
+          node = ele.$refs['yfield_'+name]
+        }
+      })
+      return node
+    },
+    isElementInViewport (el) {
+      // 判断元素是否在视窗内
+        var rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+        );
     },
     async validate() {
       try {
