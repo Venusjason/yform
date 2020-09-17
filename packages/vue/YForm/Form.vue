@@ -390,10 +390,13 @@ export default {
                           firstNode.scrollIntoViewIfNeeded();
                         }, 100)
                       }else {
-                        firstNode.scrollIntoView({
-                          block:'center',
-                          behavior:'smooth'
-                        })
+                        // 必要时滚动
+                        if(!this.isElementInViewport(firstNode)){
+                          firstNode.scrollIntoView({
+                            block:'center',
+                            behavior:'smooth'
+                          })
+                        }
                       }
                     }
                   }
@@ -414,6 +417,16 @@ export default {
         }
       })
       return node
+    },
+    isElementInViewport (el) {
+      // 判断元素是否在视窗内
+        var rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+        );
     },
     async validate() {
       try {
