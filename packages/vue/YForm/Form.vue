@@ -391,7 +391,7 @@ export default {
                         }, 100)
                       }else {
                         firstNode.scrollIntoView({
-                          block:'end',
+                          block:'center',
                           behavior:'smooth'
                         })
                       }
