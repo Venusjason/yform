@@ -42,7 +42,14 @@ Vue.use(YField, {
   }
 })
 Vue.use(YButton)
-Vue.use(YQueryTable)
+Vue.use(YQueryTable, {
+  name: 'YQueryTable',
+  pagination: {
+    pageSize: 10,
+    pageSizes: [10, 15, 20, 25, 30],
+    layout: 'total, sizes, prev, pager, next, jumper',
+  }
+})
 Vue.use(YTable)
 
 ```

@@ -4,6 +4,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 // import { useYFormLog } from '../../packages/vue/lib/YForm/index.umd.js'
 import {
   useYFormLog,
+  extendRules,
   YForm,
   YField,
   YButton,
@@ -14,11 +15,28 @@ import '../../packages/vue/lib/element-ui/index.css'
 import './reset.css'
 
 import axios from 'axios'
+import propsData from './propsData'
 
 export default ({ Vue }) => {
   useYFormLog(true)
 
+  /* yform 底层已内置常见快捷校验, 如果你需要扩展，请使用 extendRules 即可全局扩展 */
+  /* 规则格式同 element-ui rules */
+  extendRules({
+    limit10words: {
+      trigger: 'change',
+      validator: (rule, value, cb) => {
+        if (value && value.length > 10) {
+          cb(new Error('请输入少于10个字符串'))
+        } else {
+          cb()
+        }
+      }
+    }
+  })
+
   Vue.prototype.$axios = axios
+  Vue.prototype.propsData = propsData
 
   Vue.use(ElementUI)
   Vue.use(YForm, {

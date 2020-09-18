@@ -2,3 +2,11 @@ table {
   margin-top: 0!important;
   margin-bottom: 0!important;
 }
+
+.w100p {
+  min-width: 100%;
+  width: 100%;
+}
+.w500 {
+  width: 500px;
+}

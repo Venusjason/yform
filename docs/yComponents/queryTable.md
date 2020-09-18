@@ -1,5 +1,6 @@
+### QueryTable
 
-### 完整示例
+#### 完整示例1
 
 * 列表column 使用作用域插槽 自定义
 * 单项更新 查询列表并保留当前页
@@ -123,49 +124,155 @@ export default {
 ```
 :::
 
-queryTable 是中后台领域常见 分页列表查询组件，api设计非常简洁
+#### 完整示例2
 
-| 参数                             | 说明                                             | 类型                                           | 可选值                                             | 默认值                              |
-| -----------------------         |:-------------:                                  |   -----:                                      | -----:                                             | -----:                              |
-|serve         | 列表数据获取方法                     | Promise                                     | -                                                 | -                                  |
-| columns | table-column 的jsx形式             | Array                                         | -                                              |  []                                            | 
-|filterParamInvalidValue | 自动过滤serve中无效入参 | Boolean | - | true |
-|pagination |  控制分页， 使用ui库的分页api | Object | - | |
-|paginationPosition | pagination 组件对齐方式 | String | `right`, `left`, `center` | `right` |
-|showLoading | 展示loading | Boolean | - | true|
-|wrappedTableRef | 如果你需要使用ui库的table内置方法，可以用这个方法获取ref  | Function(ref) => void | -| -|
+::: demo
+```vue
+<template>
+  <YForm v-model="formData"inline labelWidth="50px" labelPosition="left">
+    <YField name="empNum" label="工号" clearable />
+    <YButton do="search" :beforeClick="beforeClick" :afterClick="resetTable" />
+    <YButton type="pain" @click="clearSelection">清空选择</YButton>
+    <YButton type="pain" @click="clearSort">清空排序</YButton>
+    <YButton type="pain" @click="openLoading">显示/关闭loading</YButton>
+    <div class="mgb20"></div>
+    <!-- 表格 -->
+    <YQueryTable ref="yquerytableRef" border
+    :serve="serve"
+    :wrappedTableRef="setTableRef"
+    :filterParamInvalidValue="filterParamInvalidValue"
+    :pagination="{ layout: paginationList.join(',') }"
+    :paginationPosition="paginationPosition"
+    :showLoading="showLoading"
+    >
+      <template>
+        <el-table-column type="selection"></el-table-column>
+        <el-table-column prop="name" label="标题"></el-table-column>
+        <el-table-column prop="price" label="价格" sortable></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <YButton type="primary" @click="editRow(scope.row, scope.$index)">编辑</YButton>
+            <YButton type="danger" @click="deleteRow(scope.row, scope.$index)">删除</YButton>
+          </template>
+        </el-table-column>
+      </template>
+    </YQueryTable>
+  </YForm>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      formData: {},
+      filterParamInvalidValue: true,
+      paginationList: ['total', 'sizes', 'prev', 'pager', 'next', 'jumper'],
+      paginationPosition: 'right',
+      showLoading: true
+    }
+  },
+  methods: {
+    // 请求列表接口
+    async serve ({ params, formValues }) {
+      const res = await Promise.resolve({
+        total: 10,
+        data: [{ name: '苹果', price: 20 }, { name: '大西瓜', price: 99.9 }]
+      })
+      console.log('run serve')
+      return {
+        total: res.total,
+        data: res.data
+      }
+    },
+    // 编辑操作
+    editRow (row, index) {
+      this.$message.success('编辑成功')
+      // 不涉及页数变化 可以继续在当前页更新
+      this.$refs.yquerytableRef.runServe()
+    },
+    // 删除操作
+    deleteRow(row, index) {
+      this.$message.success('删除成功')
+      // 涉及页数变化 重置页数为第一条查询
+      this.$refs.yquerytableRef.runServe({ currentPage: 1 })
+    },
+    // 获取table ref属性
+    setTableRef (ref) {
+      this.$options.tableRef = ref
+    },
+    // 查询后的操作
+    resetTable () {
+      console.log('after-click')
+    },
+    // 查询前的操作
+    beforeClick () {
+      console.log('before-click')
+    },
+    // 清空选择
+    clearSelection () {
+      this.$options.tableRef.clearSelection()
+    },
+    // 清空排序
+    clearSort () {
+      this.$options.tableRef.clearSort()
+    },
+    // 查看tableRef
+    lookTableRef () {
+      console.log(this.$options.tableRef)
+    },
+    // 打开loading蒙层
+    openLoading () {
+      this.$refs.yquerytableRef.loading = !this.$refs.yquerytableRef.loading
+    }
+  }
+}
+</script>
+```
+:::
 
 #### option.serve
 
- serve 是一个Promise， 所以开发者可以灵活处理入参与出参格式，该方法会传入 params(分页参数)、formValues(查询表单字段值), 返回 total、list
+ serve 是一个Promise， 所以开发者可以灵活处理入参与出参格式，该方法会传入 params(分页参数)、formValues(查询表单字段值), 返回 total、data
 
 ```js
 const serve = async ({ params, formValues }) => {
+  /* params -> { currentPage, pageSize } */
+  /* formValues -> 表单绑定值 */
   const res = await request({ ...params, ...formValues })
   return {
     total: res.total,
-    list: res.list,
+    data: res.data,
   }
 }
 ```
 
 #### columns
+
  以element-ui 的table为例
-```js
-[
-  { prop: 'name', label: '标题', width: '100px' }
-  { prop: 'price', label: '价格', sortable: true },
-  {
-    label: '操作',
-    // 需要使用作用域插槽时，对应的jsx写法
-    render: ({ row, $index }) => (
-      <div>
-        <el-button type="primary" onClick={() => { console.log(row, $index) }} >编辑</el-button>
-        <el-button type="danger" >删除</el-button>
-      </div>
-    )
-  }
-]
+
+```vue
+<YForm v-model="formData">
+  <YQueryTable :serve="serve" :columns="columns" border></YQueryTable>
+</YForm>
+
+<script>
+/* 列的属性 */
+columns () {
+  return [
+    { prop: 'name', label: '标题', width: '100px' }
+    { prop: 'price', label: '价格', sortable: true },
+    {
+      label: '操作',
+      // 需要使用作用域插槽时，对应的jsx写法
+      render: ({ row, $index }) => (
+        <div>
+          <el-button type="primary" onClick={() => { console.log(row, $index) }} >编辑</el-button>
+          <el-button type="danger" >删除</el-button>
+        </div>
+      )
+    }
+  ]
+}
+</script>
 ```
 
 #### slot
@@ -190,8 +297,6 @@ const serve = async ({ params, formValues }) => {
 
 ```
 
-
-
 ::: tip
 常见场景: 操作编辑、删除处理后，一般需要更新列表
 :::
@@ -206,3 +311,49 @@ this.$refs.YQueryTable.runServe()
 ```js
 this.$refs.YQueryTable.runServe({ currentPage: 1 })
 ```
+
+::: tip
+常见场景: 操作element-ui table的属性/方法 获取table 的 ref
+:::
+
+* 通过在 YQueryTable 中 wrappedTableRef 回调获取
+
+```vue
+<YQueryTable border :serve="serve" :wrappedTableRef="setTableRef"></YQueryTable>
+
+<script>
+// 获取table ref属性
+setTableRef (ref) {
+  this.$options.tableRef = ref
+}
+</script>
+```
+
+
+#### Attributes
+::: demo
+```vue
+<template>
+  <YForm v-model="formData">
+    <YTable :data="propsData.yquerytableProps" border>
+      <template>
+        <el-table-column prop="prop" label="参数"></el-table-column>
+        <el-table-column prop="desc" label="说明"></el-table-column>
+        <el-table-column prop="type" label="类型"></el-table-column>
+        <el-table-column prop="options" label="可选值"></el-table-column>
+        <el-table-column prop="default" label="默认值"></el-table-column>
+      </template>
+    </YTable>
+  </YForm>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      formData: {}
+    }
+  }
+}
+</script>
+```
+:::
