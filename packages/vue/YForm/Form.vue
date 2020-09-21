@@ -408,15 +408,20 @@ export default {
         })
       })
     },
-    getFieldInstance(name){
-      let children = this.$children
-      let node
-      children.forEach((ele) => {
-        if(ele && ele.$refs && ele.$refs['yfield_'+name]){
-          node = ele.$refs['yfield_'+name]
-        }
-      })
-      return node
+    getFieldInstance:function(name){
+      let result
+      let flatten = function(arr, name){
+        arr && arr.forEach((item)=>{
+          if(item.name && item.name === name && item.$refs && item.$refs['yfield_'+name]) {
+            console.log(item.$refs['yfield_'+name])
+            result = item.$refs['yfield_'+name]
+          } else if (item.$children.length) {
+            flatten(item.$children, name)
+          }
+        })
+      }
+      flatten(this.$children, name)
+      return result
     },
     isElementInViewport (el) {
       // 判断元素是否在视窗内
