@@ -312,12 +312,14 @@ const VueField = {
   render(h) {
 
     return this.yVisible ? h('div', {
+      attrs:{
+        id: 'yfield_'+this.name,
+      },
       class: {
         ...this.fieldClassNames,
         yfield: true,
       },
       key: this.name,
-      ref: 'yfield_'+this.name
     }, [
       <LabelWrap
         isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
