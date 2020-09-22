@@ -408,7 +408,7 @@ export default {
         })
       })
     },
-    getFieldInstance:function(name) {
+    getFieldInstance (name) {
       return document.getElementById('yfield_'+name)
     },
     isElementInViewport (el) {
