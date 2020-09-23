@@ -4,53 +4,173 @@
 Vue.use(YField, options)
 ```
 
-#### Field.options (全局注册options)
+#### 基本使用
 
-| 参数        | 	说明        | 类型   | 可选值 | 默认值 |
-| ------------- |:-------------:|   -----:| -----:|-----:|
-|name         | 标签名称      | String |       | YField |
-|defaultComponent | component 默认值    | String| vNode |       | 'input' |
-|componentProps | 默认配置component-props  | Object|Fuction(fieldContext) => Object |       | {} |
-|name         | 标签名称      | String |       | YField |
+::: demo
+```vue
+<template>
+  <YForm class="w500" v-model="formData" labelWidth="120px">
+    <!-- 可继承 element-ui 组件属性 例: clearable -->
+    <YField name="nickName" label="昵称" :fieldStatus="formData.fieldStatus" clearable />
+    <!-- 选项可通过 dataSource 传入 value label/key -->
+    <YField name="option" label="选项" component="el-select" :dataSource="options" :fieldStatus="formData.fieldStatus" />
+    <!-- 切换预览状态 -->
+    <YField name="fieldStatus" label="预览区状态" component="el-radio-group">
+      <el-radio-button label="edit"></el-radio-button>
+      <el-radio-button label="preview"></el-radio-button>
+      <el-radio-button label="disabled"></el-radio-button>
+    </YField>
+  </YForm>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      formData: {
+        nickName: 'lions',
+        fieldStatus: 'edit'
+      },
+      options: [
+        { label: '全部', value: null },
+        { label: '选项1', value: 'option1' }
+      ]
+    }
+  }
+}
+</script>
+```
+:::
 
-#### Field api
+#### component为el-select时 选项传入方式
 
-| 参数        | 	说明        | 类型   | 可选值 | 默认值 |
-| ------------- |:-------------:|   -----:| -----:|-----:|
-|name  (required)       | 	字段      | String |       |   |
-|label |     | |  |       |  |
-|component |   | String/VNode |  |       |  |
-|rules         | 同 elment-ui form   |  |       |  |
-|fieldStatus         |字段状态，优先级高于Form.formStatus   |String  |    edit/preview/disabled  |edit  |
-|previewValue         | 自定义预览ui  | Function(value): vNode | String |       | value |
-|colon         | 优先级高于Form.colon   |  |       |  |
-|componentProps         |component props   | Object |       |  {}|
-|componentStyle         |component 组件样式   | Object |       |  {}|
-|componentClass         | component 组件class名  |String/Array  |  | |
-wrappedComponentRef |回调函数，返回component组件实例 | Function(value: vNode): void | |  |
-|yVisible         | 同v-if，使用该属性可以省去key设置  |  |       |  |
-|其他属于 component的自身属性         |    |  |       |  |
+* dataSource 接收格式 object[]
 
+```vue
+<!-- 选项可通过 dataSource 传入 value label/key -->
+<YField name="option" label="选项" component="el-select" :dataSource="options" />
 
+<script>
+export const options = [
+  {
+    label: '选项1',
+    value: 'option1'
+  }
+]
+</script>
+```
 
-##### yVisible
+* dataSource 接收格式 new Map
 
-* `yVisible`与`y-if`都可以控制组件渲染，然而`y-if`却做不到`field`字段卸载，要达到这个效果 需要`y-if + key` 组合，`yVisible = y-if + key`
+```vue
+<!-- 选项可通过 dataSource 传入 new Map -->
+<YField name="option" label="选项" component="el-select" :dataSource="options" />
 
-<!-- ::: demo
+<script>
+export const options = new Map([
+  [0, '选项1'],
+  [1, '选项2']
+])
+</script>
+```
+
+* dataSource 接收格式 object{ key: value }
+
+```vue
+<!-- 选项可通过 dataSource 传入 object{ key: value } -->
+<YField name="option" label="选项" component="el-select" :dataSource="options" />
+
+<script>
+/* value 可为其他格式 string object array boolean 等 */
+export const options = { 'option1': '选项1' }
+</script>
+```
+
+* slot 传入选项
+
+```vue
+<!-- 选项可通过 slot 插槽传入选项 -->
+<YField name="option" label="选项" component="el-select">
+  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+</YField>
+
+<script>
+export const options = [
+  {
+    label: '选项1',
+    value: 'option1'
+  }
+]
+</script>
+```
+
+#### component为自定义组件时, 必须是可通过 `v-model` 绑定
+
+```vue
+<!-- 自定义组件 一定要有绑定值 -->
+<YField name="customCom" label="自定义组件" :component="customComponent" />
+```
+
+#### 自定义预览内容
+
+::: demo
+```vue
+<template>
+  <YForm class="w500" v-model="formData" labelWidth="120px">
+    <!-- 切换预览状态 -->
+    <YField name="fieldStatus" label="预览区状态" component="el-radio-group">
+      <el-radio-button label="edit"></el-radio-button>
+      <el-radio-button label="preview"></el-radio-button>
+      <el-radio-button label="disabled"></el-radio-button>
+    </YField>
+    <!-- previewValue -->
+    <YField name="preDIY" label="预览自定义" :fieldStatus="formData.fieldStatus" :previewValue="previewValue" />
+  </YForm>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      formData: {
+        preDIY: 'preDIY',
+        fieldStatus: 'preview'
+      }
+    }
+  },
+  methods: {
+    previewValue () {
+      return <el-card header="自定义预览内容">
+        <span>当前状态: {this.formData.fieldStatus}</span><br />
+        <span>当前绑定值: {this.formData.preDIY}</span><br />
+        <span>自定义预览内容区域ABC</span>
+      </el-card>
+    }
+  }
+}
+</script>
+```
+:::
+
+#### yVisible / v-if + key
+
+* `yVisible`暂时不可用, 请使用 `v-if + key`
+* `yVisible`与`v-if`都可以控制组件渲染，然而`v-if`却做不到`field`字段卸载，要达到这个效果 需要`v-if + key` 组合，`yVisible = v-if + key`
+
+::: demo
 ```vue
 <template>
   <YForm v-model="formValues" colon label-width="120px">
     <YField name="type" component="el-radio-group" label="交通方式" :dataSource="TYPES" />
     <YField
+      v-if="this.formValues.type === 1"
+      key="calories"
       name="calories"
       label="消耗卡路里"
-      :yVisible="this.formValues.type === 1"
     />
     <YField
+      v-if="this.formValues.type === 2"
+      key="costFee"
       name="costFee"
       label="乘车费用"
-      :yVisible="this.formValues.type === 2"
     >
       <span slot="append">元</span>
     </YField>
@@ -59,7 +179,7 @@ wrappedComponentRef |回调函数，返回component组件实例 | Function(value
 <script>
 const TYPES = new Map([
   [1, '步行'],
-  [2, '乘车'],
+  [2, '乘车']
 ])
 
 export default {
@@ -74,6 +194,60 @@ export default {
 }
 </script>
 ```
+:::
 
-::: -->
+#### Field.options (全局注册options)
+::: demo
+```vue
+<template>
+  <YForm v-model="formData">
+    <YTable :data="propsData.yfieldOptions" border>
+      <template>
+        <el-table-column prop="prop" label="参数"></el-table-column>
+        <el-table-column prop="desc" label="说明"></el-table-column>
+        <el-table-column prop="type" label="类型"></el-table-column>
+        <el-table-column prop="options" label="可选值"></el-table-column>
+        <el-table-column prop="default" label="默认值"></el-table-column>
+      </template>
+    </YTable>
+  </YForm>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      formData: {}
+    }
+  }
+}
+</script>
+```
+:::
 
+#### Attributes
+::: demo
+```vue
+<template>
+  <YForm v-model="formData">
+    <YTable :data="propsData.yfieldProps" border>
+      <template>
+        <el-table-column prop="prop" label="参数"></el-table-column>
+        <el-table-column prop="desc" label="说明"></el-table-column>
+        <el-table-column prop="type" label="类型"></el-table-column>
+        <el-table-column prop="options" label="可选值"></el-table-column>
+        <el-table-column prop="default" label="默认值"></el-table-column>
+      </template>
+    </YTable>
+  </YForm>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      formData: {}
+    }
+  }
+}
+</script>
+```
+:::
