@@ -23,30 +23,32 @@
       :serve="serve"
       :wrappedTableRef="setTableRef"
     >
-      <el-table-column prop="name" label="商品图片" show-overflow-tooltip>
-        <div slot-scope="scope">
-          <img :src="scope.row.imgUrl" style="width: 40px;height: 40px" />
-        </div>
-      </el-table-column>
-      <el-table-column prop="name" label="商品名称" show-overflow-tooltip width="200px"></el-table-column>
-      <el-table-column prop="price" label="价格" sortable></el-table-column>
-      <el-table-column label="状态">
-        <template slot-scope="scope">
-          {{ STATUS.get(scope.row.status) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="平台">
-        <template slot-scope="scope">
-          {{ PLATFORMS.get(scope.row.platform) }}
-        </template>
-      </el-table-column>
-      <el-table-column  prop="stock" label="库存"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-link type="primary" @click="editItem(scope)">编辑</el-link>
-          <el-link type="danger" @click="delItem(scope)">删除</el-link>
-        </template>
-      </el-table-column>
+      <template>
+        <el-table-column prop="name" label="商品图片" show-overflow-tooltip>
+          <div slot-scope="scope">
+            <img :src="scope.row.imgUrl" style="width: 40px;height: 40px" />
+          </div>
+        </el-table-column>
+        <el-table-column prop="name" label="商品名称" show-overflow-tooltip width="200px"></el-table-column>
+        <el-table-column prop="price" label="价格" sortable></el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            {{ STATUS.get(scope.row.status) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="平台">
+          <template slot-scope="scope">
+            {{ PLATFORMS.get(scope.row.platform) }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="stock" label="库存"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="editItem(scope)">编辑</el-link>
+            <el-link type="danger" @click="delItem(scope)">删除</el-link>
+          </template>
+        </el-table-column>
+      </template>
     </YQueryTable>
   </YForm>
 </template>
