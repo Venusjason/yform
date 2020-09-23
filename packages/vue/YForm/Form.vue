@@ -348,14 +348,13 @@ export default {
       let valid = true
       const fieldsNamesLength = Object.keys(this.fields).length
       const invalidFields = {}
-      let firstTop
-      let firstNode
+      
       return new Promise((resolve, reject) => {
         if (fieldsNamesLength === 0) {
           // 空 form 校验直接通过
           return resolve(true)
         }
-        Object.keys(this.fields).forEach(name => {
+        Object.keys(this.fields).forEach((name) => {
           nameCount++
           const fieldsChildrenLen = this.fields[name].length
           let count = 0
@@ -372,33 +371,24 @@ export default {
                 } else {
                   if(this.scrollToFirstError){
                     // 定位到错误元素
-                    Object.keys(invalidFields).forEach(name => {
-                      let node = this.getFieldInstance(name)
-                      if(node){
-                        var fieldTop = node.getBoundingClientRect().top
-                        var formTop = this.$refs.yform.getBoundingClientRect().top
-                        var top = fieldTop - formTop;
-                        if (firstTop === undefined || firstTop > top) {
-                          firstTop = top;
-                          firstNode = node;
+                    this.$nextTick(()=>{
+                      let firstNode = this.findFirstErrorField()
+                      if (firstNode) {
+                        if(typeof(firstNode.scrollIntoViewIfNeeded) == "function"){
+                          setTimeout(function(){
+                            firstNode.scrollIntoViewIfNeeded();
+                          }, 100)
+                        }else {
+                          // 必要时滚动
+                          if(!this.isElementInViewport(firstNode)){
+                            firstNode.scrollIntoView({
+                              block:'center',
+                              behavior:'smooth'
+                            })
+                          }
                         }
                       }
                     })
-                    if (firstNode) {
-                      if(typeof(firstNode.scrollIntoViewIfNeeded) == "function"){
-                        setTimeout(function(){
-                          firstNode.scrollIntoViewIfNeeded();
-                        }, 100)
-                      }else {
-                        // 必要时滚动
-                        if(!this.isElementInViewport(firstNode)){
-                          firstNode.scrollIntoView({
-                            block:'center',
-                            behavior:'smooth'
-                          })
-                        }
-                      }
-                    }
                   }
                   reject(invalidFields)
                 }
@@ -408,15 +398,24 @@ export default {
         })
       })
     },
-    getFieldInstance(name){
-      let children = this.$children
-      let node
-      children.forEach((ele) => {
-        if(ele && ele.$refs && ele.$refs['yfield_'+name]){
-          node = ele.$refs['yfield_'+name]
+    findFirstErrorField(){
+      let firstTop
+      let firstNode
+      const eles = this.$refs.yform.getElementsByClassName('is-error yfield')
+      // console.log(eles);
+      for (var i = 0; i < eles.length; i++) {
+        let node = eles[i]
+        if(node){
+          var fieldTop = node.getBoundingClientRect().top
+          var formTop = this.$refs.yform.getBoundingClientRect().top
+          var top = fieldTop - formTop;
+          if (firstTop === undefined || firstTop > top) {
+            firstTop = top;
+            firstNode = node;
+          }
         }
-      })
-      return node
+      }
+      return firstNode
     },
     isElementInViewport (el) {
       // 判断元素是否在视窗内
