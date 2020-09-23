@@ -417,9 +417,6 @@ export default {
       }
       return firstNode
     },
-    getFieldInstance (name) {
-      return document.getElementById('yfield_'+name)
-    },
     isElementInViewport (el) {
       // 判断元素是否在视窗内
         var rect = el.getBoundingClientRect();
