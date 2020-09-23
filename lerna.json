@@ -9,6 +9,7 @@
     "ignoreChanges": [
       "packages/.vuepress/**",
       "*.md",
+      "package-lock.json",
       "**/example/**",
       "**/test/**",
       "**/dist/**",
