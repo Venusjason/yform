@@ -111,6 +111,7 @@ const VueField = {
       validateMessage: '',
       errorMsg: '',
       rulesResultChangeCount: 0,
+      fleldIndex: 0
     }
   },
   computed: {
@@ -252,6 +253,8 @@ const VueField = {
     initField() {
       const { EM } = this.YForm
       EM.emit('FIELD_REGISTER', this)
+      this.fieldIndex = this.YForm.fields[this.name] && this.YForm.fields[this.name].length
+      console.log('FIELD_REGISTER', this.name, this.fieldIndex)
     },
     updateAfter(trigger = '') {
       this.trigger = trigger
@@ -313,7 +316,7 @@ const VueField = {
 
     return this.yVisible ? h('div', {
       attrs:{
-        id: 'yfield_'+this.name,
+        id: 'yfield_'+this.name+'_'+this.fieldIndex,
       },
       class: {
         ...this.fieldClassNames,
