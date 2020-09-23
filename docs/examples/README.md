@@ -37,7 +37,7 @@ export default {
 ::: demo
 ```vue
 <template>
-  <YForm v-model="formValues" @submit="submitForm">
+  <YForm v-model="formValues" @submit="submitForm" scrollToFirstError>
     <p>班级学生登记表</p>
     <YButton type="primary" @click="addItem">添加学生</YButton>
     <el-table :data="formValues.list" style="margin: 20px 0">

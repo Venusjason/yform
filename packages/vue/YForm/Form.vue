@@ -401,8 +401,8 @@ export default {
     findFirstErrorField(){
       let firstTop
       let firstNode
-      const eles = document.getElementsByClassName('is-error')
-      console.log(eles)
+      const eles = this.$refs.yform.getElementsByClassName('is-error yfield')
+      // console.log(eles);
       for (var i = 0; i < eles.length; i++) {
         let node = eles[i]
         if(node){
