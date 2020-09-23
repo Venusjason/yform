@@ -1,6 +1,22 @@
 {
+  "npmClient": "npm",
+  "command": {
+    "publish": {
+      "allowBranch": [
+        "master"
+      ]
+    },
+    "ignoreChanges": [
+      "packages/.vuepress/**",
+      "*.md",
+      "**/example/**",
+      "**/test/**",
+      "**/dist/**",
+      "**/lib/**"
+    ]
+  },
   "packages": [
-    "packages/*"
+    "packages/vue"
   ],
-  "version": "0.0.0"
+  "version": "independent"
 }
