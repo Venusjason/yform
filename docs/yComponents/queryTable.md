@@ -11,9 +11,9 @@
 ::: demo
 ```vue
 <template>
-  <YForm v-model="formValues" inline colon>
-    <YField name="name" label="商品名称" />
-    <YField name="platform" label="平台" component="el-select" :dataSource="PLATFORMS"/>
+  <YForm v-model="formValues" inline colon @fieldsInput="formEvents" @keyup.enter="formEvents" >
+    <YField name="name" label="商品名称" @keyup.enter="keypress" />
+    <YField name="platform" label="平台" component="el-select" :dataSource="PLATFORMS" />
     <YField name="status" label="状态" component="el-select" :dataSource="STATUS"/>
     <YButton do="search" :afterClick="resetTable" />
     <YButton do="reset" :afterClick="resetTable" />
@@ -110,6 +110,12 @@ export default {
     },
     resetTable() {
       this.$options.tableRef.clearSort()
+    },
+    formEvents(e, value) {
+      console.log(e, value)
+    },
+    keypress(e) {
+      console.log('keypress2222', e)
     }
   }
 }

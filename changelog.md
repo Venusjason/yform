@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### 0.1.34
+
+- feat: form events透传, field.component 支持 native 事件
+
 ### 0.1.32
 
 - feat: 新增 scrollToFirstError api: 表单提交时是否需要自动定位到错误项

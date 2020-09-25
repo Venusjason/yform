@@ -1,6 +1,6 @@
 module.exports = {
   title: '@yform',
-  base: '/yform/',
+  base: process.env.NODE_ENV === 'production' ? '/yform/' : '',
   description: '@yform 帮你快速搞定vue 中后台应用',
   plugins: ['demo-container'],
   themeConfig: {
