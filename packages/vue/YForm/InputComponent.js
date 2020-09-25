@@ -72,7 +72,7 @@ export default {
 
     const componentStyleResult = getType(componentStyle) === 'string' ? inlineStyleToJsStyle(componentStyle) : componentStyle
 
-  
+    const fieldEvents = fieldContext.$listeners
     // const { fieldInstance } = fieldContext.$options
   
     const getClassNames = () => {
@@ -167,10 +167,11 @@ export default {
             value = e.target.value
           }
           EM.emit('FIELD_INPUT_CHANGE', {
+            trigger: 'input',
             field: fieldContext,
             value
           })
-          fieldContext.$listeners.input && fieldContext.$listeners.input(e)
+          fieldEvents.input && fieldEvents.input(e)
         },
         change(e) {
           let value = e
@@ -181,24 +182,44 @@ export default {
             value = e.target.value
           }
           EM.emit('FIELD_INPUT_CHANGE', {
+            trigger: 'change',
             field: fieldContext,
             value
           })
-          fieldContext.$listeners.change && fieldContext.$listeners.change(e)
+          fieldEvents.change && fieldEvents.change(e)
         },
         focus(e) {
+          let value = e
+          /**
+           * 原生事件
+           */
+          if (fieldContext.yNative) {
+            value = e.target.value
+          }
           EM.emit('FIELD_INPUT_FOCUS', {
+            trigger: 'focus',
             field: fieldContext,
+            value,
           })
-          fieldContext.$listeners.focus && fieldContext.$listeners.focus(e)
+          fieldEvents.focus && fieldEvents.focus(e)
         },
         blur(e) {
+          let value = e
+          /**
+           * 原生事件
+           */
+          if (fieldContext.yNative) {
+            value = e.target.value
+          }
           EM.emit('FIELD_INPUT_BLUR', {
+            trigger: 'blur',
             field: fieldContext,
+            value,
           })
-          fieldContext.$listeners.blur && fieldContext.$listeners.blur(e)
+          fieldEvents.blur && fieldEvents.blur(e)
         },
       },
+      nativeOn: $listeners,
     }, [
       ...(dataSourceSlots || []),
       ...slots,

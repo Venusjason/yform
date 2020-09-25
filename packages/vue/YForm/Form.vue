@@ -99,14 +99,23 @@ export default {
     scrollToFirstError: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   computed: {
     autoLabelWidth() {
       if (!this.potentialLabelWidthArr.length) return 0;
       const max = Math.max(...this.potentialLabelWidthArr);
       return max ? `${max}px` : '';
-    }
+    },
+    events() {
+      const events = {}
+      Object.keys(this.$listeners).forEach(name => {
+        if (name !== 'input') {
+          events[name] = this.$listeners[name]
+        }
+      })
+      return events
+    },
   },
   data() {
     return {
@@ -136,7 +145,7 @@ export default {
   created() {
     this.initForm()
   },
-  mounted () {
+  mounted() {
   },
   beforeDestroy () {
     const LIFE_CYCLES = [
@@ -144,7 +153,7 @@ export default {
       'FIELD_INPUT_CHANGE',
       'FIELD_INPUT_FOCUS',
       'FIELD_INPUT_BLUR',
-      'FIELD_DESTORY'
+      'FIELD_DESTORY',
     ]
     LIFE_CYCLES.forEach(ELE => this.EM.off(ELE))
   },
@@ -521,6 +530,8 @@ export default {
       },
       attrs: filterAttrs(this.$attrs),
       ref: 'yform',
+      // 除了 input 事件,其他事件透传
+      on: this.events,
     }, [
       this.$slots.default,
       // <pre>value: {JSON.stringify(this.value, null, 2)}</pre>,
