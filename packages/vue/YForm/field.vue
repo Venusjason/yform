@@ -33,7 +33,7 @@ const VueField = {
     component: {
     },
     /**
-     * component style
+     * component style 支持css内联字符串
      */
     componentStyle: {
       type: [Object, String],
