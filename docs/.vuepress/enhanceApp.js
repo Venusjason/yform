@@ -10,6 +10,8 @@ import {
   YButton,
   YQueryTable,
   YTable,
+  YLayout,
+  YCol,
 } from '../../packages/vue/lib/element-ui/index.umd.js'
 import '../../packages/vue/lib/element-ui/index.css'
 import './reset.css'
@@ -71,6 +73,25 @@ export default ({ Vue }) => {
       pageSize: 10,
       pageSizes: [10, 15, 20, 25, 30],
       layout: 'total, sizes, prev, pager, next, jumper',
+    }
+  })
+
+  Vue.use(YLayout, {
+    breakpointWidth: {
+      xs: 480,
+      sm: 576,
+      md: 768,
+      lg: 992,
+      xl: 1200,
+      xxl: 1600,
+    }
+  })
+  Vue.use(YCol, {
+    collapseButtonComponent: {
+      tag: 'YButton',
+      props: {
+        type: 'text',
+      }
     }
   })
 }

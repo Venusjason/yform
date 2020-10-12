@@ -11,13 +11,23 @@
 ::: demo
 ```vue
 <template>
-  <YForm v-model="formValues" inline colon @fieldsInput="formEvents" @keyup.enter="formEvents" >
-    <YField name="name" label="商品名称" @keyup.enter="keypress" />
-    <YField name="platform" label="平台" component="el-select" :dataSource="PLATFORMS" />
-    <YField name="status" label="状态" component="el-select" :dataSource="STATUS"/>
-    <YButton do="search" :afterClick="resetTable" />
-    <YButton do="reset" :afterClick="resetTable" />
-    <YButton do="debug" />
+  <YForm v-model="formValues" colon label-width="100px" @fieldsInput="formEvents" @keyup.enter="formEvents" >
+    <YLayout>
+      <YCol>
+        <YField name="name" label="商品名称" @keyup.enter="keypress" />
+      </YCol>
+      <YCol :layouts="{xs: {span: 9}, sm: { span: 18 }}">
+        <YField name="platform" label="平台" component="el-select" :dataSource="PLATFORMS" />
+      </YCol>
+      <YCol>
+        <YField name="status" label="状态" component="el-select" :dataSource="STATUS"/>
+      </YCol>
+      <YCol collapse :span="12">
+        <YButton do="search" :afterClick="resetTable" />
+        <YButton do="reset" :afterClick="resetTable" />
+        <YButton do="debug" />
+      </YCol>
+    </YLayout>
     <YQueryTable
       ref="YQueryTable"
       :serve="serve"
