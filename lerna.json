@@ -4,7 +4,8 @@
     "publish": {
       "allowBranch": [
         "master"
-      ]
+      ],
+      "npmClientArgs": ["--no-package-lock"]
     },
     "ignoreChanges": [
       "packages/.vuepress/**",
