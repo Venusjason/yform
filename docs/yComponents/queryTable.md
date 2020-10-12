@@ -7,6 +7,7 @@
 * 删除操作 查询列表并更新到第一页
 * 点击查询 table的sort状态等 重置
 * 点击重置 table的sort状态等 重置 & 表单值恢复初始化
+* 支持表单栅格化布局 自动展开收起 ([layout](/yComponents/layout/))
 
 ::: demo
 ```vue

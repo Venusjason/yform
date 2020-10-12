@@ -16,10 +16,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    color: {
-      type: String,
-      default: '#409eff'
-    },
   },
   collapseButtonComponent: {
     tag: 'a',
@@ -112,8 +108,7 @@ export default {
               }
             }, [
               this.collapsed ? '展开' : '收起',
-              <i class={['y-collapse--arrow', this.collapsed ? 'down' : 'up']}
-                style={{borderColor: this.color}}></i>
+              <i class={['y-collapse--arrow', this.collapsed ? 'down' : 'up']}></i>
             ])
           )
         }

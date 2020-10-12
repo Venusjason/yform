@@ -12,7 +12,9 @@ import {
   YField,
   YButton,
   YQueryTable,
-  YTable
+  YTable,
+  YLayout,
+  YCol,
 } from '@yform/vue/lib/element-ui/index.umd'
 import '@yform/vue/lib/element-ui/index.css'
 
@@ -51,6 +53,26 @@ Vue.use(YQueryTable, {
   }
 })
 Vue.use(YTable)
+
+Vue.use(YLayout, {
+  breakpointWidth: {
+    xs: 480,
+    sm: 576,
+    md: 768,
+    lg: 992,
+    xl: 1200,
+    xxl: 1600,
+  }
+})
+
+Vue.use(YCol, {
+  collapseButtonComponent: {
+    tag: 'YButton',
+    props: {
+      type: 'text',
+    }
+  }
+})
 
 ```
 

@@ -3,7 +3,7 @@
   <slot></slot>
 </div>
 </template>
-
+  
 <script>
 
 export default {
@@ -71,7 +71,7 @@ export default {
             this.mediaScreen = this.mediaScreens[i]
           }
         } else {
-          if (_this.cols[i] < _this.width && _this.width < _this.cols[i + 1]) {
+          if (_this.cols[i] <= _this.width && _this.width <= _this.cols[i + 1]) {
             // console.log(`宽度区间 ${_this.cols[i]} ~ ${_this.cols[i + 1]}`)
             itemSizes = i + 2
             this.mediaScreen = this.mediaScreens[i + 1]

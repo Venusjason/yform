@@ -9,7 +9,7 @@ export const YLayout = {
       Layout.breakpointWidth = option.breakpointWidth
     }
     Vue.component(
-      Layout.name,
+      (option && option.name) || Layout.name,
       Layout
     )
   }
@@ -23,7 +23,7 @@ export const YCol = {
       Object.assign(Col.collapseButtonComponent, option.collapseButtonComponent)
     }
     Vue.component(
-      Col.name,
+      (option && option.name) || Col.name,
       Col
     )
   }
