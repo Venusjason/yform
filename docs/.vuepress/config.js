@@ -40,6 +40,10 @@ module.exports = {
             path: '/yComponents/button'
           },
           {
+            title: 'layout',
+            path: '/yComponents/layout'
+          },
+          {
             title: 'queryTable',
             path: '/yComponents/queryTable'
           }

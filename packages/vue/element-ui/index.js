@@ -4,6 +4,8 @@ import { getType } from '../../core/lib/utils/index'
 import {
   Form as VueForm,
   Field as VueField,
+  YLayout,
+  YCol,
   createTable,
   createQueryTable,
   createYButton,
@@ -14,6 +16,8 @@ import {
 export {
   useYFormLog,
   extendRules,
+  YLayout,
+  YCol,
 }
 
 // console.log(Loading)
