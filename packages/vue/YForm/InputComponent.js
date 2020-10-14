@@ -219,7 +219,7 @@ export default {
           fieldEvents.blur && fieldEvents.blur(e)
         },
       },
-      nativeOn: $listeners,
+      // nativeOn: $listeners,
     }, [
       ...(dataSourceSlots || []),
       ...slots,

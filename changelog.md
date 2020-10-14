@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### 0.1.35.alpha.2
+
+- fix: 去掉 inputComponent 组件的 nativeOn, 使用该模式会导致先on 后 nativeOn事件触发，引发一个 trigger 触发2次
+
 ### 0.1.35.alpha.1
 
 - add: 增加 YLayout YCol组件,支持查询表单的展开收起

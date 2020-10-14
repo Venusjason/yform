@@ -22,7 +22,7 @@
     <YField name="isRequired" label="花名是否必须" component="el-switch" />
     <!-- 可继承 element-ui 组件属性 -->
     <YField name="nickName" label="花名" :required="formData.isRequired" clearable />
-    <YField name="empNum" label="工号" rules="limit10words" clearable />
+    <YField name="empNum" label="工号" rules="limit10words" clearable @change="onFieldChange" />
     <YField name="regText" label="自定义校验" :rules="regRules" clearable />
     <YField
       name="sendTimeStart,sendTimeEnd"
@@ -71,7 +71,10 @@ export default {
     // 表单校验
     onValidate (valid) {
       this.formValidate = valid
-    }
+    },
+    onFieldChange(e) {
+      console.log('onFieldChange')
+    },
   }
 }
 </script>
