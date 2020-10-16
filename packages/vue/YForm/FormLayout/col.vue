@@ -25,14 +25,13 @@ export default {
   },
   data() {
     return {
-      // resultSpan: 0,
       isShowWhencollapsed: false,
       collapsed: false,
     }
   },
   computed: {
     resultSpan() {
-      let span = 24 / this.YLayout.itemSizes
+      let span = (24 / this.YLayout.itemSizes)
       if (this.span !== undefined) {
         span = this.span
       }
@@ -51,7 +50,9 @@ export default {
   render(h) {
     const { gutter, mediaScreens, mediaScreen, collapsing } = this.YLayout
     let classList = []
-    const style = {}
+    const style = {
+      width: `${this.resultSpan / 24 * 100}%`
+    }
     if (gutter) {
       const px = gutter / 2 + 'px'
       Object.assign(style, {
@@ -124,9 +125,10 @@ export default {
   box-sizing: border-box;
 }
 each(range(24), {
-  .y-col-@{value} {
-    width: (@value / 24) * 100%;
-  }
+  // 使用js 来均分
+  // .y-col-@{value} {
+  //   width: (@value / 24) * 100%;
+  // }
 
   .y-col-offset-@{value} {
     margin-left: (@value / 24) * 100%;

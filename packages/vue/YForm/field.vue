@@ -66,7 +66,8 @@ const VueField = {
     rules: {},
     inline: {
       type: Boolean,
-      default: false,
+      required: false,
+      default: undefined,
     },
     labelWidth: {
       type: String,
@@ -102,7 +103,17 @@ const VueField = {
     validateOnRuleChange: {
       type: Boolean,
       required: false,
-    }
+    },
+    /**
+     * 表单域标签的位置，如果值为 left 或者 right 时，则需要设置 label-width
+     */
+    labelPosition: {
+      type: String,
+      required: false,
+      validator(value) {
+        return ['right', 'left', 'top'].includes(value)
+      },
+    },
   },
   data() {
     return {
@@ -130,24 +141,30 @@ const VueField = {
     dataSourceSlots() {
       return this.dataSource || []
     },
+    labelPositionResult() {
+      return this.labelPosition || this.YForm.labelPosition
+    },
     labelStyle() {
       const ret = {};
       if (!this.YForm) return ret
-      const { labelPosition } = this.YForm
-      if (labelPosition === 'top') return ({ width: '100%', textAlign: 'left', display: 'block' })
+      const { labelPositionResult } = this
+      if (labelPositionResult === 'top') return ({ width: '100%', textAlign: 'left', display: 'block' })
       const labelWidth = this.labelWidth || this.YForm.labelWidth
       if (labelWidth) {
         ret.width = labelWidth;
+        // label 默认设置 inline-block,因为 inline = true 时,label-width作用在display:inline上无效
+        ret.display = 'inline-block'
       }
-      if (labelPosition !== 'top') {
-        ret['textAlign'] = labelPosition
+      if (labelPositionResult !== 'top') {
+        ret['textAlign'] = labelPositionResult
       }
       return ret;
     },
     contentStyle() {
       const ret = {};
       const label = this.label;
-      if (this.YForm.labelPosition === 'top' || this.YForm.inline) return ret;
+      // top || inline 
+      if (this.labelPositionResult === 'top' || this.isInline) return ret;
       if (!label && !this.labelWidth && this.isNested) return ret;
       const labelWidth = this.labelWidth || this.YForm.labelWidth;
       if (labelWidth === 'auto') {
@@ -162,8 +179,17 @@ const VueField = {
       return ret;
     },
     isInline() {
-      if (!this.YForm) return false
-      return this.YForm.inline
+      let inline = false
+      if ([true, false].includes(this.inline)) {
+        inline = this.inline
+      } else {
+        if (!this.YForm) {
+          inline = false
+        } else {
+          inline = this.YForm.inline
+        }
+      }
+      return inline
     },
     fieldSize() {
       return this.YForm.size || 'small'
