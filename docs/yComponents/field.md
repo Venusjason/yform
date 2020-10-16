@@ -150,7 +150,7 @@ export default {
 ```
 :::
 
-#### yVisible / v-if + key
+#### yVisible / v-if + key(有bug，暂未修复，请使用 v-if + key)
 
 * `yVisible`暂时不可用, 请使用 `v-if + key`
 * `yVisible`与`v-if`都可以控制组件渲染，然而`v-if`却做不到`field`字段卸载，要达到这个效果 需要`v-if + key` 组合，`yVisible = v-if + key`

@@ -22,8 +22,8 @@
     <YField name="isRequired" label="花名是否必须" component="el-switch" />
     <!-- 可继承 element-ui 组件属性 -->
     <YField name="nickName" label="花名" :required="formData.isRequired" clearable />
-    <YField name="empNum" label="工号" rules="limit10words" clearable @change="onFieldChange" />
-    <YField name="regText" label="自定义校验" :rules="regRules" clearable />
+    <YField name="empNum" inline label="工号" rules="limit10words" clearable @change="onFieldChange" />
+    <YField name="regText" inline label="自定义校验" :rules="regRules" clearable />
     <YField
       name="sendTimeStart,sendTimeEnd"
       label="发送时间"
@@ -34,6 +34,10 @@
       start-placeholder="开始日期"
       end-placeholder="结束日期"
     />
+
+    <YField name="label" label-position="top">
+      <span slot="label">slot label</span>
+    </YField>
     <YButton do="submit" />
   </YForm>
 </template>
