@@ -30,6 +30,10 @@ const VueField = {
       required: false
     },
     label: {},
+    yList: {
+      type: Boolean,
+      default: false,
+    },
     component: {
     },
     /**
@@ -334,9 +338,23 @@ const VueField = {
     updateComputedLabelWidth(width) {
       this.computedLabelWidth = width ? `${width}px` : '';
     },
+    actionFun() {
+      return {
+        add: (data)=>{
+          this.value.push(data)
+        },
+        delete: (index)=>{
+          if(this.value.length>1){
+            this.value.splice(index, 1);
+          } else {
+            console.error('已经不能再删除了')
+          }
+          
+        }
+      }
+    }
   },
   render(h) {
-
     return this.yVisible ? h('div', {
       class: {
         ...this.fieldClassNames,
@@ -364,7 +382,11 @@ const VueField = {
         'is-inline': this.isInline,
         [`size-${this.fieldSize}`]: true,
       }} style={this.contentStyle} key={this.name}>
-        <InputComponent />
+        {
+          !this.yList
+          ? <InputComponent />
+          : this.$scopedSlots.default({ value: this.value, action: this.actionFun() })
+        }
         {
           this.errorMsg && (
             <div class="yfield__errors" >{this.errorMsg}</div>
@@ -376,6 +398,7 @@ const VueField = {
 }
 
 export default VueField
+
 </script>
 <style lang="less">
 @import "./common.less";
