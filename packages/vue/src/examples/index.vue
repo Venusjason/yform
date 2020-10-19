@@ -1,6 +1,7 @@
 <script>
 import ElementUi from './element-ui/index'
 import EditForm from './element-ui/EditForm'
+import Fieldlist from './Fieldlist.vue' 
 
 export default {
   data () {
@@ -17,6 +18,10 @@ export default {
       2: {
         component: EditForm,
         name: '复杂表单'
+      },
+      3: {
+        component: Fieldlist,
+        name: '列表式表单'
       }
     }
 
