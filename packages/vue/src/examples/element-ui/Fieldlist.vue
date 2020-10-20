@@ -9,7 +9,7 @@
           <div v-for="(item, i) in value" :key="i">
             <ElField :name="`list.${i}.name`" label="姓名" inline component="el-input" required/>
             <ElField :name="`list.${i}.age`" label="年龄" inline component="el-input"/>
-            <ElButton @click="action.delete(i)">Delete</ElButton>
+            <ElButton @click="action.delete(i)" type="" v-if='value.length!==1'>Delete</ElButton>
           </div>
         </template>
       </ElFieldList>
