@@ -4,7 +4,7 @@ import AsyncValidator from 'async-validator'
 import InputComponent from './InputComponent.js'
 import { computedRules } from './rules.js'
 import log from '../../core/lib/utils/log'
-import { getType } from '../../core/lib/utils/index'
+import { getType, filterAttrs } from '../../core/lib/utils/index'
 import LabelWrap from './label-wrap.vue'
 
 const globalOptions = {
@@ -236,7 +236,6 @@ const VueField = {
       deep: true,
       handler: function (val, oldVal) {
         if (!isEqualWith(val, oldVal)) {
-          // console.log(`${this.name} : ${val} ${oldVal}`)
           // 执行校验
           if (oldVal !== undefined) {
             this.validate(this.trigger)
@@ -344,12 +343,7 @@ const VueField = {
           this.value.push(data)
         },
         delete: (index)=>{
-          if(this.value.length>1){
-            this.value.splice(index, 1);
-          } else {
-            console.error('已经不能再删除了')
-          }
-          
+          this.value.splice(index, 1);
         }
       }
     }
@@ -399,54 +393,30 @@ const VueField = {
 
 export default VueField
 
-export const FieldList = {
-    ...VueField,
+export const FieldList = ({
   name: 'YFieldList',
-  provide() {
-    return {
-      YFieldList: this
-    }
-  },
   render(h) {
-    return this.yVisible ? h('div', {
-      class: {
-        ...this.fieldClassNames,
-        yfield: true,
+    return h(VueField, {
+      props: {
+        yList: true,
+        ...this.$attrs
       },
-      key: this.name,
-    }, [
-      <LabelWrap
-        isAutoWidth={this.labelStyle && this.labelStyle.width === 'auto'}
-        updateAll={this.YForm.labelWidth === 'auto'}
-      >
-      {
-        (this.label || this.$slots.label) && (
-          <label for={this.name} style={this.labelStyle} class={{
-            'yfield__label': true,
-            [`size-${this.fieldSize}`]: true,
-          }}>
-            {this.label || this.$slots.label}{this.fieldColon}
-          </label>
-        )
-      }
-      </LabelWrap>,
-      <div class={{
-        'yfield__content': true,
-        'is-inline': this.isInline,
-        [`size-${this.fieldSize}`]: true,
-      }} style={this.contentStyle} key={this.name}>
-        {
-          this.$scopedSlots.default({ value: this.value, action: this.actionFun() })
+      attrs: filterAttrs({
+        ...this.$attrs,
+      }),
+      on: {
+        ...this.$listeners,
+      },
+      scopedSlots: { // 作用域透传
+        default: (props) => {
+          return h('div', [
+            this.$scopedSlots.default(props),
+          ])
         }
-        {
-          this.errorMsg && (
-            <div class="yfield__errors" >{this.errorMsg}</div>
-          )
-        }
-      </div>
-    ]) : null
+      },
+    })
   }
-}
+})
 
 </script>
 <style lang="less">
