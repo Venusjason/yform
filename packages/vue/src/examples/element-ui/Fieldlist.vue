@@ -1,39 +1,35 @@
 <template>
   <div>
     <p>新版</p>
-    <ElForm v-model="values" labelPosition="top" @submit="onSubmit">
-      <ElField name="name" label="名称444" component="el-input" required></ElField>
-      <ElFieldList name="list" label="员工列表">
+    <YForm v-model="values" labelPosition="top" @submit="onSubmit">
+      <YField name="name" label="名称444" component="el-input" required></YField>
+      <YFieldList name="list" label="员工列表">
         <template v-slot="{ value, action }" >
-          <ElButton @click="action.add({name: '', age:''})" >Add</ElButton>
+          <el-button @click="action.add({name: '', age:''})" >Add</el-button>
           <div v-for="(item, i) in value" :key="i">
-            <ElField :name="`list.${i}.name`" label="姓名" inline component="el-input" required/>
-            <ElField :name="`list.${i}.age`" label="年龄" inline component="el-input"/>
-            <ElButton @click="action.delete(i)" type="" v-if='value.length!==1'>Delete</ElButton>
+            <YField :name="`list.${i}.name`" label="姓名" inline component="el-input" required/>
+            <YField :name="`list.${i}.age`" label="年龄" inline component="el-input"/>
+            <el-button :disabled='value.length == 1' @click="action.delete(i)">Delete</el-button>
+            <el-button icon="el-icon-top" round :disabled="i === 0" @click="action.onMove('up', i)"></el-button>
+            <el-button icon="el-icon-bottom" round :disabled="(i+1) === value.length" @click="action.onMove('down', i)"></el-button>
           </div>
         </template>
-      </ElFieldList>
-      <ElButton do="submit">submit</ElButton>
-    </ElForm>
+      </YFieldList>
+      <YButton do="submit">submit</YButton>
+    </YForm>
   </div>
 </template>
 
 <script>
 import {
-  ElForm,
-  ElField,
-  ElFieldList,
-  ElButton
+  ElForm as YForm,
+  ElField as YField,
+  ElFieldList as YFieldList,
+  ElButton as YButton
 } from '../../../element-ui/index.js'
-// import ElForm from '../../../YForm/Form.vue'
-// import ElField from '../../../YForm/field.vue'
-// import { FieldList as ElFieldList } from '../../../YForm/field.vue'
-// import ElButton from '../../../YForm/Button.js'
-
-
 
 export default {
-  components: {ElForm, ElField, ElButton, ElFieldList},
+  components: {YForm, YField, YButton, YFieldList},
   data() {
     return {
       values: {
