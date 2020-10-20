@@ -1,7 +1,7 @@
 <script>
 import ElementUi from './element-ui/index'
 import EditForm from './element-ui/EditForm'
-import Fieldlist from './Fieldlist.vue' 
+import Fieldlist from './element-ui/Fieldlist' 
 
 export default {
   data () {
