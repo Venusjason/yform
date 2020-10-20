@@ -157,24 +157,14 @@ export default {
     <div class="mgb20"></div>
     <!-- 表格 -->
     <YQueryTable ref="yquerytableRef" border
-    :serve="serve"
-    :wrappedTableRef="setTableRef"
-    :filterParamInvalidValue="filterParamInvalidValue"
-    :pagination="{ layout: paginationList.join(',') }"
-    :paginationPosition="paginationPosition"
-    :showLoading="showLoading"
+      :serve="serve"
+      :columns="columns"
+      :wrappedTableRef="setTableRef"
+      :filterParamInvalidValue="filterParamInvalidValue"
+      :pagination="{ layout: paginationList.join(',') }"
+      :paginationPosition="paginationPosition"
+      :showLoading="showLoading"
     >
-      <template>
-        <el-table-column type="selection"></el-table-column>
-        <el-table-column prop="name" label="标题"></el-table-column>
-        <el-table-column prop="price" label="价格" sortable></el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
-            <YButton type="primary" @click="editRow(scope.row, scope.$index)">编辑</YButton>
-            <YButton type="danger" @click="deleteRow(scope.row, scope.$index)">删除</YButton>
-          </template>
-        </el-table-column>
-      </template>
     </YQueryTable>
   </YForm>
 </template>
@@ -186,8 +176,28 @@ export default {
       filterParamInvalidValue: true,
       paginationList: ['total', 'sizes', 'prev', 'pager', 'next', 'jumper'],
       paginationPosition: 'right',
-      showLoading: true
+      showLoading: true,
     }
+  },
+  computed: {
+    columns() {
+      return [
+        { type: 'selection' },
+        { prop: 'name', label: '标题' },
+        { prop: 'price', label: '价格', type: 'y-money' },
+        {
+          align: 'center', label: '操作',
+          render: (scope) => {
+            return (
+              <div>
+                <YButton type="primary">编辑</YButton>
+                <YButton type="danger">删除</YButton>
+              </div>
+            )
+          }
+        },
+      ]
+    },
   },
   methods: {
     // 请求列表接口

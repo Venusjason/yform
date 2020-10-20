@@ -20,20 +20,6 @@ export {
   YCol,
 }
 
-// console.log(Loading)
-
-// export const getMySlots = (fieldContext, context, slotName = '*') => {
-//   const slotNames = slotName.split(',')
-
-//   const keys = Object.keys(fieldContext.$slots)
-//   const acceptKeys = keys.filter(key => slotName === '*' || slotNames.includes(key))
-
-//   return acceptKeys.reduce((arr, key) => arr.concat(fieldContext.$slots[key]), []).map(vnode => {
-//     vnode.context = context._self
-//     return vnode
-//   })
-// }
-
 export const ElForm = merge({}, VueForm, {
   provide() {
     return {
@@ -42,31 +28,6 @@ export const ElForm = merge({}, VueForm, {
     };
   },
 })
-
-// export const Form = ({
-//   name: 'ElForm',
-//   componentName: 'ElForm',
-//   provide() {
-//     return {
-//       elForm: this
-//     };
-//   },
-//   render(h) {
-//     return h(VueForm, {
-//       props: {
-//         ...this.$attrs
-//       },
-//       attrs: {
-//         ...this.$attrs,
-//       },
-//       on: {
-//         ...this.$listeners
-//       }
-//     }, [
-//       this.$slots.default,
-//     ])
-//   },
-// })
 
 export const ElField = merge({}, VueField, {
   provide() {
@@ -198,12 +159,16 @@ export const YField = {
       ElField
     )
   }
-}
+} 
 
 export const YTable = {
   install: function(Vue, option = { name: 'YTable' }) {
+    const { columnTypes = ElTable.columnTypes, name = ElTable.name } = option
+    // 全局注册自定义 column.type
+    merge(ElTable, { columnTypes })
+
     Vue.component(
-      option.name || ElTable.name,
+      name,
       ElTable,
     )
   }
@@ -212,6 +177,7 @@ export const YTable = {
 export const YQueryTable = {
   install: function(Vue, option = {}) {
     merge(ElQueryTable.globalOptions, { name: 'YQueryTable' }, option)
+
     Vue.component(
       option.name || ElQueryTable.name,
       ElQueryTable,

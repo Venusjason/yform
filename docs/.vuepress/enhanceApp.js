@@ -45,7 +45,15 @@ export default ({ Vue }) => {
     name: 'YForm',
     debug: true,
   })
-  Vue.use(YTable)
+  Vue.use(YTable, {
+    name: 'YTable',
+    columnTypes: {
+      'y-money': (value, scopedValue, columnProps) => {
+        console.log(value, scopedValue, columnProps)
+        return `￥${value}`
+      }
+    }
+  })
   Vue.use(YField, {
     name: 'YField',
     defaultComponent: 'el-input',
