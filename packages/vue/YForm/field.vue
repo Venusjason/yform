@@ -129,8 +129,13 @@ const VueField = {
     }
   },
   computed: {
-    value() {
-      return this.YForm && this.YForm.getFieldValue(this.name)
+    value: {
+      get: function() {
+        return this.YForm && this.YForm.getFieldValue(this.name)
+      },
+      set: function() {
+
+      }
     },
     isRequired() {
       return this.rulesResult.filter(rule => rule.required).length > 0
@@ -344,6 +349,22 @@ const VueField = {
         },
         delete: (index)=>{
           this.value.splice(index, 1);
+        },
+        onMove: (dir, index) => {
+          let moveComm = (curIndex, nextIndex) => {
+            let arr = this.value
+            arr[curIndex] = arr.splice(nextIndex, 1, arr[curIndex])[0]
+            return arr
+          }
+          if (dir === 'up' && index === 0) {
+            this.$message.warning('已在顶部！')
+          } else if (dir === 'down' && index === this.value.length - 1) {
+            this.$message.warning('已在底部！')
+          } else {
+            let nextIndex = dir === 'up' ? index - 1 : index + 1
+            this.value = moveComm(index, nextIndex)
+          }
+          return true
         }
       }
     }
