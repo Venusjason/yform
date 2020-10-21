@@ -343,6 +343,11 @@ const VueField = {
       this.computedLabelWidth = width ? `${width}px` : '';
     },
     actionFun() {
+      let moveComm = (curIndex, nextIndex) => {
+        let arr = this.value
+        arr[curIndex] = arr.splice(nextIndex, 1, arr[curIndex])[0]
+        return arr
+      }
       return {
         add: (data)=>{
           this.value.push(data)
@@ -350,21 +355,17 @@ const VueField = {
         delete: (index)=>{
           this.value.splice(index, 1);
         },
-        onMove: (dir, index) => {
-          let moveComm = (curIndex, nextIndex) => {
-            let arr = this.value
-            arr[curIndex] = arr.splice(nextIndex, 1, arr[curIndex])[0]
-            return arr
-          }
-          if (dir === 'up' && index === 0) {
-            this.$message.warning('已在顶部！')
-          } else if (dir === 'down' && index === this.value.length - 1) {
-            this.$message.warning('已在底部！')
-          } else {
-            let nextIndex = dir === 'up' ? index - 1 : index + 1
-            this.value = moveComm(index, nextIndex)
-          }
-          return true
+        up: (index) => {
+          let nextIndex = index - 1
+          this.value = moveComm(index, nextIndex)
+        },
+        down: (index) => {
+          let nextIndex = index + 1
+          this.value = moveComm(index, nextIndex)
+        },
+        move: (dir, index) => {
+          let nextIndex = dir === 'up' ? index - 1 : index + 1
+          this.value = moveComm(index, nextIndex)
         }
       }
     }

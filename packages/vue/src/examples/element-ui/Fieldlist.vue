@@ -10,8 +10,8 @@
             <YField :name="`list.${i}.name`" label="姓名" inline component="el-input" required/>
             <YField :name="`list.${i}.age`" label="年龄" inline component="el-input"/>
             <el-button :disabled='value.length == 1' @click="action.delete(i)">Delete</el-button>
-            <el-button icon="el-icon-top" round :disabled="i === 0" @click="action.onMove('up', i)"></el-button>
-            <el-button icon="el-icon-bottom" round :disabled="(i+1) === value.length" @click="action.onMove('down', i)"></el-button>
+            <el-button icon="el-icon-top" round :disabled="i === 0" @click="action.up(i)"></el-button>
+            <el-button icon="el-icon-bottom" round :disabled="(i+1) === value.length" @click="action.down(i)"></el-button>
           </div>
         </template>
       </YFieldList>
