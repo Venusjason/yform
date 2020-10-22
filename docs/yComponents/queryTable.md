@@ -184,7 +184,7 @@ export default {
       return [
         { type: 'selection' },
         { prop: 'name', label: '标题' },
-        { prop: 'price', label: '价格', type: 'y-money' },
+        { prop: 'price', label: '价格', sortable: true, type: 'y-money' },
         {
           align: 'center', label: '操作',
           render: (scope) => {

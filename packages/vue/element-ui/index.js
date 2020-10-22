@@ -163,9 +163,22 @@ export const YField = {
 
 export const YTable = {
   install: function(Vue, option = { name: 'YTable' }) {
-    const { columnTypes = ElTable.columnTypes, name = ElTable.name } = option
+    const {
+      columnTypes = ElTable.columnTypes,
+      name = ElTable.name,
+      EmptyComponnet,
+      defaultProps,
+    } = option
     // 全局注册自定义 column.type
     merge(ElTable, { columnTypes })
+
+    if (EmptyComponnet) {
+      ElTable.EmptyComponnet = EmptyComponnet
+    }
+
+    if (defaultProps) {
+      ElTable.defaultProps = defaultProps
+    }
 
     Vue.component(
       name,
