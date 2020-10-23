@@ -453,7 +453,7 @@ export const FieldList = ({
 }
 
 .yfield {
-  margin-bottom: 20px!important;
+  margin-bottom: 20px;
 
   &:before {
     display: table;

@@ -10,6 +10,7 @@ import {
   extendRules,
   YForm,
   YField,
+  YFieldList,
   YButton,
   YQueryTable,
   YTable,
@@ -43,6 +44,7 @@ Vue.use(YField, {
     return props
   }
 })
+Vue.use(YFieldList)
 Vue.use(YButton)
 Vue.use(YQueryTable, {
   name: 'YQueryTable',

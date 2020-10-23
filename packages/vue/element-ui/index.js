@@ -233,9 +233,9 @@ export const YFieldList = {
   install: function(Vue, option = {
     name: 'YFieldList',
   }) {
-    merge(ElFieldList.globalOptions, option)
+    merge({}, option)
     Vue.component(
-      ElFieldList.globalOptions.name || ElFieldList.name,
+      ElFieldList.name,
       ElFieldList
     )
   }

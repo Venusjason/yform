@@ -12,6 +12,7 @@ import {
   YTable,
   YLayout,
   YCol,
+  YFieldList
 } from '../../packages/vue/lib/element-ui/index.umd.js'
 import '../../packages/vue/lib/element-ui/index.css'
 import './reset.css'
@@ -94,4 +95,5 @@ export default ({ Vue }) => {
       }
     }
   })
+  Vue.use(YFieldList)
 }
