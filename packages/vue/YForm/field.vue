@@ -1,5 +1,6 @@
 <script>
 import isEqualWith from 'lodash/isEqualWith'
+import cloneDeep from 'lodash/cloneDeep'
 import AsyncValidator from 'async-validator'
 import InputComponent from './InputComponent.js'
 import { computedRules } from './rules.js'
@@ -367,24 +368,22 @@ const VueField = {
         add: (data)=>{
           if (self.yList) {
             const { EM } = self.YForm
-            var valueCopy = [].concat(JSON.parse(JSON.stringify(self.value)));
-            valueCopy.push(data)
+            let formValue = cloneDeep(self.value)
+            formValue.push(data)
             EM.emit('FIELD_INPUT_CHANGE', {
-              trigger: '',
               field: self,
-              value: valueCopy
+              value: formValue
             }) 
           }
         },
         delete: (index)=>{
           if (self.yList) {
             const { EM } = self.YForm
-            var valueCopy = [].concat(JSON.parse(JSON.stringify(self.value)));
-            valueCopy.splice(index, 1);
+            let formValue = cloneDeep(self.value)
+            formValue.splice(index, 1);
             EM.emit('FIELD_INPUT_CHANGE', {
-              trigger: '',
               field: self,
-              value: valueCopy
+              value: formValue
             })
           }
         },
