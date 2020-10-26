@@ -146,23 +146,14 @@ export const ElFieldList = merge({}, FieldList, {
   provide() {
     return {
       elFormItem: this,
-      YField: this
+      YFieldList: this
     }
   },
   elFormItem: true,
   computed: {
-    elFormItemSize() {
-      return this.fieldSize
-    },
     fieldClassNames() {
       return {
         'el-form-item': true,
-        'is-error': this.errorMsg !== '',
-        'is-success': this.errorMsg === '',
-        'is-required': this.isRequired,
-        'is-no-asterisk': this.YForm && this.YForm.hideRequiredAsterisk,
-        'is-inline': this.isInline,
-        'mr4': this.isInline,
       }
     }
   },

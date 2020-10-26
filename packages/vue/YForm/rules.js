@@ -29,8 +29,8 @@ const requiredArray = (message = '这是必填项') => ({
 })
 
 const validatorFunc = (regRule) => {
-  const { reg, message } = regRule
-  if (reg) {
+  const { reg, message, min, max } = regRule
+  if (reg) { // 正则判断
     const validator = (rule, val, callback) => {
       if ([null, undefined, ''].includes(val)) {
         return callback()
@@ -41,10 +41,25 @@ const validatorFunc = (regRule) => {
       callback()
     }
     return { validator }
+  } else if (min || max) {  // 长度判断
+    const validator = (rule, val, callback) => {
+      if ([null, undefined, ''].includes(val)) {
+        return callback()
+      }
+      if (min && val.length < min) {
+        return callback(new Error(message))
+      }
+      if (max && val.length > max) {
+        return callback(new Error(message))
+      }
+      callback()
+    }
+    return { validator }
   } else {
     return regRule
   }
 }
+
 
 const requiredMsg = (label) => `${label || '这'}是必填项`
 
@@ -102,8 +117,7 @@ const regs = {
   englishAndDigital: {
     reg: /^[a-z0-9]+$/i,
     message: '请输入字母和数字',
-  },
-
+  }
 }
 
 export const extendRules = (newRegs) => {
@@ -168,18 +182,25 @@ export const computedRules = (rules, label) => {
       })
     }
     Object.keys(rest).forEach(ruleName => {
-      if (rest[ruleName] === true && regs[ruleName]) {
-        const ruleReg = {
-          ...regs[ruleName],
+      if ((rest[ruleName] === true && regs[ruleName]) || ['type', 'min', 'max'].includes(ruleName)) {
+        let ruleReg
+        if(regs[ruleName]){
+          ruleReg = {
+            ...regs[ruleName],
+          }
+        }else{
+          ruleReg = rest
         }
         if (message) {
           ruleReg.message = message
         }
+        
         rulesResult.push({
           ...validatorFunc(ruleReg),
           trigger,
         })
       }
+
       if (!regs[ruleName] && !['type', 'min', 'max'].includes(ruleName)) {
         log.error(`${ruleName} 不在快捷校验方式中，你可自行扩展`)
         rulelistLog()

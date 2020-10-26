@@ -117,7 +117,7 @@ const VueField = {
       validator(value) {
         return ['right', 'left', 'top'].includes(value)
       },
-    },
+    }
   },
   data() {
     return {
@@ -226,7 +226,9 @@ const VueField = {
       }
     },
     fieldClassNames() {
+      const fieldClassNames = this.yList ? this.YFieldList ? this.YFieldList.fieldClassNames : {}: {}
       return {
+        ...fieldClassNames,
         'is-error': this.errorMsg !== '',
         'is-success': this.errorMsg === '',
         'is-required': this.isRequired,
@@ -234,6 +236,17 @@ const VueField = {
         'is-inline': this.isInline,
         'mr4': this.isInline,
       }
+    },
+    YFieldList() {
+      const getParentField = (context) => {
+        let parent = context.$parent
+        let parentName = parent && parent.$options && parent.$options._componentTag
+        if (parentName !== 'YFieldList') {
+          return getParentField(parent)
+        }
+        return parent
+      }
+      return getParentField(this)
     },
   },
   watch: {
@@ -343,29 +356,48 @@ const VueField = {
       this.computedLabelWidth = width ? `${width}px` : '';
     },
     actionFun() {
+      const self = this
       let moveComm = (curIndex, nextIndex) => {
-        let arr = this.value
+        let arr = self.value
         arr[curIndex] = arr.splice(nextIndex, 1, arr[curIndex])[0]
         return arr
       }
       return {
         add: (data)=>{
-          this.value.push(data)
+          if (self.yList) {
+            const { EM } = self.YForm
+            var valueCopy = [].concat(JSON.parse(JSON.stringify(self.value)));
+            valueCopy.push(data)
+            EM.emit('FIELD_INPUT_CHANGE', {
+              trigger: '',
+              field: self,
+              value: valueCopy
+            }) 
+          }
         },
         delete: (index)=>{
-          this.value.splice(index, 1);
+          if (self.yList) {
+            const { EM } = self.YForm
+            var valueCopy = [].concat(JSON.parse(JSON.stringify(self.value)));
+            valueCopy.splice(index, 1);
+            EM.emit('FIELD_INPUT_CHANGE', {
+              trigger: '',
+              field: self,
+              value: valueCopy
+            })
+          }
         },
         up: (index) => {
           let nextIndex = index - 1
-          this.value = moveComm(index, nextIndex)
+          self.value = moveComm(index, nextIndex)
         },
         down: (index) => {
           let nextIndex = index + 1
-          this.value = moveComm(index, nextIndex)
+          self.value = moveComm(index, nextIndex)
         },
         move: (dir, index) => {
           let nextIndex = dir === 'up' ? index - 1 : index + 1
-          this.value = moveComm(index, nextIndex)
+          self.value = moveComm(index, nextIndex)
         }
       }
     }
@@ -417,6 +449,12 @@ export default VueField
 
 export const FieldList = ({
   name: 'YFieldList',
+  inject: ['YForm'],
+  provide() {
+    return {
+      YFieldList: this
+    }
+  },
   render(h) {
     return h(VueField, {
       props: {
