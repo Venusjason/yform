@@ -1,12 +1,14 @@
 <script>
 import ElementUi from './element-ui/index'
 import EditForm from './element-ui/EditForm'
-import Fieldlist from './element-ui/FieldList' 
+import Fieldlist from './element-ui/Fieldlist' 
 
 export default {
   data () {
     return {
-      tab: '2',
+      tab: '3',
+
+      
     }
   },
   render () {

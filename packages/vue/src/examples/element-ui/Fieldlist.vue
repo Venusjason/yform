@@ -1,9 +1,10 @@
 <template>
   <div>
-    <p>新版</p>
+     <!-- 支持两种写法 -->
     <YForm v-model="values" labelPosition="top" @submit="onSubmit">
       <YField name="name" label="名称444" component="el-input" required></YField>
-      <YFieldList name="list" label="员工列表" :rules="{ min: 3, max: 5, message: '长度在 3 到 5'}" yList>
+      <p>第一种写法：标签式写法</p>
+      <YFieldList name="list1" label="员工列表1" :rules="{ min: 3, max: 5, message: '长度在 3 到 5'}" yList>
         <template v-slot="{ value, action }" >
           <el-button @click="action.add({name: '', age:''})" >Add</el-button>
           <div v-for="(item, i) in value" :key="i">
@@ -15,8 +16,8 @@
           </div>
         </template>
       </YFieldList>
-      <!-- 支持两种写法 -->
-      <!-- <YField name="list" label="员工列表" required yList>
+      <p>第二种写法：yList属性写法</p>
+      <YField name="list2" label="员工列表2" required yList>
         <template v-slot="{ value, action }" >
           <el-button @click="action.add({name: '', age:''})" >Add</el-button>
           <div v-for="(item, i) in value" :key="i">
@@ -27,7 +28,7 @@
             <el-button icon="el-icon-bottom" round :disabled="(i+1) === value.length" @click="action.down(i)"></el-button>
           </div>
         </template>
-      </YField> -->
+      </YField>
       <YButton do="submit">submit</YButton>
     </YForm>
   </div>
@@ -47,7 +48,12 @@ export default {
     return {
       values: {
         name: '',
-        list: [
+        list1: [
+            { name: '', age: '' },
+            { name: '', age: '' },
+            { name: '', age: '' }
+        ],
+        list2: [
             { name: '', age: '' },
             { name: '', age: '' },
             { name: '', age: '' }

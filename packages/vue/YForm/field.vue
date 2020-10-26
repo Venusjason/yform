@@ -226,7 +226,8 @@ const VueField = {
       }
     },
     fieldClassNames() {
-      const fieldClassNames = this.yList ? this.YFieldList ? this.YFieldList.fieldClassNames : {}: {}
+      // 承接父组件YFieldList上渲染的fieldClassNames属性
+      const fieldClassNames = this.yList ? this.YFieldList ? this.YFieldList.fieldClassNames ? this.YFieldList.fieldClassNames: {} : {}: {}
       return {
         ...fieldClassNames,
         'is-error': this.errorMsg !== '',
@@ -448,6 +449,9 @@ const VueField = {
 export default VueField
 
 export const FieldList = ({
+  globalOptions:{
+    name: 'YFieldList',
+  },
   name: 'YFieldList',
   inject: ['YForm'],
   provide() {
@@ -505,7 +509,7 @@ export const FieldList = ({
   }
 
   &.is-required:not(.is-no-asterisk) {
-    .yfield__label:before {
+    > .yfield__label:before {
       content: '*';
       color: #f56c6c;
       margin-right: 4px;

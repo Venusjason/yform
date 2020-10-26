@@ -146,14 +146,14 @@ export const ElFieldList = merge({}, FieldList, {
   provide() {
     return {
       elFormItem: this,
-      YFieldList: this
+      YField: this
     }
   },
   elFormItem: true,
   computed: {
     fieldClassNames() {
       return {
-        'el-form-item': true,
+        'el-form-item': true
       }
     }
   },
@@ -224,9 +224,9 @@ export const YFieldList = {
   install: function(Vue, option = {
     name: 'YFieldList',
   }) {
-    merge({}, option)
+    merge(ElFieldList.globalOptions, option)
     Vue.component(
-      ElFieldList.name,
+      ElFieldList.globalOptions.name || ElFieldList.name,
       ElFieldList
     )
   }
