@@ -4,7 +4,7 @@
     <YForm v-model="values" labelPosition="top" @submit="onSubmit">
       <YField name="name" label="名称444" component="el-input" required></YField>
       <p>第一种写法：标签式写法</p>
-      <YFieldList name="list1" label="员工列表1" :rules="{ min: 3, max: 5, message: '长度在 3 到 5'}" yList>
+      <YFieldList name="list1" label="员工列表1" :rules="{ validator: this.validateLength, trigger: '' }" yList>
         <template v-slot="{ value, action }" >
           <el-button @click="action.add({name: '', age:''})" >Add</el-button>
           <div v-for="(item, i) in value" :key="i">
@@ -17,7 +17,7 @@
         </template>
       </YFieldList>
       <p>第二种写法：yList属性写法</p>
-      <YField name="list2" label="员工列表2" required yList>
+      <YField name="list2" label="员工列表2" yList required>
         <template v-slot="{ value, action }" >
           <el-button @click="action.add({name: '', age:''})" >Add</el-button>
           <div v-for="(item, i) in value" :key="i">
@@ -58,13 +58,22 @@ export default {
             { name: '', age: '' },
             { name: '', age: '' }
         ],
+        
       },
-      inputRef: null
     }
   },
   mounted() {
   },
   methods:{
+    validateLength: (rule, val, callback) => {
+      if (val.length < 3) {
+        return callback(new Error(`长度不能小于3`))
+      }
+      if (val.length > 5) {
+        return callback(new Error(`长度不能大于5`))
+      }
+      callback()
+    },
     onSubmit (form) {
       console.log(form)
     },

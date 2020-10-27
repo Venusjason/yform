@@ -145,16 +145,7 @@ export const ElField = merge({}, VueField, {
 export const ElFieldList = merge({}, FieldList, {
   provide() {
     return {
-      elFormItem: this,
-      YField: this
-    }
-  },
-  elFormItem: true,
-  computed: {
-    fieldClassNames() {
-      return {
-        'el-form-item': true
-      }
+      YFieldList: this
     }
   },
 })

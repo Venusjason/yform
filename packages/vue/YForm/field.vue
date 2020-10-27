@@ -130,13 +130,8 @@ const VueField = {
     }
   },
   computed: {
-    value: {
-      get: function() {
-        return this.YForm && this.YForm.getFieldValue(this.name)
-      },
-      set: function() {
-
-      }
+    value () {
+      return this.YForm && this.YForm.getFieldValue(this.name)
     },
     isRequired() {
       return this.rulesResult.filter(rule => rule.required).length > 0
@@ -227,10 +222,7 @@ const VueField = {
       }
     },
     fieldClassNames() {
-      // 承接父组件YFieldList上渲染的fieldClassNames属性
-      const fieldClassNames = this.yList ? this.YFieldList ? this.YFieldList.fieldClassNames ? this.YFieldList.fieldClassNames: {} : {}: {}
       return {
-        ...fieldClassNames,
         'is-error': this.errorMsg !== '',
         'is-success': this.errorMsg === '',
         'is-required': this.isRequired,
@@ -238,17 +230,6 @@ const VueField = {
         'is-inline': this.isInline,
         'mr4': this.isInline,
       }
-    },
-    YFieldList() {
-      const getParentField = (context) => {
-        let parent = context.$parent
-        let parentName = parent && parent.$options && parent.$options._componentTag
-        if (parentName !== 'YFieldList') {
-          return getParentField(parent)
-        }
-        return parent
-      }
-      return getParentField(this)
     },
   },
   watch: {
