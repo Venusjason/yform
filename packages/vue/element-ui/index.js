@@ -45,7 +45,7 @@ export const ElField = merge({}, VueField, {
     fieldClassNames() {
       return {
         'el-form-item': true,
-        'is-error': this.errorMsg !== '',
+        [this.errorClassName]: this.errorMsg !== '',
         'is-success': this.errorMsg === '',
         'is-required': this.isRequired,
         'is-no-asterisk': this.YForm && this.YForm.hideRequiredAsterisk,
