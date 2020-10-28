@@ -36,6 +36,10 @@ module.exports = {
             path: '/yComponents/field'
           },
           {
+            title: 'FieldList',
+            path: '/yComponents/fieldlist'
+          },
+          {
             title: 'Button',
             path: '/yComponents/button'
           },

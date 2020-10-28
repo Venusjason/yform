@@ -4,6 +4,7 @@ import { getType } from '../../core/lib/utils/index'
 import {
   Form as VueForm,
   Field as VueField,
+  FieldList,
   YLayout,
   YCol,
   createTable,
@@ -102,6 +103,16 @@ export const ElField = merge({}, VueField, {
   },
 })
 
+export const ElFieldList = merge({}, FieldList, {
+  provide() {
+    return {
+      YFieldList: this
+    }
+  },
+})
+
+
+
 export const ElTable = createTable({
   TableComponent: 'el-table',
   TableColumnComponent: 'el-table-column',
@@ -160,6 +171,18 @@ export const YField = {
     )
   }
 } 
+
+export const YFieldList = {
+  install: function(Vue, option = {
+    name: 'YFieldList',
+  }) {
+    merge(ElFieldList.globalOptions, option)
+    Vue.component(
+      ElFieldList.globalOptions.name || ElFieldList.name,
+      ElFieldList
+    )
+  }
+}
 
 export const YTable = {
   install: function(Vue, option = { name: 'YTable' }) {

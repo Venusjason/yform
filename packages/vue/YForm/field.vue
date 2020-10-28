@@ -1,10 +1,11 @@
 <script>
 import isEqualWith from 'lodash/isEqualWith'
+import cloneDeep from 'lodash/cloneDeep'
 import AsyncValidator from 'async-validator'
 import InputComponent from './InputComponent.js'
 import { computedRules } from './rules.js'
 import log from '../../core/lib/utils/log'
-import { getType } from '../../core/lib/utils/index'
+import { getType, filterAttrs } from '../../core/lib/utils/index'
 import LabelWrap from './label-wrap.vue'
 
 const globalOptions = {
@@ -30,6 +31,10 @@ const VueField = {
       required: false
     },
     label: {},
+    yList: {
+      type: Boolean,
+      default: false,
+    },
     component: {
     },
     /**
@@ -113,7 +118,7 @@ const VueField = {
       validator(value) {
         return ['right', 'left', 'top'].includes(value)
       },
-    },
+    }
   },
   data() {
     return {
@@ -125,7 +130,7 @@ const VueField = {
     }
   },
   computed: {
-    value() {
+    value () {
       return this.YForm && this.YForm.getFieldValue(this.name)
     },
     isRequired() {
@@ -232,7 +237,6 @@ const VueField = {
       deep: true,
       handler: function (val, oldVal) {
         if (!isEqualWith(val, oldVal)) {
-          // console.log(`${this.name} : ${val} ${oldVal}`)
           // 执行校验
           if (oldVal !== undefined) {
             this.validate(this.trigger)
@@ -334,9 +338,52 @@ const VueField = {
     updateComputedLabelWidth(width) {
       this.computedLabelWidth = width ? `${width}px` : '';
     },
+    actionFun() {
+      const self = this
+      let moveComm = (curIndex, nextIndex) => {
+        let arr = self.value
+        arr[curIndex] = arr.splice(nextIndex, 1, arr[curIndex])[0]
+        return arr
+      }
+      return {
+        add: (data)=>{
+          if (self.yList) {
+            const { EM } = self.YForm
+            let formValue = cloneDeep(self.value) || []
+            formValue.push(data)
+            EM.emit('FIELD_INPUT_CHANGE', {
+              field: self,
+              value: formValue
+            }) 
+          }
+        },
+        delete: (index)=>{
+          if (self.yList) {
+            const { EM } = self.YForm
+            let formValue = cloneDeep(self.value)
+            formValue.splice(index, 1);
+            EM.emit('FIELD_INPUT_CHANGE', {
+              field: self,
+              value: formValue
+            })
+          }
+        },
+        up: (index) => {
+          let nextIndex = index - 1
+          self.value = moveComm(index, nextIndex)
+        },
+        down: (index) => {
+          let nextIndex = index + 1
+          self.value = moveComm(index, nextIndex)
+        },
+        move: (dir, index) => {
+          let nextIndex = dir === 'up' ? index - 1 : index + 1
+          self.value = moveComm(index, nextIndex)
+        }
+      }
+    }
   },
   render(h) {
-
     return this.yVisible ? h('div', {
       class: {
         ...this.fieldClassNames,
@@ -364,7 +411,11 @@ const VueField = {
         'is-inline': this.isInline,
         [`size-${this.fieldSize}`]: true,
       }} style={this.contentStyle} key={this.name}>
-        <InputComponent />
+        {
+          !this.yList
+          ? <InputComponent />
+          : this.$scopedSlots.default({ value: this.value || [], action: this.actionFun() })
+        }
         {
           this.errorMsg && (
             <div class="yfield__errors" >{this.errorMsg}</div>
@@ -376,6 +427,41 @@ const VueField = {
 }
 
 export default VueField
+
+export const FieldList = ({
+  globalOptions:{
+    name: 'YFieldList',
+  },
+  name: 'YFieldList',
+  inject: ['YForm'],
+  provide() {
+    return {
+      YFieldList: this
+    }
+  },
+  render(h) {
+    return h(VueField, {
+      props: {
+        yList: true,
+        ...this.$attrs
+      },
+      attrs: filterAttrs({
+        ...this.$attrs,
+      }),
+      on: {
+        ...this.$listeners,
+      },
+      scopedSlots: { // 作用域透传
+        default: (props) => {
+          return h('div', [
+            this.$scopedSlots.default(props),
+          ])
+        }
+      },
+    })
+  }
+})
+
 </script>
 <style lang="less">
 @import "./common.less";
@@ -403,7 +489,7 @@ export default VueField
   }
 
   &.is-required:not(.is-no-asterisk) {
-    .yfield__label:before {
+    > .yfield__label:before {
       content: '*';
       color: #f56c6c;
       margin-right: 4px;

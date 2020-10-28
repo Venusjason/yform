@@ -1,11 +1,14 @@
 <script>
 import ElementUi from './element-ui/index'
 import EditForm from './element-ui/EditForm'
+import Fieldlist from './element-ui/Fieldlist' 
 
 export default {
   data () {
     return {
-      tab: '2',
+      tab: '3',
+
+      
     }
   },
   render () {
@@ -17,6 +20,10 @@ export default {
       2: {
         component: EditForm,
         name: '复杂表单'
+      },
+      3: {
+        component: Fieldlist,
+        name: '列表式表单'
       }
     }
 
