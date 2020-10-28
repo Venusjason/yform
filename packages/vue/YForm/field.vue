@@ -349,7 +349,7 @@ const VueField = {
         add: (data)=>{
           if (self.yList) {
             const { EM } = self.YForm
-            let formValue = cloneDeep(self.value)
+            let formValue = cloneDeep(self.value) || []
             formValue.push(data)
             EM.emit('FIELD_INPUT_CHANGE', {
               field: self,
@@ -414,7 +414,7 @@ const VueField = {
         {
           !this.yList
           ? <InputComponent />
-          : this.$scopedSlots.default({ value: this.value, action: this.actionFun() })
+          : this.$scopedSlots.default({ value: this.value || [], action: this.actionFun() })
         }
         {
           this.errorMsg && (
