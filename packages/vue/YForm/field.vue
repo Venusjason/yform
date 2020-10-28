@@ -118,7 +118,15 @@ const VueField = {
       validator(value) {
         return ['right', 'left', 'top'].includes(value)
       },
-    }
+    },
+    /**
+     * field 校验出错时的 className 
+     */
+    errorClassName: {
+      type: String,
+      required: false,
+      default: 'is-error',
+    },
   },
   data() {
     return {
@@ -223,7 +231,7 @@ const VueField = {
     },
     fieldClassNames() {
       return {
-        'is-error': this.errorMsg !== '',
+        [this.errorClassName]: this.errorMsg !== '',
         'is-success': this.errorMsg === '',
         'is-required': this.isRequired,
         'is-no-asterisk': this.YForm && this.YForm.hideRequiredAsterisk,
