@@ -30,6 +30,7 @@ const yfieldProps = [
   { prop: 'componentProps', desc: 'component props,组件需接收的props', type: 'Object', options: '-', default: '{}' },
   { prop: 'componentStyle', desc: 'component 组件样式', type: 'Object', options: '-', default: '{}' },
   { prop: 'componentClass', desc: 'component 组件class名', type: 'String/Array', options: '-', default: '-' },
+  { prop: 'errorClassName', desc: 'field 校验出错时的 className ', type: 'string', options: '-', default: 'is-error' },
   { prop: 'wrappedComponentRef', desc: '回调函数，返回component组件实例', type: 'Function(value: vNode): void', options: '-', default: '-' },
   { prop: 'yVisible', desc: '同v-if，使用该属性可以省去key设置', type: 'Boolean', options: 'true/false', default: '-' },
   { prop: 'component的自身其他属性', desc: '组件自身属性', type: '-', options: '-', default: '-' }
