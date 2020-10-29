@@ -351,11 +351,12 @@ export default {
     },
     /**
      * 供外部调用 formValidate
+     * names 待校验字段[]，不传则整体校验
      */
-    _validateForm() {
+    _validateForm(names) {
       let nameCount = 0
       let valid = true
-      const fieldsNamesLength = Object.keys(this.fields).length
+      const fieldsNamesLength = names ? names.length : Object.keys(this.fields).length
       const invalidFields = {}
       
       return new Promise((resolve, reject) => {
@@ -363,7 +364,7 @@ export default {
           // 空 form 校验直接通过
           return resolve(true)
         }
-        Object.keys(this.fields).forEach((name) => {
+        (names || Object.keys(this.fields)).forEach((name) => {
           nameCount++
           const fieldsChildrenLen = this.fields[name].length
           let count = 0
@@ -436,9 +437,9 @@ export default {
             rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
         );
     },
-    async validate() {
+    async validate(names) {
       try {
-        const res = await this._validateForm()
+        const res = await this._validateForm(names)
         this.$listeners.validate && this.$listeners.validate(true)
         return Promise.resolve(res)
       } catch(e) {

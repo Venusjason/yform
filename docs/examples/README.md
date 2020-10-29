@@ -3,7 +3,7 @@
 ::: demo
 ```vue
 <template>
-  <YForm v-model="formValues" label-width="140px" colon scrollToFirstError>
+  <YForm v-model="formValues" label-width="140px" colon scrollToFirstError ref="YForm" >
     <YField name="name" label="商品名称" :rules="['required', 'whiteSpace']" />
     <YField name="priceA" label="供货价" :rules="['required', 'positiveInteger']" />
     <YField name="priceB" label="售卖价" component="el-input-number" rules="required" />
@@ -12,6 +12,7 @@
     <YField name="startTime,EndTime" label="售卖时间" component="el-date-picker" type="daterange" :rules="['required', 'requiredArray']" />
     <div style="padding-left: 140px" >
       <YButton do="cancel" />
+      <YButton @click="validateSome" >局部字段校验</YButton>
       <YButton />
       <YButton do="debug" />
     </div>
@@ -22,6 +23,17 @@ export default {
   data() {
     return {
       formValues: {}
+    }
+  },
+  methods: {
+    async validateSome() {
+      const names = ['name', 'priceA']
+      try {
+        const res = await this.$refs.YForm.validate(names)
+        console.log('局部校验', res)
+      } catch(e) {
+        console.log('校验出错')
+      }
     }
   }
 }
