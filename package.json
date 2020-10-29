@@ -6,7 +6,7 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "publish": "node lerna.publish.js"
+    "publish": "sh build.sh"
   },
   "author": "jindajian",
   "license": "ISC",
