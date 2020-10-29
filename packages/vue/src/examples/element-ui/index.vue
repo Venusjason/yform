@@ -16,19 +16,19 @@ const serveList = (params) => {
     const delay = Math.ceil(Math.random() * 1000)
     setTimeout(() => {
       const list = []
-      for (let i = 0; i < 10; i++) {
-        const id = Math.ceil(Math.random() * 100)
-        const status = Math.ceil(Math.random() * 2)
-        const price = Math.ceil(Math.random() * 999)
-        list.push({
-          id,
-          name: `我是编号${id}`,
-          status,
-          price,
-        })
-      }
+      // for (let i = 0; i < 10; i++) {
+      //   const id = Math.ceil(Math.random() * 100)
+      //   const status = Math.ceil(Math.random() * 2)
+      //   const price = Math.ceil(Math.random() * 999)
+      //   list.push({
+      //     id,
+      //     name: `我是编号${id}`,
+      //     status,
+      //     price,
+      //   })
+      // }
       resolve({
-        total: 92,
+        total: 0,
         list
       })
     }, delay)
