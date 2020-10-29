@@ -29,6 +29,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
   echo "开始发包"
   lerna publish
+
+  echo "准备上传到阿里云oss"
+  node aliyun-oss.js
+
 else
   echo "流程结束"
 fi
