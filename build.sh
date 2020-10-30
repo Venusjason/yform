@@ -31,6 +31,7 @@ then
   lerna publish
 
   echo "准备上传到阿里云oss"
+  cd ../../
   node aliyun-oss.js
 
 else
