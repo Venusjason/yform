@@ -1,6 +1,6 @@
 {
   "name": "@yform/vue",
-  "version": "0.1.35-alpha9",
+  "version": "0.1.35-alpha.9",
   "private": false,
   "main": "./lib",
   "scripts": {
