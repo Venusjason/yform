@@ -223,10 +223,14 @@ export default {
     }, [
       ...(dataSourceSlots || []),
       ...slots,
-    ])
+    ]) 
 
     if (this.fieldStatusResult === 'preview') {
-      return previewValue ? (<div>{previewValue(fieldContext.value)}</div>) : (<span>{fieldContext.value}</span>)
+      const previewSlot = fieldContext.$scopedSlots.preview
+      const previewResult = previewSlot ? previewSlot(fieldContext.value) : (
+        previewValue ? (<div class={`yfield-preview__${fieldContext.name}`}>{previewValue(fieldContext.value)}</div>) : (<span class={`yfield-preview__${fieldContext.name}`} >{fieldContext.value}</span>)
+      )
+      return previewResult
     }
 
     return VModelComponent

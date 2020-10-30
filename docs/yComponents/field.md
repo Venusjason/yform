@@ -13,7 +13,11 @@ Vue.use(YField, options)
     <!-- 可继承 element-ui 组件属性 例: clearable -->
     <YField name="nickName" label="昵称" :fieldStatus="formData.fieldStatus" clearable />
     <!-- 选项可通过 dataSource 传入 value label/key -->
-    <YField name="option" label="选项" component="el-select" :dataSource="options" :fieldStatus="formData.fieldStatus" />
+    <YField name="option" label="选项" component="el-select" :dataSource="options" :fieldStatus="formData.fieldStatus">
+      <template slot="preview" slot-scope="x">
+        <div>preview slot模式渲染 option 字段值： {{x}}</div>
+      </template>
+    </YField>
     <!-- 切换预览状态 -->
     <YField name="fieldStatus" label="预览区状态" component="el-radio-group">
       <el-radio-button label="edit"></el-radio-button>
