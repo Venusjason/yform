@@ -176,6 +176,10 @@ const VueField = {
     contentStyle() {
       const ret = {};
       const label = this.label;
+      if (this.isInline && this.labelPositionResult !== 'top') {
+        // inline 模式 防止Input过宽 内容宽度不够出现换行
+        ret.maxWidth = `calc(100% - ${this.labelWidth || this.YForm.labelWidth})`
+      }
       // top || inline 
       if (this.labelPositionResult === 'top' || this.isInline) return ret;
       if (!label && !this.labelWidth && this.isNested) return ret;
