@@ -272,9 +272,11 @@ export default (props) => {
         ...paginationOn,
         ...onPageChange,
       }
+
+      // TODO: V-loading 需要接入层提前实现
       return (
-        <div>
-          <div v-loading={this.loading && this.showLoading} >
+        <div v-loading={this.loading && this.showLoading}>
+          <div>
             {
               TableComponent
             }

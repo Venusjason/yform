@@ -29,6 +29,7 @@
         <YButton do="debug" />
       </YCol>
     </YLayout>
+    <el-card>
     <YQueryTable
       ref="YQueryTable"
       :serve="serve"
@@ -61,6 +62,7 @@
         </el-table-column>
       </template>
     </YQueryTable>
+    </el-card>
   </YForm>
 </template>
 <script>
@@ -386,3 +388,10 @@ export default {
 </script>
 ```
 :::
+
+
+### FAQ
+
+* Q : `YQueryTable` 组件被其他组件包裹（如`el-card`）能支持吗?
+
+  A : 已经支持了，但是这个支持在 `0.1.35`之后的版本才实现，所以之前使用`el-card`包裹会报错

@@ -4,6 +4,7 @@ module.exports = {
   description: '@yform 帮你快速搞定vue 中后台应用',
   plugins: ['demo-container'],
   themeConfig: {
+    lastUpdated: 'Last Updated',
     sidebar: [
       {
         title: '开发指南',
