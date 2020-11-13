@@ -10,3 +10,7 @@ table {
 .w500 {
   width: 500px;
 }
+
+.theme-default-content {
+  max-width: 1440px !important;
+}

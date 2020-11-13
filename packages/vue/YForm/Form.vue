@@ -131,6 +131,7 @@ export default {
       count: 0,
     }
   },
+  childrenQueryTable: [],
   watch: {
     value: {
       deep: true,
@@ -524,8 +525,15 @@ export default {
     deregisterLabelWidth(val) {
       const index = this.getLabelWidthIndex(val);
       this.potentialLabelWidthArr.splice(index, 1);
-    }
-
+    },
+    _queryTableRegister(node) {
+      if (!this.$options.childrenQueryTable.includes(node)) {
+        this.$options.childrenQueryTable.push(node)
+      }
+    },
+    _queryTableDestory(node) {
+      this.$options.childrenQueryTable = this.$options.childrenQueryTable.filter(ele => ele !== node)
+    },
   },
   render(h) {
     return h('div', {

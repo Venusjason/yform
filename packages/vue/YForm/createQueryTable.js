@@ -75,6 +75,7 @@ export default (props) => {
         type: Function
       }
     },
+    inject: ['YForm'],
     computed: {
       yColumns() {
         return this.columns
@@ -102,6 +103,8 @@ export default (props) => {
         pageSize,
       })
       this.globalOptionsPagination = globalOptionsPagination
+
+      this.YForm && this.YForm._queryTableRegister(this)
     },
     mounted() {
       // id++
@@ -109,28 +112,14 @@ export default (props) => {
       this.wrappedTableRef && this.wrappedTableRef(this.tableRef)
       this.refreshList()
     },
+    beforeDestory() {
+      this.YForm && this.YForm._queryTableDestory(this)
+    },
     latestYform: null,
     methods: {
       setlatestYform() {
         if (!this.$options.latestYform) {
-          const getLatestQueryTable = (context) => {
-            let parent = context.$parent
-            let children = parent.$children || []
-            let matchedTable = children.filter(child => {
-              return child && child.$options && ((child.$options.componentName === 'YFORM' || child.$options.name === 'YFORM'))
-            })
-
-            if (matchedTable.length === 0) {
-              if (!parent) {
-                log.warn('YQuerytable 没有对应的 YForm')
-                return null
-              }
-              return getLatestQueryTable(parent)
-            }
-
-            return matchedTable[0]
-          }
-          this.$options.latestYform = getLatestQueryTable(this)
+          this.$options.latestYform = this.YForm
         }
       },
       getPaginationProps(someParams = {}) {
@@ -283,9 +272,11 @@ export default (props) => {
         ...paginationOn,
         ...onPageChange,
       }
+
+      // TODO: V-loading 需要接入层提前实现
       return (
-        <div>
-          <div v-loading={this.loading && this.showLoading} >
+        <div v-loading={this.loading && this.showLoading}>
+          <div>
             {
               TableComponent
             }

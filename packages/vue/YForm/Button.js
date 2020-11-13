@@ -112,25 +112,26 @@ export const createYButton = (ButtonComponent = 'button') => {
     methods: {
       setLatestQueryTable() {
         if (!this.$options.latestQueryTable) {
-          const getLatestQueryTable = (context) => {
-            if (!context) {
-              return null
-            }
-            const nodes = (context && context.$children) || []
+          // const getLatestQueryTable = (context) => {
+          //   if (!context) {
+          //     return null
+          //   }
+          //   const nodes = (context && context.$children) || []
 
-            let arr = nodes.filter(ele => (ele.$options.componentName === 'YQUERYTABLE'))
+          //   let arr = nodes.filter(ele => (ele.$options.componentName === 'YQUERYTABLE'))
 
-            if (arr.length === 0) {
-              const nodes1 = nodes.filter(ele => !(ele.$options.componentName === 'YFIELD'))
-              return nodes1.filter(ele => {
-                return getLatestQueryTable(ele)
-              })[0]
-            } else {
-              return arr[0]
-            }
-          }
-          this.$options.latestQueryTable = getLatestQueryTable(this.YForm)
-          if (!this.$options.latestQueryTable) {
+          //   if (arr.length === 0) {
+          //     const nodes1 = nodes.filter(ele => !(ele.$options.componentName === 'YFIELD'))
+          //     return nodes1.filter(ele => {
+          //       return getLatestQueryTable(ele)
+          //     })[0]
+          //   } else {
+          //     return arr[0]
+          //   }
+          // }
+          const { childrenQueryTable } = this.YForm.$options
+          this.$options.latestQueryTable = childrenQueryTable
+          if (childrenQueryTable.length === 0) {
             log.warn(`QueryTable 组件必须内置在 YForm组件内`)
           }
         }
@@ -176,10 +177,9 @@ export const createYButton = (ButtonComponent = 'button') => {
           aParams.currentPage = 1
         }
         this.loading = true
-        this.$options.latestQueryTable.runServe(aParams).then(() => {
-          this.loading = false
-          this.afterClick && this.afterClick()
-        }).catch(() => {
+        Promise.all(
+          this.$options.latestQueryTable.map(queryTable => queryTable.runServe(aParams))
+        ).finally(() => {
           this.loading = false
           this.afterClick && this.afterClick()
         })
@@ -204,10 +204,9 @@ export const createYButton = (ButtonComponent = 'button') => {
          * 要v-model 先生效 form props.value 更新才能正确获取到formValues
          */
         setTimeout(() => {
-          this.$options.latestQueryTable.runServe(a).then(() => {
-            this.loading = false
-            this.afterClick && this.afterClick()
-          }).catch(() => {
+          Promise.all(
+            this.$options.latestQueryTable.map(queryTable => queryTable.runServe(a))
+          ).finally(() => {
             this.loading = false
             this.afterClick && this.afterClick()
           })
