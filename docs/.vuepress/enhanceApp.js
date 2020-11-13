@@ -44,7 +44,7 @@ export default ({ Vue }) => {
   Vue.use(ElementUI)
   Vue.use(YForm, {
     name: 'YForm',
-    size: 'xx',
+    size: 'small',
     debug: true,
   })
   Vue.use(YTable, {

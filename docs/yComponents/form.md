@@ -12,7 +12,6 @@
     :labelPosition="labelPosition"
     :inline="inline"
     :colon="colon"
-    :size="size"
     :hideRequiredAsterisk="hideRequiredAsterisk"
     :formStatus="formStatus"
     :validateOnRuleChange="validateOnRuleChange"
