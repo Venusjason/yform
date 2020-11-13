@@ -93,6 +93,10 @@ export const createYButton = (ButtonComponent = 'button') => {
       YFormDisabled() {
         return this.YForm && (this.YForm.formStatus === 'disabled')
       },
+      buttonDisabled() {
+        const hasDisabled = Object.prototype.hasOwnProperty.call(this.$attrs, 'disabled')
+        return hasDisabled ? this.$attrs.disabled : this.YFormDisabled
+      },
     },
     // watch: {
     //   YFormDisabled(value = false) {
@@ -137,7 +141,7 @@ export const createYButton = (ButtonComponent = 'button') => {
           return this.$listeners.click(e)
         }
         this.beforeClick && this.beforeClick()
-        if (this.loading || this.YFormDisabled) return
+        if (this.loading || this.buttonDisabled) return
         if (this.do === 'submit') {
           this.onSubmit()
         } else if (this.do === 'search') {
