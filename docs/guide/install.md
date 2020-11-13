@@ -22,7 +22,10 @@ import '@yform/vue/lib/element-ui/index.css'
 extendRules({})
 useYFormLog(process.env.NODE_ENV === 'development')
 
-Vue.use(YForm)
+Vue.use(YForm, {
+  name: 'YForm',
+  size: 'small',
+})
 Vue.use(YField, {
   name: 'YField',
   defaultComponent: 'el-input',
