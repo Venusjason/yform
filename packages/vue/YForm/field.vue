@@ -209,7 +209,7 @@ const VueField = {
       return inline
     },
     fieldSize() {
-      return this.YForm.size || 'small'
+      return this.YForm.formSize || 'small'
     },
     fieldColon() {
       const getcolon = (colon) => {

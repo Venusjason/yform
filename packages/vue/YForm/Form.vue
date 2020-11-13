@@ -17,7 +17,8 @@ export default {
     }
   },
   globalOptions: {
-    name: 'YForm'
+    name: 'YForm',
+    size: 'small',
   },
   props: {
     value: {
@@ -56,7 +57,6 @@ export default {
      */
     size: {
       type: String,
-      default: 'small',
       validator(value) {
         return ['large', 'medium', 'small', 'mini'].includes(value)
       },
@@ -115,6 +115,9 @@ export default {
         }
       })
       return events
+    },
+    formSize() {
+      return this.size || this.$options.globalOptions.size
     },
   },
   data() {

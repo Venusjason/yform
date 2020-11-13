@@ -233,7 +233,7 @@ export const createYButton = (ButtonComponent = 'button') => {
           break
       }
 
-      const size = this.YForm.size
+      const size = this.YForm.formSize
 
       const Btn = h(ButtonComponent, {
         props: {
