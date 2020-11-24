@@ -104,7 +104,7 @@ export default (props) => {
       })
       this.globalOptionsPagination = globalOptionsPagination
 
-      this.YForm && this.YForm._queryTableRegister(this)
+      this.YForm && this.YForm.queryTableRegister(this)
     },
     mounted() {
       // id++
@@ -113,15 +113,9 @@ export default (props) => {
       this.refreshList()
     },
     beforeDestory() {
-      this.YForm && this.YForm._queryTableDestory(this)
+      this.YForm && this.YForm.queryTableDestory(this)
     },
-    latestYform: null,
     methods: {
-      setlatestYform() {
-        if (!this.$options.latestYform) {
-          this.$options.latestYform = this.YForm
-        }
-      },
       getPaginationProps(someParams = {}) {
         const defaultPaginationProps = {
           pageSizes: [10, 20, 50, 100],
@@ -175,12 +169,11 @@ export default (props) => {
       async refreshList(someParams = {}) {
         // TODO: 自动取消上一次接口
         if (this.loading) return
-        this.setlatestYform()
         // 默认在这里走了 form 校验
-        await this.$options.latestYform.validate()
+        await this.YForm.validate()
         this.loading = true
         const { currentPage, pageSize } = this.getPaginationProps(someParams)
-        const formValues = this.$options.latestYform._getFormVales()
+        const formValues = this.YForm._getFormVales()
         return this.serve({
           params: {
             currentPage,

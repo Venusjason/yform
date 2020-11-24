@@ -5,7 +5,6 @@ export const createYButton = (ButtonComponent = 'button') => {
   const YButton = ({
     name: 'YBUTTON',
     componentName: 'YBUTTON',
-    latestQueryTable: null,
     props: {
       /**
        * TODO: 注意 与v1 版本默认值不兼容
@@ -110,32 +109,6 @@ export const createYButton = (ButtonComponent = 'button') => {
       }
     },
     methods: {
-      setLatestQueryTable() {
-        if (!this.$options.latestQueryTable) {
-          // const getLatestQueryTable = (context) => {
-          //   if (!context) {
-          //     return null
-          //   }
-          //   const nodes = (context && context.$children) || []
-
-          //   let arr = nodes.filter(ele => (ele.$options.componentName === 'YQUERYTABLE'))
-
-          //   if (arr.length === 0) {
-          //     const nodes1 = nodes.filter(ele => !(ele.$options.componentName === 'YFIELD'))
-          //     return nodes1.filter(ele => {
-          //       return getLatestQueryTable(ele)
-          //     })[0]
-          //   } else {
-          //     return arr[0]
-          //   }
-          // }
-          const { childrenQueryTable } = this.YForm.$options
-          this.$options.latestQueryTable = childrenQueryTable
-          if (childrenQueryTable.length === 0) {
-            log.warn(`QueryTable 组件必须内置在 YForm组件内`)
-          }
-        }
-      },
       onClick(e) {
         e && e.preventDefault()
         if (this.$listeners.click) {
@@ -171,14 +144,13 @@ export const createYButton = (ButtonComponent = 'button') => {
       onSearch(params = {
         toFirstPage: true
       }) {
-        this.setLatestQueryTable()
         const aParams = {}
         if (params.toFirstPage) {
           aParams.currentPage = 1
         }
         this.loading = true
         Promise.all(
-          this.$options.latestQueryTable.map(queryTable => queryTable.runServe(aParams))
+          this.YForm.childrenQueryTable.map(queryTable => queryTable.runServe(aParams))
         ).finally(() => {
           this.loading = false
           this.afterClick && this.afterClick()
@@ -195,17 +167,15 @@ export const createYButton = (ButtonComponent = 'button') => {
             currentPage: params
           }
         }
-        this.setLatestQueryTable()
         this.loading = true
         // 重置表单值
         this.YForm.resetFormValues()
-        if (!this.$options.latestQueryTable) return
         /**
          * 要v-model 先生效 form props.value 更新才能正确获取到formValues
          */
         setTimeout(() => {
           Promise.all(
-            this.$options.latestQueryTable.map(queryTable => queryTable.runServe(a))
+            this.YForm.childrenQueryTable.map(queryTable => queryTable.runServe(a))
           ).finally(() => {
             this.loading = false
             this.afterClick && this.afterClick()

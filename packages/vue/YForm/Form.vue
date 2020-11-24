@@ -129,9 +129,9 @@ export default {
       submiting: false,
       potentialLabelWidthArr: [],
       count: 0,
+      childrenQueryTable: [],
     }
   },
-  childrenQueryTable: [],
   watch: {
     value: {
       deep: true,
@@ -160,6 +160,7 @@ export default {
       'FIELD_DESTORY',
     ]
     LIFE_CYCLES.forEach(ELE => this.EM.off(ELE))
+    this.childrenQueryTable = []
   },
   methods: {
     initForm() {
@@ -526,13 +527,13 @@ export default {
       const index = this.getLabelWidthIndex(val);
       this.potentialLabelWidthArr.splice(index, 1);
     },
-    _queryTableRegister(node) {
-      if (!this.$options.childrenQueryTable.includes(node)) {
-        this.$options.childrenQueryTable.push(node)
+    queryTableRegister(node) {
+      if (!this.childrenQueryTable.includes(node)) {
+        this.childrenQueryTable.push(node)
       }
     },
-    _queryTableDestory(node) {
-      this.$options.childrenQueryTable = this.$options.childrenQueryTable.filter(ele => ele !== node)
+    queryTableDestory(node) {
+      this.childrenQueryTable = this.childrenQueryTable.filter(ele => ele !== node)
     },
   },
   render(h) {
