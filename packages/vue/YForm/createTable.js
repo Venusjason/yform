@@ -41,7 +41,7 @@ export default ({TableComponent, TableColumnComponent}) => {
       id++
     },
     computed: {
-      // 从 queryTable 透传slots
+      // 从 queryTable 透传slots 
       parentScopetSlots() {
         const { EmptyComponnet, emptySlotName } = this.$options
         let slots = {
@@ -91,6 +91,13 @@ export default ({TableComponent, TableColumnComponent}) => {
 
       const renderSlotColumns = this.$slots.default || this.$slots.columns
 
+      // template 语法 slots 无法动态更新， 所以scopedslotsn 只保留 empty
+      // 0.1.34 - 0.1.36版本有此问题
+      const { EmptyComponnet, emptySlotName } = this.$options
+      let emptyslots = {
+        [emptySlotName]: () => <EmptyComponnet />,
+      }
+
       return h(TableComponent, {
         props: {
           ...defaultProps,
@@ -98,7 +105,7 @@ export default ({TableComponent, TableColumnComponent}) => {
           columns: this.columns,
         },
         on: events,
-        scopedSlots: this.parentScopetSlots,
+        scopedSlots: emptyslots,
         key: this.uniqueKey || String(id),
         ref: 'YTable'
       }, renderSlotColumns || renderColomns)
