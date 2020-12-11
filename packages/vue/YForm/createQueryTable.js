@@ -142,6 +142,9 @@ export default (props) => {
         }
       },
       handleSizeChange(pageSize) {
+        // fix: size变化，但data里的 page size 在接口请求完毕才更新值，这时size * currentPage > total，el-pagination 自动将currentPage 调整为最大分页值而自动并触发了 onCurrentChange
+        // 将 total = 0 这个比较将失效
+        this.total = 0
         this.paginationMethodsIntercept('onSizeChange')(pageSize).then(() => {
           this.refreshList({
             currentPage: 1,
