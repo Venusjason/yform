@@ -53,6 +53,12 @@ export default ({TableComponent, TableColumnComponent}) => {
         }
         return slots
       },
+      YQUERYTABLE() {
+        if (this.$parent && this.$parent.$options && this.$parent.$options.componentName === 'YQUERYTABLE') {
+          return this.$parent
+        }
+        return null
+      },
     },
     methods: {
       // 渲染自定义type
@@ -94,8 +100,15 @@ export default ({TableComponent, TableColumnComponent}) => {
       // template 语法 slots 无法动态更新， 所以scopedslotsn 只保留 empty
       // 0.1.34 - 0.1.36版本有此问题
       const { EmptyComponnet, emptySlotName } = this.$options
+      // TODO: EMPTY 局部
       let emptyslots = {
         [emptySlotName]: () => <EmptyComponnet />,
+        ...this.$scopedSlots,
+      }
+
+      if (this.YQUERYTABLE && this.YQUERYTABLE.$slots && this.YQUERYTABLE.$slots[emptySlotName]) {
+        this.YQUERYTABLE.$slots[emptySlotName].context = this._self
+        emptyslots[emptySlotName] = () => this.YQUERYTABLE.$slots[emptySlotName]
       }
 
       return h(TableComponent, {
