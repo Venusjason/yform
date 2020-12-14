@@ -27,6 +27,7 @@
         <YButton do="search" :afterClick="resetTable" />
         <YButton do="reset" :afterClick="resetTable" />
         <YButton do="debug" />
+        <el-button @click="changeType">动态切换column</el-button>
       </YCol>
     </YLayout>
     <el-card>
@@ -35,13 +36,14 @@
       :serve="serve"
       :wrappedTableRef="setTableRef"
     >
+      <template slot="empty">空</template>
       <template>
         <el-table-column prop="name" label="商品图片" show-overflow-tooltip>
           <div slot-scope="scope">
             <img :src="scope.row.imgUrl" style="width: 40px;height: 40px" />
           </div>
         </el-table-column>
-        <el-table-column prop="name" label="商品名称" show-overflow-tooltip width="200px"></el-table-column>
+        <el-table-column prop="name" label="商品名称" show-overflow-tooltip width="200px" v-if="activeType !== '2'"></el-table-column>
         <el-table-column prop="price" label="价格" sortable></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
@@ -86,6 +88,7 @@ export default {
       formValues: {},
       PLATFORMS,
       STATUS,
+      activeType: '1',
     }
   },
   methods: {
@@ -103,6 +106,9 @@ export default {
         data: list,
         total,
       }
+    },
+    changeType() {
+      this.activeType = this.activeType === '1' ? '2' : '1'
     },
     setTableRef(ref) {
       this.$options.tableRef = ref
