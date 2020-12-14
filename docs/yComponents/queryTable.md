@@ -27,10 +27,10 @@
         <YButton do="search" :afterClick="resetTable" />
         <YButton do="reset" :afterClick="resetTable" />
         <YButton do="debug" />
+        <el-button @click="changeType">动态切换column</el-button>
       </YCol>
     </YLayout>
     <el-card>
-    <el-button @click="changeType">动态切换column</el-button>
     <YQueryTable
       ref="YQueryTable"
       :serve="serve"

@@ -41,18 +41,6 @@ export default ({TableComponent, TableColumnComponent}) => {
       id++
     },
     computed: {
-      // 从 queryTable 透传slots 
-      parentScopetSlots() {
-        const { EmptyComponnet, emptySlotName } = this.$options
-        let slots = {
-          [emptySlotName]: () => <EmptyComponnet />,
-          ...this.$scopedSlots,
-        }
-        if (this.$parent && this.$parent.$options && this.$parent.$options.componentName === 'YQUERYTABLE') {
-          Object.assign(slots, this.$parent.$scopedSlots)
-        }
-        return slots
-      },
       YQUERYTABLE() {
         if (this.$parent && this.$parent.$options && this.$parent.$options.componentName === 'YQUERYTABLE') {
           return this.$parent
@@ -100,15 +88,18 @@ export default ({TableComponent, TableColumnComponent}) => {
       // template 语法 slots 无法动态更新， 所以scopedslotsn 只保留 empty
       // 0.1.34 - 0.1.36版本有此问题
       const { EmptyComponnet, emptySlotName } = this.$options
-      // TODO: EMPTY 局部
-      let emptyslots = {
+      let parentSlots = {
         [emptySlotName]: () => <EmptyComponnet />,
         ...this.$scopedSlots,
       }
 
       if (this.YQUERYTABLE && this.YQUERYTABLE.$slots && this.YQUERYTABLE.$slots[emptySlotName]) {
-        this.YQUERYTABLE.$slots[emptySlotName].context = this._self
-        emptyslots[emptySlotName] = () => this.YQUERYTABLE.$slots[emptySlotName]
+        Object.keys(this.YQUERYTABLE.$slots).forEach(slotName => {
+          // 转换slot的this
+          this.YQUERYTABLE.$slots[slotName].context = this._self
+          // TODO: 没有传参，暂时不需要
+          parentSlots[slotName] = () => this.YQUERYTABLE.$slots[slotName]
+        })
       }
 
       return h(TableComponent, {
@@ -118,7 +109,7 @@ export default ({TableComponent, TableColumnComponent}) => {
           columns: this.columns,
         },
         on: events,
-        scopedSlots: emptyslots,
+        scopedSlots: parentSlots,
         key: this.uniqueKey || String(id),
         ref: 'YTable'
       }, renderSlotColumns || renderColomns)
