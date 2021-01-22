@@ -63,6 +63,8 @@ export default {
       $listeners,
       componentStyle,
       componentClass,
+      componentOn,
+      componentNativeOn,
       previewValue,
       dataSourceSlots,
       componentProps,
@@ -158,6 +160,7 @@ export default {
       ref: 'VModelComponent',
       on: {
         ...$listeners,
+        ...componentOn,
         input(e) {
           let value = e
           /**
@@ -171,6 +174,7 @@ export default {
             field: fieldContext,
             value
           })
+          componentOn.input && componentOn.input(e)
           fieldEvents.input && fieldEvents.input(e)
         },
         change(e) {
@@ -186,6 +190,7 @@ export default {
             field: fieldContext,
             value
           })
+          componentOn.change && componentOn.change(e)
           fieldEvents.change && fieldEvents.change(e)
         },
         focus(e) {
@@ -201,6 +206,7 @@ export default {
             field: fieldContext,
             value,
           })
+          componentOn.focus && componentOn.focus(e)
           fieldEvents.focus && fieldEvents.focus(e)
         },
         blur(e) {
@@ -216,10 +222,11 @@ export default {
             field: fieldContext,
             value,
           })
+          componentOn.blur && componentOn.blur(e)
           fieldEvents.blur && fieldEvents.blur(e)
         },
       },
-      // nativeOn: $listeners,
+      nativeOn: componentNativeOn,
     }, [
       ...(dataSourceSlots || []),
       ...slots,

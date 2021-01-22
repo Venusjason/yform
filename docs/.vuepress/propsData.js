@@ -30,6 +30,8 @@ const yfieldProps = [
   { prop: 'componentProps', desc: 'component props,组件需接收的props', type: 'Object', options: '-', default: '{}' },
   { prop: 'componentStyle', desc: 'component 组件样式', type: 'Object', options: '-', default: '{}' },
   { prop: 'componentClass', desc: 'component 组件class名', type: 'String/Array', options: '-', default: '-' },
+  { prop: 'componentOn', desc: 'component 组件events', type: 'Object', options: '-', default: '{}' },
+  { prop: 'componentNativeOn', desc: 'component 组件nativeEvents', type: 'Object', options: '-', default: '{}' },
   { prop: 'errorClassName', desc: 'field 校验出错时的 className ', type: 'string', options: '-', default: 'is-error' },
   { prop: 'wrappedComponentRef', desc: '回调函数，返回component组件实例', type: 'Function(value: vNode): void', options: '-', default: '-' },
   { prop: 'yVisible', desc: '同v-if，使用该属性可以省去key设置', type: 'Boolean', options: 'true/false', default: '-' },
@@ -39,6 +41,7 @@ const yfieldProps = [
 const yquerytableProps = [
   { prop: 'serve', desc: '列表数据获取方法', type: 'Promise', options: '-', default: '-' },
   { prop: 'columns', desc: 'table-column 的jsx形式', type: 'Array', options: '-', default: '[]' },
+  { prop: 'manual', desc: '是否手动调用serve', type: 'Boolean', options: '-', default: 'false' },
   { prop: 'filterParamInvalidValue', desc: '自动过滤serve中无效入参', type: 'Boolean', options: 'true/false', default: 'true' },
   { prop: 'pagination', desc: '控制分页， 使用ui库的分页api', type: 'Object', options: '-', default: '-' },
   { prop: 'paginationPosition', desc: 'pagination 组件对齐方式', type: 'String', options: 'left/center/right', default: 'right' },

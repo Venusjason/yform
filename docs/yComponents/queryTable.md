@@ -33,6 +33,7 @@
     <el-card>
     <YQueryTable
       ref="YQueryTable"
+      manual
       :serve="serve"
       :wrappedTableRef="setTableRef"
     >

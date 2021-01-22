@@ -73,7 +73,12 @@ export default (props) => {
        */
       wrappedTableRef: {
         type: Function
-      }
+      },
+      // 手动调用serve，默认false
+      manual: {
+        type: Boolean,
+        default: false,
+      },
     },
     inject: ['YForm'],
     computed: {
@@ -110,7 +115,9 @@ export default (props) => {
       // id++
       this.tableRef = this.$refs.table.$refs.YTable
       this.wrappedTableRef && this.wrappedTableRef(this.tableRef)
-      this.refreshList()
+      if (!this.manual || this.manual === undefined) {
+        this.refreshList()
+      }
     },
     beforeDestory() {
       this.YForm && this.YForm.queryTableDestory(this)
@@ -197,9 +204,10 @@ export default (props) => {
             pageSize,
           }
           this.$nextTick(() => {
-            if (this.tableRef !== this.$refs.table.$refs.YTable) {
-              this.tableRef = this.$refs.table.$refs.YTable
-              this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
+            const tableRef = this.$refs && this.$refs.table && this.$refs.table.$refs && this.$refs.table.$refs.YTable
+            if (tableRef && this.tableRef !== tableRef) {
+              this.tableRef = tableRef
+              this.wrappedTableRef && this.wrappedTableRef(tableRef)
             }
           })
           this.$emit('refreshListCb', resToOut)
@@ -211,9 +219,10 @@ export default (props) => {
           // 如点击2 2页接口挂掉，其实需要回退到上一页的页码高亮，erlement 还是2
           this.refreshPaginationForUi()
           this.$nextTick(() => {
-            if (this.tableRef !== this.$refs.table.$refs.YTable) {
-              this.tableRef = this.$refs.table.$refs.YTable
-              this.wrappedTableRef && this.wrappedTableRef(this.$refs.table.$refs.YTable)
+            const tableRef = this.$refs && this.$refs.table && this.$refs.table.$refs && this.$refs.table.$refs.YTable
+            if (tableRef && this.tableRef !== tableRef) {
+              this.tableRef = tableRef
+              this.wrappedTableRef && this.wrappedTableRef(tableRef)
             }
           })
           return Promise.reject(e)
