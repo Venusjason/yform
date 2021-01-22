@@ -54,6 +54,12 @@ const VueField = {
     componentProps: {
       default: () => ({})
     },
+    componentOn: {
+      default: () => ({})
+    },
+    componentNativeOn: {
+      default: () => ({})
+    },
     /**
      * 是否html原生控件
      */
@@ -408,12 +414,12 @@ const VueField = {
         updateAll={this.YForm.labelWidth === 'auto'}
       >
       {
-        (this.label || this.$slots.label) && (
+        (this.label || this.$slots.yfieldlabel || this.$slots.label) && (
           <label for={this.name} style={this.labelStyle} class={{
             'yfield__label': true,
             [`size-${this.fieldSize}`]: true,
           }}>
-            {this.label || this.$slots.label}{this.fieldColon}
+            {this.label || this.$slots.yfieldlabel || this.$slots.label}{this.fieldColon}
           </label>
         )
       }
