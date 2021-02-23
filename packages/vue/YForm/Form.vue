@@ -123,7 +123,7 @@ export default {
   data() {
     return {
       initialValues: {},
-      fields: [],
+      fields: {},
       EM: null,
       formValuesA: {},
       submiting: false,

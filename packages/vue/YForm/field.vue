@@ -265,8 +265,9 @@ const VueField = {
     yVisible: {
       immediate: true,
       handler: function(val) {
+        log.error('yVisible 已废弃')
         if (val) {
-          this.initField()
+          // this.initField()
         } else {
           this.YForm.EM.emit('FIELD_DESTORY', this)
         }
