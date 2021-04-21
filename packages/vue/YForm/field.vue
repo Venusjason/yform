@@ -265,7 +265,6 @@ const VueField = {
     yVisible: {
       immediate: true,
       handler: function(val) {
-        log.error('yVisible 已废弃')
         if (val) {
           // this.initField()
         } else {
