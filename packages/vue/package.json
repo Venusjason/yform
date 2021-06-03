@@ -19,8 +19,7 @@
     "vue": "^2.6.11",
     "async-validator": "^3.3.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "async-validator": "^3.3.0",
     "axios": "^0.19.2",
