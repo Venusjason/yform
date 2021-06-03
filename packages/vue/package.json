@@ -11,7 +11,17 @@
     "compile:element-ui": "cross-env NODE_ENV=production & vue-cli-service build --target lib --name index --dest lib/element-ui element-ui/index.js",
     "release": "npm run compile:vue && npm run compile:element-ui && npm publish"
   },
+  "peerDependencies": {
+    "iview": "^3.5.4",
+    "element-ui": "^2.12.0",
+    "axios": "^0.19.2",
+    "lodash": "^4.17.15",
+    "vue": "^2.6.11",
+    "async-validator": "^3.3.0"
+  },
   "dependencies": {
+  },
+  "devDependencies": {
     "async-validator": "^3.3.0",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
@@ -19,9 +29,7 @@
     "iview": "^3.5.4",
     "lodash": "^4.17.15",
     "vue": "^2.6.11",
-    "vue-property-decorator": "^8.4.2"
-  },
-  "devDependencies": {
+    "vue-property-decorator": "^8.4.2",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
     "@vue/babel-preset-jsx": "^1.1.2",
     "@vue/cli-plugin-babel": "^4.3.0",
