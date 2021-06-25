@@ -125,7 +125,7 @@ export default {
       log.warn(`全局注册 placeholder 不能为${getType(globalComponentPropsPlaceholder)}`)
     }
 
-    let placeholder = fieldContext.$attrs.placeholder || defaultPlaceholder
+    let placeholder = componentProps.placeholder || fieldContext.$attrs.placeholder || defaultPlaceholder
 
     const isFieldDisabled = this.fieldStatusResult === 'disabled'
 
