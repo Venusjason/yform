@@ -8,6 +8,7 @@ package-lock.json
 lib/
 esm/
 temp_esm/
+dist/
 build/
 coverage/
 node_modules/
