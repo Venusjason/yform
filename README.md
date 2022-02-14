@@ -1,4 +1,4 @@
-### @yform/vue [文档地址]https://venusjason.github.io/yform-doc-site
+## @yform/vue
 
 #### 简介
 
@@ -10,7 +10,6 @@ YFORM 是一个基于vue 2.x jsx方案实现的中后台表单库，主要用于
 
 ```
 npm install @yform/vue --save
-
 ```
 
 
