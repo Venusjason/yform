@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>@yform</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    
+    <meta name="description" content="@yform 帮你快速搞定vue 中后台应用">
+    
+    <link rel="preload" href="/assets/css/0.styles.1a634d85.css" as="style"><link rel="preload" href="/assets/js/app.ec129044.js" as="script"><link rel="preload" href="/assets/js/2.b0125562.js" as="script"><link rel="preload" href="/assets/js/18.63c604e3.js" as="script"><link rel="prefetch" href="/assets/js/10.95480c2a.js"><link rel="prefetch" href="/assets/js/11.f41ba305.js"><link rel="prefetch" href="/assets/js/12.275b2f97.js"><link rel="prefetch" href="/assets/js/13.076eafb1.js"><link rel="prefetch" href="/assets/js/14.40961c34.js"><link rel="prefetch" href="/assets/js/15.a8e548f0.js"><link rel="prefetch" href="/assets/js/16.f457da6e.js"><link rel="prefetch" href="/assets/js/17.ef36d483.js"><link rel="prefetch" href="/assets/js/19.13b09cd6.js"><link rel="prefetch" href="/assets/js/3.b3587903.js"><link rel="prefetch" href="/assets/js/4.db523e23.js"><link rel="prefetch" href="/assets/js/5.647ac780.js"><link rel="prefetch" href="/assets/js/6.55b3e53f.js"><link rel="prefetch" href="/assets/js/7.b01df213.js"><link rel="prefetch" href="/assets/js/8.6490f1c5.js"><link rel="prefetch" href="/assets/js/9.08832d25.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.1a634d85.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">@yform</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/guide/" class="sidebar-heading clickable router-link-active open"><span>开发指南</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/install.html" aria-current="page" class="active sidebar-link">安装</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/yComponents/form" class="sidebar-heading clickable"><span>YFormCore 组件</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/yComponents/form.html" class="sidebar-link">Form</a></li><li><a href="/yComponents/field.html" class="sidebar-link">Field</a></li><li><a href="/yComponents/fieldlist.html" class="sidebar-link">FieldList</a></li><li><a href="/yComponents/button.html" class="sidebar-link">Button</a></li><li><a href="/yComponents/layout.html" class="sidebar-link">layout</a></li><li><a href="/yComponents/table.html" class="sidebar-link">table</a></li><li><a href="/yComponents/queryTable.html" class="sidebar-link">queryTable</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/examples" class="sidebar-heading clickable"><span>常见场景示例</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/examples/" class="sidebar-link">表单</a></li><li><a href="/examples/customQueryTable.html" class="sidebar-link">自定义查询列表</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><div class="language- extra-class"><pre class="language-text"><code>npm i @yform/vue -S
+</code></pre></div><p>main.js</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>
+  useYFormLog<span class="token punctuation">,</span>
+  extendRules<span class="token punctuation">,</span>
+  YForm<span class="token punctuation">,</span>
+  YField<span class="token punctuation">,</span>
+  YFieldList<span class="token punctuation">,</span>
+  YButton<span class="token punctuation">,</span>
+  YQueryTable<span class="token punctuation">,</span>
+  YTable<span class="token punctuation">,</span>
+  YLayout<span class="token punctuation">,</span>
+  YCol<span class="token punctuation">,</span>
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@yform/vue/lib/element-ui/index.umd'</span>
+<span class="token keyword">import</span> <span class="token string">'@yform/vue/lib/element-ui/index.css'</span>
+
+<span class="token function">extendRules</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token function">useYFormLog</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">===</span> <span class="token string">'development'</span><span class="token punctuation">)</span>
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YForm<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'YForm'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">size</span><span class="token operator">:</span> <span class="token string">'small'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YField<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'YField'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">defaultComponent</span><span class="token operator">:</span> <span class="token string">'el-input'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">componentProps</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+    component <span class="token operator">=</span> <span class="token string">'el-input'</span><span class="token punctuation">,</span>
+    label
+  <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> props <span class="token operator">=</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">placeholder</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">请选择</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>label<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>component <span class="token operator">===</span> <span class="token string">'el-input'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      props<span class="token punctuation">.</span>placeholder <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">请输入</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>label<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
+      props<span class="token punctuation">.</span>clearable <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>component <span class="token operator">===</span> <span class="token string">'el-select'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      props<span class="token punctuation">.</span>clearable <span class="token operator">=</span> <span class="token boolean">true</span>
+      props<span class="token punctuation">.</span>filterable <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 这里处理 一些组件 基于业务的配置</span>
+    <span class="token keyword">return</span> props
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YFieldList<span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YButton<span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YQueryTable<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'YQueryTable'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">pagination</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">pageSize</span><span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">pageSizes</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">layout</span><span class="token operator">:</span> <span class="token string">'total, sizes, prev, pager, next, jumper'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YTable<span class="token punctuation">)</span>
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YLayout<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">breakpointWidth</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">xs</span><span class="token operator">:</span> <span class="token number">480</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">sm</span><span class="token operator">:</span> <span class="token number">576</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">md</span><span class="token operator">:</span> <span class="token number">768</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">lg</span><span class="token operator">:</span> <span class="token number">992</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">xl</span><span class="token operator">:</span> <span class="token number">1200</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">xxl</span><span class="token operator">:</span> <span class="token number">1600</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YCol<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">collapseButtonComponent</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">tag</span><span class="token operator">:</span> <span class="token string">'YButton'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h4 id="extendrules"><a href="#extendrules" class="header-anchor">#</a> extendRules</h4> <ul><li>yform 底层已内置常见快捷校验, 如果你需要扩展，请使用 extendRules 即可全局扩展</li></ul> <h4 id="useyformlog"><a href="#useyformlog" class="header-anchor">#</a> useYFormLog</h4> <ul><li>一般在 development 环境 启用表单log模式</li></ul></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2/11/2022, 6:08:38 PM</span></div></footer> <div class="page-nav"><p class="inner"><!----> <span class="next"><a href="/yComponents/form.html">
+        Form
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ec129044.js" defer></script><script src="/assets/js/2.b0125562.js" defer></script><script src="/assets/js/18.63c604e3.js" defer></script>
+  </body>
+</html>

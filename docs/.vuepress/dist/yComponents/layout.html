@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>@yform</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    
+    <meta name="description" content="@yform 帮你快速搞定vue 中后台应用">
+    
+    <link rel="preload" href="/assets/css/0.styles.1a634d85.css" as="style"><link rel="preload" href="/assets/js/app.ec129044.js" as="script"><link rel="preload" href="/assets/js/2.b0125562.js" as="script"><link rel="preload" href="/assets/js/19.13b09cd6.js" as="script"><link rel="prefetch" href="/assets/js/10.95480c2a.js"><link rel="prefetch" href="/assets/js/11.f41ba305.js"><link rel="prefetch" href="/assets/js/12.275b2f97.js"><link rel="prefetch" href="/assets/js/13.076eafb1.js"><link rel="prefetch" href="/assets/js/14.40961c34.js"><link rel="prefetch" href="/assets/js/15.a8e548f0.js"><link rel="prefetch" href="/assets/js/16.f457da6e.js"><link rel="prefetch" href="/assets/js/17.ef36d483.js"><link rel="prefetch" href="/assets/js/18.63c604e3.js"><link rel="prefetch" href="/assets/js/3.b3587903.js"><link rel="prefetch" href="/assets/js/4.db523e23.js"><link rel="prefetch" href="/assets/js/5.647ac780.js"><link rel="prefetch" href="/assets/js/6.55b3e53f.js"><link rel="prefetch" href="/assets/js/7.b01df213.js"><link rel="prefetch" href="/assets/js/8.6490f1c5.js"><link rel="prefetch" href="/assets/js/9.08832d25.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.1a634d85.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">@yform</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/guide/" class="sidebar-heading clickable"><span>开发指南</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/install.html" class="sidebar-link">安装</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/yComponents/form" class="sidebar-heading clickable open"><span>YFormCore 组件</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/yComponents/form.html" class="sidebar-link">Form</a></li><li><a href="/yComponents/field.html" class="sidebar-link">Field</a></li><li><a href="/yComponents/fieldlist.html" class="sidebar-link">FieldList</a></li><li><a href="/yComponents/button.html" class="sidebar-link">Button</a></li><li><a href="/yComponents/layout.html" aria-current="page" class="active sidebar-link">layout</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/yComponents/layout.html#ylayout" class="sidebar-link">YLayout</a></li><li class="sidebar-sub-header"><a href="/yComponents/layout.html#ycol" class="sidebar-link">YCol</a></li></ul></li><li><a href="/yComponents/table.html" class="sidebar-link">table</a></li><li><a href="/yComponents/queryTable.html" class="sidebar-link">queryTable</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/examples" class="sidebar-heading clickable"><span>常见场景示例</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/examples/" class="sidebar-link">表单</a></li><li><a href="/examples/customQueryTable.html" class="sidebar-link">自定义查询列表</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><ul><li>针对表单提供24栅格化布局</li> <li>自带收起展开功能</li> <li>根据屏幕分辨率自动排版</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>
+  useYFormLog<span class="token punctuation">,</span>
+  extendRules<span class="token punctuation">,</span>
+  YForm<span class="token punctuation">,</span>
+  YField<span class="token punctuation">,</span>
+  YButton<span class="token punctuation">,</span>
+  YQueryTable<span class="token punctuation">,</span>
+  YTable<span class="token punctuation">,</span>
+  YLayout<span class="token punctuation">,</span>
+  YCol<span class="token punctuation">,</span>
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@yform/vue/lib/element-ui/index.umd'</span>
+
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YLayout<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 定义区块不同屏幕尺寸，必须由小向大</span>
+  <span class="token literal-property property">breakpointWidth</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">xs</span><span class="token operator">:</span> <span class="token number">480</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">sm</span><span class="token operator">:</span> <span class="token number">576</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">md</span><span class="token operator">:</span> <span class="token number">768</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">lg</span><span class="token operator">:</span> <span class="token number">992</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">xl</span><span class="token operator">:</span> <span class="token number">1200</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>YCol<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">collapseButtonComponent</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 渲染收起展开的按钮</span>
+    <span class="token literal-property property">tag</span><span class="token operator">:</span> <span class="token string">'YButton'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="ylayout"><a href="#ylayout" class="header-anchor">#</a> YLayout</h2> <h4 id="attributes"><a href="#attributes" class="header-anchor">#</a> Attributes</h4> <table><thead><tr><th>参数</th> <th>说明</th> <th>类型</th> <th>可选值</th> <th>默认值</th></tr></thead> <tbody><tr><td>gutter</td> <td>栅格间隔</td> <td>Number</td> <td>——</td> <td>8</td></tr></tbody></table> <h2 id="ycol"><a href="#ycol" class="header-anchor">#</a> YCol</h2> <h4 id="attributes-2"><a href="#attributes-2" class="header-anchor">#</a> Attributes</h4> <table><thead><tr><th>参数</th> <th>说明</th> <th>类型</th> <th>可选值</th> <th>默认值</th></tr></thead> <tbody><tr><td>offset</td> <td>栅格左侧的间隔格数</td> <td>Number</td> <td>——</td> <td>——</td></tr> <tr><td>pull</td> <td>栅格向左移动格数</td> <td>Number</td> <td>——</td> <td>——</td></tr> <tr><td>push</td> <td>栅格向右移动格数</td> <td>Number</td> <td>——</td> <td>——</td></tr> <tr><td>span</td> <td>栅格占据的列数</td> <td>Number</td> <td>——</td> <td>——</td></tr> <tr><td>layouts</td> <td>该字段可以定义不同<code>breakpointWidth</code>尺寸下的 <code>offset</code>、<code>pull</code>、<code>push</code>、<code>span</code></td> <td>Object</td> <td>——</td> <td>——</td></tr> <tr><td>collapse</td> <td>展开收起功能块</td> <td>Boolean</td> <td>——</td> <td>——</td></tr></tbody></table></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2/11/2022, 6:08:38 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/yComponents/button.html" class="prev">
+        Button
+      </a></span> <span class="next"><a href="/yComponents/table.html">
+        table
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ec129044.js" defer></script><script src="/assets/js/2.b0125562.js" defer></script><script src="/assets/js/19.13b09cd6.js" defer></script>
+  </body>
+</html>
