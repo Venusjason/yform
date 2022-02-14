@@ -18,7 +18,6 @@
     "@types/node": "^14.0.5",
     "@vuepress-reco/vuepress-plugin-extract-code": "^1.0.4",
     "@vuepress/plugin-register-components": "^1.5.2",
-    "@weier/webpack-aliyun-oss": "^0.3.1",
     "ant-design-vue": "^1.6.3",
     "core-js": "^2.6.5",
     "exec-sh": "^0.3.4",
