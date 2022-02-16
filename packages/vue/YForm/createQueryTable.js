@@ -119,7 +119,7 @@ export default (props) => {
         this.refreshList()
       }
     },
-    beforeDestory() {
+    beforeDestroy() {
       this.YForm && this.YForm.queryTableDestory(this)
     },
     methods: {
