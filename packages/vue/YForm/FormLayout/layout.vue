@@ -48,7 +48,7 @@ export default {
     this.$el.addEventListener('resize', this.onResize)
     window.addEventListener('resize', this.onResize)
   },
-  beforeDestory() {
+  beforeDestroy() {
     this.$el.removeEventListener('resize', this.onResize)
     window.removeEventListener('resize', this.onResize)
   },
